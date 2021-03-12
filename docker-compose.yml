@@ -1,0 +1,36 @@
+version: "3.7"
+services:
+    frontend:
+        tty: true
+        depends_on:
+            - backend
+        container_name: kanaliiga_apex_frontend
+        ports:
+            - "3000:3000"
+        build:
+            context: ./frontend
+        environment:
+            REACT_APP_API_HOST: backend
+    backend:
+        depends_on:
+            - database
+        container_name: kanaliiga_apex_backend
+        ports:
+            - "3001:3001"
+        build:
+            context: ./backend
+        environment:
+            TYPEORM_HOST: database
+            FRONTEND_HOST: frontend
+    database:
+        container_name: kanaliiga_apex_database
+        image: postgres:11-alpine
+        volumes:
+            - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+            - "database:/var/lib/lib/postgresql/data"
+        ports:
+            - "5433:5432"
+        restart: always
+        env_file: .env
+volumes:
+    database:
