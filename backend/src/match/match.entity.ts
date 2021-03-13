@@ -1,14 +1,25 @@
-import { MatchPlayerEntity } from 'src/match-player/match-player.entity';
-import { Column, OneToMany, PrimaryColumn } from 'typeorm';
+import { EAMatchData } from '../ea-match-data/ea-match-data.interface';
+import { MatchPlayerEntity } from '../match-player/match-player.entity';
+import {
+  Column,
+  ManyToOne,
+  OneToMany,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
+import { TournamentEntity } from '../tournament/tournament.entity';
 
 @Entity('match')
 export class MatchEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column({ unique: true })
   token: string;
 
-  @Column()
-  start: Date;
+  @Column({ type: 'timestamp with time zone', nullable: true })
+  start?: Date;
 
   @OneToMany(
     () => MatchPlayerEntity,
@@ -17,10 +28,17 @@ export class MatchEntity {
   )
   matchPlayers: MatchPlayerEntity[];
 
+  @ManyToOne(
+    () => TournamentEntity,
+    tournament => tournament.matches,
+    { nullable: true },
+  )
+  tournament?: TournamentEntity;
+
   constructor(token?: string, matchData?: EAMatchData) {
     if (token && matchData) {
       this.token = token;
-      this.start = new Date(matchData.match_start);
+      this.start = new Date(matchData.match_start * 1000);
       this.matchPlayers = matchData.player_results.map(
         playerResult => new MatchPlayerEntity(playerResult),
       );

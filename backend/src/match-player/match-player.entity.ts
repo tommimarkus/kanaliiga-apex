@@ -1,5 +1,5 @@
-import { Logger } from '@nestjs/common';
-import { MatchEntity } from 'src/match/match.entity';
+import { EAMatchPlayerResult } from '../ea-match-data/ea-match-data.interface';
+import { MatchEntity } from '../match/match.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('match-player')

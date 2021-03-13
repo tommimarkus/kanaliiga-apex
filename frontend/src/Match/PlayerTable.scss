@@ -1,0 +1,47 @@
+.table-container {
+    display: flex;
+    max-width: 100%;
+  }
+  
+  .table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  .table-header {
+  }
+  
+  .table-body {
+  }
+  
+  .table-footer {
+  }
+  
+  .table-header-row {
+  }
+  
+  .table-column {
+    padding-left: 1em;
+    padding-right: 1em;
+    text-align: start;
+  }
+  
+  .table-column-header {
+    @extend .table-column;
+    padding-bottom: 0.25em;
+  }
+  
+  .table-data-row {
+    &.odd {
+      background-color: #FFFFFF30;
+    }
+    &.even {
+      background-color: #BBBBBB30;
+    }
+  }
+  
+  .table-column-data {
+    @extend .table-column;
+    padding-bottom: 0.1em;
+  }
+  

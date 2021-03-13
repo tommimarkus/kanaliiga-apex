@@ -1,0 +1,78 @@
+$logo_area_width: 58.17vh;
+
+.container {
+  display: flex;
+  background-image: url('../images/background.jpg');
+  background-size: auto 100vh;
+  background-repeat: no-repeat;
+  background-color: #e8e1d9;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  height: 100vh;
+}
+
+.left-column {
+  @extend .column;
+  width: $logo_area_width !important;
+  flex-shrink: 0;
+  color: #ffffff;
+  overflow: hidden;
+  align-content: center;
+  align-items: center;
+}
+
+.right-column {
+  @extend .column;
+  width: 100%;
+  align-content: center;
+  align-items: center;
+}
+
+.column-content {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 85%;
+  margin: 2.5em;
+  justify-content: space-between;
+}
+
+.match-info {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  font-size: 3vh;
+}
+
+.player-tables {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.sponsors {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
+  img {
+    width: 15vh;
+  }
+}
+
+.last-fetched {
+  display: flex;
+  font-size: 0.5em;
+  position: absolute;
+  letter-spacing: 0.1em;
+  bottom: 0.8em;
+}

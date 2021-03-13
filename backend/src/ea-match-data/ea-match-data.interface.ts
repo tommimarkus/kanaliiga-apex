@@ -1,19 +1,40 @@
-interface EAMatchPlayerResult {
-    kills: number;
-    damageDealt: number;
-    playerName: string;
-    survivalTime: number;
-    teamPlacement: number;
-    teamName: string;
-    teamNum: number;
-    assists: number;
+import { ApiProperty } from '@nestjs/swagger';
+
+export class EAMatchPlayerResult {
+  @ApiProperty()
+  kills: number;
+
+  @ApiProperty()
+  damageDealt: number;
+
+  @ApiProperty()
+  playerName: string;
+
+  @ApiProperty()
+  survivalTime: number;
+
+  @ApiProperty()
+  teamPlacement: number;
+
+  @ApiProperty()
+  teamName: string;
+
+  @ApiProperty()
+  teamNum: number;
+
+  @ApiProperty()
+  assists: number;
 }
 
-interface EAMatchData {
-    match_start: number;
-    player_results: EAMatchPlayerResult[];
+export class EAMatchData {
+  @ApiProperty()
+  match_start: number;
+
+  @ApiProperty({ type: [EAMatchPlayerResult] })
+  player_results: EAMatchPlayerResult[];
 }
 
-interface EAMatchesData {
-    matches: EAMatchData[];
+export class EAMatchesData {
+  @ApiProperty({ type: [EAMatchData] })
+  matches: EAMatchData[];
 }
