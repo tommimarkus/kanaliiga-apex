@@ -8,6 +8,10 @@ export interface TournamentOutputData extends TournamentData {
   matches: MatchOutputData[];
 }
 
+export interface TournamentOutputListData extends TournamentData {
+  id: number;
+}
+
 export interface TournamentInputData extends TournamentData {
   matchTokens: string[];
 }

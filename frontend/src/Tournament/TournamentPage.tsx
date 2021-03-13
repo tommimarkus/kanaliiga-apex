@@ -4,6 +4,7 @@ import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
+import './TournamentPage.scss';
 import SponsorCGI from '../images/cgi_600px.webp';
 import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
 import {
@@ -47,71 +48,80 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
 
   const name = data?.name;
 
-  const dataMatches = data?.matches
-    ?.filter(
-      (match): match is MatchOutputData =>
-        match.results !== undefined &&
-        match.results !== null &&
-        match.results.length > 0
-    )
-    .map((match) =>
-      match.results?.map(
-        (result) =>
-          ({
-            id: result.teamNum,
-            name: result.teamName,
-            points: result.teamPoints,
-            kills: result.teamKills,
-            damage: result.teamDamage,
-          } as MatchTableData)
-      )
-    )
-    .reduce((prev: MatchTableData[], curr) =>
-      curr.map((currData) => {
-        const prevData = prev.find((s) => s.id === currData.id);
-        return {
-          id: prevData?.id || currData.id,
-          name: prevData?.name || currData.name,
-          damage: (prevData?.damage || 0) + currData.damage,
-          kills: (prevData?.kills || 0) + currData.kills,
-          points: (prevData?.points || 0) + currData.points,
-        } as MatchTableData;
-      })
-    )
-    .sort((a: MatchTableData, b: MatchTableData) => {
-      const points = b.points - a.points;
-      if (points === 0) {
-        const kills = b.kills - a.kills;
-        if (kills === 0) {
-          return b.damage - a.damage;
-        }
-        return kills;
-      }
-      return points;
-    });
+  const dataValidMatches = data?.matches?.filter(
+    (match): match is MatchOutputData =>
+      match.results !== undefined &&
+      match.results !== null &&
+      match.results.length > 0
+  );
+  const dataMatches =
+    dataValidMatches && dataValidMatches.length > 0
+      ? dataValidMatches
+          .map((match) =>
+            match.results?.map(
+              (result) =>
+                ({
+                  id: result.teamNum,
+                  name: result.teamName,
+                  points: result.teamPoints,
+                  kills: result.teamKills,
+                  damage: result.teamDamage,
+                } as MatchTableData)
+            )
+          )
+          .reduce((prev: MatchTableData[], curr) =>
+            curr.map((currData) => {
+              const prevData = prev.find((s) => s.id === currData.id);
+              return {
+                id: prevData?.id || currData.id,
+                name: prevData?.name || currData.name,
+                damage: (prevData?.damage || 0) + currData.damage,
+                kills: (prevData?.kills || 0) + currData.kills,
+                points: (prevData?.points || 0) + currData.points,
+              } as MatchTableData;
+            })
+          )
+          .sort((a: MatchTableData, b: MatchTableData) => {
+            const points = b.points - a.points;
+            if (points === 0) {
+              const kills = b.kills - a.kills;
+              if (kills === 0) {
+                return b.damage - a.damage;
+              }
+              return kills;
+            }
+            return points;
+          })
+      : undefined;
 
   const top = 5;
 
-  const dataPlayer = data?.matches
-    ?.filter(
-      (match): match is MatchOutputData =>
-        match.results !== undefined &&
-        match.results !== null &&
-        match.results.length > 0
-    )
-    .map((match) => match.results?.flatMap((result) => result.teamMembers))
-    .reduce((prev: MatchResultTeamMemberOutputData[], curr) =>
-      curr.map((currData) => {
-        const prevData = prev.find((s) => s.name === currData.name);
-        return {
-          name: prevData?.name || currData.name,
-          damage: (prevData?.damage || 0) + currData.damage,
-          kills: (prevData?.kills || 0) + currData.kills,
-          assists: (prevData?.assists || 0) + currData.assists,
-          survivalTime: (prevData?.survivalTime || 0) + currData.survivalTime,
-        } as MatchResultTeamMemberOutputData;
-      })
-    );
+  const dataValidPlayer = data?.matches?.filter(
+    (match): match is MatchOutputData =>
+      match.results !== undefined &&
+      match.results !== null &&
+      match.results.length > 0
+  );
+  const dataPlayer =
+    dataValidPlayer && dataValidPlayer.length > 0
+      ? dataValidPlayer
+          .map((match) =>
+            match.results?.flatMap((result) => result.teamMembers)
+          )
+          .reduce((prev: MatchResultTeamMemberOutputData[], curr) =>
+            curr.map((currData) => {
+              const prevData = prev.find((s) => s.name === currData.name);
+              return {
+                name: prevData?.name || currData.name,
+                damage: (prevData?.damage || 0) + currData.damage,
+                kills: (prevData?.kills || 0) + currData.kills,
+                assists: (prevData?.assists || 0) + currData.assists,
+                survivalTime:
+                  (prevData?.survivalTime || 0) + currData.survivalTime,
+              } as MatchResultTeamMemberOutputData;
+            })
+          )
+      : undefined;
 
   const columnsPlayerKills = [
     { title: 'Name', field: '' },
