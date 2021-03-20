@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 
+export class MatchInputJSONData {
+  @ApiProperty()
+  token: string;
+
+  @ApiProperty({ type: 'file' })
+  file: Express.Multer.File;
+}
+
 export class MatchResultTeamMemberOutputData {
   @ApiProperty()
   name: string;

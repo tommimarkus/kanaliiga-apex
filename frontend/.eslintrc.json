@@ -12,8 +12,7 @@
       "jsx": true
     },
     "ecmaVersion": 12,
-    "project": "./tsconfig.json",
-    "tsconfigRootDir": "./frontend",
+    "project": "tsconfig.json",
     "sourceType": "module"
   },
   "plugins": ["eslint-plugin-import-helpers"],
@@ -61,7 +60,7 @@
     "react/jsx-max-props-per-line": [
       "error",
       {
-        "maximum": 3
+        "maximum": 5
       }
     ],
     "react/jsx-props-no-spreading": [

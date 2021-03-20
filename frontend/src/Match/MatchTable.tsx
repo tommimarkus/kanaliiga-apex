@@ -26,35 +26,35 @@ export interface MatchTableProps {
 const MatchTable = (props: MatchTableProps): ReactElement => {
   const { columns, data } = props;
   return (
-    <div className="table-container">
-      <table className="table">
-        <thead className="table-header">
-          <tr className="table-header-row">
+    <div className="match-table-container">
+      <table className="match-table">
+        <thead className="match-table-header">
+          <tr className="match-table-header-row">
             {columns.map((c, columnIndex) => (
-              <th className="table-column-header" key={columnIndex.toString()}>
+              <th className="match-table-column-header" key={columnIndex.toString()}>
                 {c.title}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="table-body">
+        <tbody className="match-table-body">
           {data.map((d, rowIndex) => (
             <tr
               className={classNames(
-                'table-data-row',
+                'match-table-data-row',
                 { odd: rowIndex % 2 !== 0 },
                 { even: rowIndex % 2 === 0 }
               )}
               key={rowIndex.toString()}
             >
-              <td className="table-column-data">{rowIndex + 1}</td>
-              <td className="table-column-data">{d.name}</td>
+              <td className="match-table-column-data">{rowIndex + 1}</td>
+              <td className="match-table-column-data">{d.name}</td>
               {d.placement && (
-                <td className="table-column-data">{d.placement}</td>
+                <td className="match-table-column-data">{d.placement}</td>
               )}
-              <td className="table-column-data">{d.kills}</td>
-              <td className="table-column-data">{d.points}</td>
-              <td className="table-column-data">{d.damage}</td>
+              <td className="match-table-column-data">{d.kills}</td>
+              <td className="match-table-column-data">{d.points}</td>
+              <td className="match-table-column-data">{d.damage}</td>
             </tr>
           ))}
         </tbody>

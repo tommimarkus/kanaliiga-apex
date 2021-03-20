@@ -1,15 +1,15 @@
-import { ReactElement, useEffect, useState } from 'react';
+import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
-import SponsorCGI from '../images/cgi_600px.webp';
-import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
+import BasePage from '../Base/BasePage';
 import {
   MatchOutputData,
   MatchResultTeamMemberOutputData,
 } from '../interface/match.interface';
+import Utils from '../utils';
 import MatchTable, { MatchTableData } from './MatchTable';
 import PlayerTable from './PlayerTable';
 import './MatchPage.scss';
@@ -28,7 +28,7 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
   useEffect(() => {
     if (id) {
       axios
-        .get<MatchOutputData>(`http://localhost:3001/match/${id}`)
+        .get<MatchOutputData>(`${Utils.baseUrl}/match/${id}`)
         .then((response) => {
           setData(response.data);
           setLastFetched(new Date());
@@ -145,23 +145,11 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
     }));
 
   return (
-    <div className="container">
-      <div className="left-column">
-        <div className="column-content">
-          {startMatch && (
-            <div className="match-info">
-              <div>Match started</div>
-              <div>{startMatch}</div>
-            </div>
-          )}
-          {showSponsors === true && (
-            <div className="sponsors">
-              <img alt="CGI" src={SponsorCGI} />
-              <img alt="Etteplan" src={SponsorEtteplan} />
-            </div>
-          )}
-        </div>
-      </div>
+    <BasePage
+      showSponsors={showSponsors}
+      subtitles={startMatch ? [new Date(startMatch).toUTCString()] : undefined}
+      title="Match Started"
+    >
       {dataMatch && (
         <div className="right-column">
           <div className="column-content">
@@ -190,8 +178,12 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
           </div>
         </div>
       )}
-    </div>
+    </BasePage>
   );
+};
+
+MatchPage.defaultProps = {
+  showSponsors: true,
 };
 
 export default MatchPage;

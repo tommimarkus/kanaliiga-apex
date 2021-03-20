@@ -5,8 +5,7 @@ import axios from 'axios';
 import { formatISO } from 'date-fns';
 
 import './TournamentPage.scss';
-import SponsorCGI from '../images/cgi_600px.webp';
-import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
+import BasePage from '../Base/BasePage';
 import {
   MatchOutputData,
   MatchResultTeamMemberOutputData,
@@ -14,6 +13,7 @@ import {
 import { TournamentOutputData } from '../interface/tournament.interface';
 import MatchTable, { MatchTableData } from '../Match/MatchTable';
 import PlayerTable from '../Match/PlayerTable';
+import Utils from '../utils';
 
 export interface TournamentPageProps extends RouteComponentProps {
   id?: string;
@@ -28,12 +28,13 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
 
   useEffect(() => {
     if (id) {
-      axios
-        .get<TournamentOutputData>(`http://localhost:3001/tournament/${id}`)
-        .then((response) => {
-          setData(response.data);
-          setLastFetched(new Date());
-        });
+      const entrypoint = `${Utils.baseUrl}/tournament/${id}`;
+      // eslint-disable-next-line no-console
+      console.log(entrypoint);
+      axios.get<TournamentOutputData>(entrypoint).then((response) => {
+        setData(response.data);
+        setLastFetched(new Date());
+      });
     }
     return () => {};
   }, [id]);
@@ -41,8 +42,8 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const columnsMatch = [
     { title: '#', field: '' },
     { title: 'Name', field: '' },
-    { title: 'Points', field: '' },
     { title: 'Kills', field: '' },
+    { title: 'Points', field: '' },
     { title: 'Damage', field: '' },
   ];
 
@@ -193,23 +194,11 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
     }));
 
   return (
-    <div className="container">
-      <div className="left-column">
-        <div className="column-content">
-          {name && (
-            <div className="match-info">
-              <div>Tournament</div>
-              <div>{name}</div>
-            </div>
-          )}
-          {showSponsors === true && (
-            <div className="sponsors">
-              <img alt="CGI" src={SponsorCGI} />
-              <img alt="Etteplan" src={SponsorEtteplan} />
-            </div>
-          )}
-        </div>
-      </div>
+    <BasePage
+      showSponsors={showSponsors}
+      subtitles={name ? [name] : undefined}
+      title="Tournament"
+    >
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
@@ -238,8 +227,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
           </div>
         </div>
       )}
-    </div>
+    </BasePage>
   );
+};
+
+TournamentPage.defaultProps = {
+  showSponsors: true,
 };
 
 export default TournamentPage;

@@ -22,33 +22,36 @@ export interface PlayerTableProps {
 const PlayerTable = (props: PlayerTableProps): ReactElement => {
   const { columns, data } = props;
   return (
-    <div className="table-container">
-      <table className="table">
-        <thead className="table-header">
-          <tr className="table-header-row">
+    <div className="player-table-container">
+      <table className="player-table">
+        <thead className="player-table-header">
+          <tr className="player-table-header-row">
             {columns.map((c, columnIndex) => (
-              <th className="table-column-header" key={columnIndex.toString()}>
+              <th
+                className="player-table-column-header"
+                key={columnIndex.toString()}
+              >
                 {c.title}
               </th>
             ))}
           </tr>
         </thead>
-        <tbody className="table-body">
+        <tbody className="player-table-body">
           {data.map((d, rowIndex) => (
             <tr
               className={classNames(
-                'table-data-row',
+                'player-table-data-row',
                 { odd: rowIndex % 2 !== 0 },
                 { even: rowIndex % 2 === 0 }
               )}
               key={rowIndex.toString()}
             >
-              <td className="table-column-data">{d.name}</td>
-              <td className="table-column-data">{d.value}</td>
+              <td className="player-table-column-data">{d.name}</td>
+              <td className="player-table-column-data">{d.value}</td>
             </tr>
           ))}
         </tbody>
-        <tfoot className="table-footer" />
+        <tfoot className="player-table-footer" />
       </table>
     </div>
   );

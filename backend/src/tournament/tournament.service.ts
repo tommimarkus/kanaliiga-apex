@@ -77,8 +77,6 @@ export class TournamentService {
     file: Express.Multer.File,
     tournamentData: TournamentData,
   ): Promise<TournamentOutputData> | undefined {
-    Logger.log(file.buffer.toString());
-
     const stream = new Readable();
     stream.push(file.buffer);
     stream.push(null);
@@ -92,8 +90,6 @@ export class TournamentService {
           index < headerNames.length ? headerNames[index] : null,
       })
     ).list;
-
-    Logger.log(JSON.stringify(tournamentCSVDatas, null, 2));
 
     const token = tournamentCSVDatas[0].token;
     const tournamentInputData = {

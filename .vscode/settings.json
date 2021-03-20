@@ -1,0 +1,4 @@
+{
+  "eslint.runtime": "",
+  "eslint.workingDirectories": ["backend", "frontend"]
+}

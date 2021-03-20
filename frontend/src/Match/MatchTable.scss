@@ -1,45 +1,49 @@
-.table-container {
+$color_light: #fde3c980;
+$color_normal: #bd9d8780;
+
+.match-table-container {
   display: flex;
   max-width: 100%;
 }
 
-.table {
+.match-table {
   border-collapse: collapse;
+  width: 100%;
 }
 
-.table-header {
+.match-table-header {
 }
 
-.table-body {
+.match-table-body {
 }
 
-.table-footer {
+.match-table-footer {
 }
 
-.table-header-row {
+.match-table-header-row {
 }
 
-.table-column {
+.match-table-column {
   padding-left: 1em;
   padding-right: 1em;
   text-align: start;
 }
 
-.table-column-header {
-  @extend .table-column;
+.match-table-column-header {
+  @extend .match-table-column;
   padding-bottom: 0.25em;
 }
 
-.table-data-row {
+.match-table-data-row {
   &.odd {
-    background-color: #FFFFFF30;
+    background-color: rgba($color_light, 0.5);
   }
   &.even {
-    background-color: #BBBBBB30;
+    background-color: rgba($color_normal, 0.5);
   }
 }
 
-.table-column-data {
-  @extend .table-column;
+.match-table-column-data {
+  @extend .match-table-column;
   padding-bottom: 0.1em;
 }

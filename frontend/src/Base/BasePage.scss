@@ -1,0 +1,101 @@
+.container {
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  justify-items: center;
+  height: 100%;
+}
+
+.left-column {
+  @extend .column;
+  width: 20vw !important;
+  flex-shrink: 0;
+  color: #ffffff;
+  overflow: hidden;
+  align-content: center;
+  align-items: center;
+  background-color: rgba(#000000, 0.2);
+}
+
+.right-column {
+  @extend .column;
+  width: 100%;
+  align-content: center;
+  align-items: center;
+}
+
+.column-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 85%;
+  margin: 2.5em;
+  justify-content: space-between;
+}
+
+.title-info {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  font-size: 4vh;
+  overflow-wrap: break-word;
+  text-align: center;
+}
+
+.subtitle-info {
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  font-size: 3vh;
+  overflow-wrap: break-word;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+.sponsors {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  align-content: center;
+  align-items: center;
+  justify-content: space-between;
+  justify-items: center;
+  overflow: hidden;
+  img {
+    width: 15vh;
+  }
+}
+
+.kanaliiga-logo {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  align-items: center;
+  align-content: center;
+  overflow: hidden;
+  img {
+    width: 20vh;
+  }
+}
+
+.last-fetched {
+  display: flex;
+  font-size: 0.5em;
+  position: absolute;
+  letter-spacing: 0.1em;
+  bottom: 0.8em;
+  color: #ffffff;
+}

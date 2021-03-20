@@ -8,6 +8,7 @@ import './TournamentListPage.scss';
 import SponsorCGI from '../images/cgi_600px.webp';
 import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
 import { TournamentOutputListData } from '../interface/tournament.interface';
+import Utils from '../utils';
 
 export interface TournamentListPageProps extends RouteComponentProps {
   showSponsors?: boolean;
@@ -21,7 +22,7 @@ const TournamentListPage = (props: TournamentListPageProps): ReactElement => {
 
   useEffect(() => {
     axios
-      .get<TournamentOutputListData[]>(`http://localhost:3001/tournament`)
+      .get<TournamentOutputListData[]>(`${Utils.baseUrl}/tournament`)
       .then((response) => {
         setData(response.data);
         setLastFetched(new Date());

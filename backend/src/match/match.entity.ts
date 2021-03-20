@@ -15,7 +15,7 @@ export class MatchEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ unique: true })
+  @PrimaryColumn({ unique: true })
   token: string;
 
   @Column({ type: 'timestamp with time zone', nullable: true })
