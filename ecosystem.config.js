@@ -33,7 +33,7 @@ module.exports = {
       user: "kanapex",
       host: "95.216.174.76",
       ref: "origin/main",
-      repo: "https://github.com/tommimarkus/kanaliiga-apex.git",
+      repo: "git@github.com:tommimarkus/kanaliiga-apex.git",
       path: "/var/opt/apps/kanaliiga-apex",
       "pre-deploy-local": "",
       "post-deploy":
