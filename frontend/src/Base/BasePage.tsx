@@ -17,7 +17,7 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
 
   return (
     <div className="container">
-      <VideoBackground videoSources={["apex-video-background-download-worlds-edge-6.mp4"]} />
+      <VideoBackground videoSources={["/apex-video-background-download-worlds-edge-6.mp4"]} />
       <div className="left-column">
         <div className="column-content">
           {title && (
