@@ -5,18 +5,26 @@ module.exports = {
       cwd: "./backend",
       script: "dist/main.js",
       watch: true,
+      env: {
+        NODE_ENV: "development",
+      },
       env_production: {
         NODE_ENV: "production",
       },
-      mex_memory_restart: "200M",
+      max_memory_restart: "200M",
     },
     {
       name: "frontend",
       cwd: "./frontend",
-      script: "index.js",
+      script: "node_modules/react-scripts/scripts/start.js",
+      watch: true,
+      env: {
+        NODE_ENV: "development",
+      },
       env_production: {
         NODE_ENV: "production",
       },
+      max_memory_restart: "200M",
     },
   ],
 
@@ -24,7 +32,7 @@ module.exports = {
     production: {
       user: "kanapex",
       host: "95.216.174.76",
-      ref: "origin/master",
+      ref: "origin/main",
       repo: "https://github.com/tommimarkus/kanaliiga-apex.git",
       path: "/var/opt/apps/kanaliiga-apex",
       "pre-deploy-local": "",
