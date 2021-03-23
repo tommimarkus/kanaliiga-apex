@@ -9,6 +9,7 @@ async function bootstrap() {
   app.use(helmet());
   //app.use(csurf());
   app.enableCors();
+  app.setGlobalPrefix('api');
 
   const config = new DocumentBuilder()
     .setTitle('Kanaliiga Apex')
