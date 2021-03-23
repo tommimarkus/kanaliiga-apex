@@ -3,6 +3,7 @@
 pushd backend
 npm install
 npm run prebuild
+npm run build
 popd
 
 pushd frontend
