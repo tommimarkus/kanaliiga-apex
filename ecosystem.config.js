@@ -37,7 +37,7 @@ module.exports = {
       path: "/var/opt/apps/kanaliiga-apex",
       "pre-deploy-local": "",
       "post-deploy":
-        ". ~/bash_profile && sh post-deploy.sh && pm2 reload ecosystem.config.js --env production",
+        ". ~/.bash_profile && sh post-deploy.sh && pm2 reload ecosystem.config.js --env production",
       "pre-setup": "",
       env_production: {
         NODE_ENV: "production",
