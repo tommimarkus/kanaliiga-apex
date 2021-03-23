@@ -13,19 +13,6 @@ module.exports = {
       },
       max_memory_restart: "200M",
     },
-    {
-      name: "frontend",
-      cwd: "./frontend",
-      script: "node_modules/react-scripts/scripts/start.js",
-      watch: true,
-      env: {
-        NODE_ENV: "development",
-      },
-      env_production: {
-        NODE_ENV: "production",
-      },
-      max_memory_restart: "500M",
-    },
   ],
 
   deploy: {
