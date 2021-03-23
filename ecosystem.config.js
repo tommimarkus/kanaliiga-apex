@@ -24,7 +24,7 @@ module.exports = {
       env_production: {
         NODE_ENV: "production",
       },
-      max_memory_restart: "200M",
+      max_memory_restart: "500M",
     },
   ],
 

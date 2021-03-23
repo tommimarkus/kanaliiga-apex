@@ -7,7 +7,7 @@ import * as csurf from 'csurf';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
-  app.use(csurf());
+  //app.use(csurf());
   app.enableCors();
 
   const config = new DocumentBuilder()
