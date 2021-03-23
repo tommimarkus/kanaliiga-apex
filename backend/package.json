@@ -44,18 +44,12 @@
     "typeorm": "^0.2.31"
   },
   "devDependencies": {
-    "@nestjs/testing": "^7.6.14",
-    "@types/jest": "25.1.2",
-    "@types/supertest": "^2.0.8",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.19.1",
-    "jest": "^24.9.0",
     "prettier": "^1.18.2",
-    "supertest": "^4.0.2",
-    "ts-jest": "^26.5.4",
     "ts-loader": "^6.2.1",
     "ts-node": "^8.6.0",
     "tsconfig-paths": "^3.9.0",
