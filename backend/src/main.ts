@@ -14,6 +14,7 @@ async function bootstrap() {
     .setTitle('Kanaliiga Apex')
     .setDescription('Kanaliiga Apex API')
     .setVersion('1.0')
+    .setBasePath('api')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('docs', app, document);
