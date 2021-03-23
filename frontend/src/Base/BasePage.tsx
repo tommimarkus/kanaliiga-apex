@@ -1,8 +1,5 @@
 import React, { PropsWithChildren, ReactElement } from 'react';
 
-// import VideoKingsCanyon11 from '../images/apex-video-background-download-kings-canyon-11.mp4';
-// import VideoWorldsEdge1 from '../images/apex-video-background-download-worlds-edge-1.mp4';
-import VideoWorldsEdge6 from '../images/apex-video-background-download-worlds-edge-6.mp4';
 import SponsorCGI from '../images/cgi_600px.webp';
 import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
 import KanaliigaLogo from '../images/kanaliiga-logo-250px.png';
@@ -20,7 +17,7 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
 
   return (
     <div className="container">
-      <VideoBackground videoSources={[VideoWorldsEdge6]} />
+      <VideoBackground videoSources={["apex-video-background-download-worlds-edge-6.mp4"]} />
       <div className="left-column">
         <div className="column-content">
           {title && (
