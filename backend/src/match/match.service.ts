@@ -1,17 +1,10 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { formatISO } from 'date-fns';
 import { matchEntityToMatchResultsOutput } from '../util/util';
-import { EAMatchData, EAMatchesData } from '../ea-match-data/ea-match-data.interface';
+import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
 import { MatchEntity } from './match.entity';
-import {
-  MatchResultOutputData,
-  MatchResultTeamMemberOutputData,
-  MatchOutputData,
-} from './match.interface';
+import { MatchOutputData } from './match.interface';
 import { MatchRepository } from './match.repository';
-import { TournamentEntity } from 'src/tournament/tournament.entity';
-import { TournamentCSVData, TournamentInputData, TournamentOutputData } from 'src/tournament/tournament.interface';
-import { Readable } from 'stream';
 
 @Injectable()
 export class MatchService {
@@ -60,6 +53,9 @@ export class MatchService {
     file: Express.Multer.File,
     token: string,
   ): Promise<MatchOutputData[]> | undefined {
-    return await this.save(token, JSON.parse(file.buffer.toString()) as EAMatchesData);
+    return await this.save(
+      token,
+      JSON.parse(file.buffer.toString()) as EAMatchesData,
+    );
   }
 }

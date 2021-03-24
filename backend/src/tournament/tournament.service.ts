@@ -1,6 +1,6 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { formatISO } from 'date-fns';
-import { MatchOutputData } from 'src/match/match.interface';
+import { MatchOutputData } from '../match/match.interface';
 import { matchEntityToMatchResultsOutput } from '../util/util';
 import { TournamentEntity } from './tournament.entity';
 import {

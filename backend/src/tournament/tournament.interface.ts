@@ -1,9 +1,5 @@
-import {
-  ApiHideProperty,
-  ApiProperty,
-  ApiPropertyOptional,
-} from '@nestjs/swagger';
-import { MatchOutputData } from 'src/match/match.interface';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { MatchOutputData } from '../match/match.interface';
 
 export class TournamentData {
   @ApiPropertyOptional()

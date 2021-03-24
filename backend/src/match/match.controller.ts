@@ -11,7 +11,6 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes } from '@nestjs/swagger';
-import { TournamentInputCSVData, TournamentOutputData } from 'src/tournament/tournament.interface';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
 import { MatchInputJSONData, MatchOutputData } from './match.interface';
 import { MatchService } from './match.service';
