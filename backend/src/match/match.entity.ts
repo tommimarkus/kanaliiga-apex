@@ -4,7 +4,6 @@ import {
   Column,
   ManyToOne,
   OneToMany,
-  PrimaryColumn,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
@@ -15,7 +14,7 @@ export class MatchEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @PrimaryColumn({ unique: true })
+  @Column({ unique: true })
   token: string;
 
   @Column({ type: 'timestamp with time zone', nullable: true })
