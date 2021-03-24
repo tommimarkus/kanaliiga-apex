@@ -86,7 +86,7 @@ export class TournamentService {
       await this.csvParser.parse(stream, TournamentCSVData, null, null, {
         strict: true,
         separator: ',',
-        mapHeaders: ({ _header, index }) =>
+        mapHeaders: ({ index }) =>
           index < headerNames.length ? headerNames[index] : null,
       })
     ).list;
@@ -94,8 +94,8 @@ export class TournamentService {
     const token = tournamentCSVDatas[0].token;
     const tournamentInputData = {
       name: tournamentData.name,
-      matchTokens: tournamentCSVDatas.map(
-        tournamentCSVData => tournamentCSVData.matchToken,
+      matchTokens: tournamentCSVDatas.map(tournamentCSVData =>
+        tournamentCSVData.matchToken.trim(),
       ),
     } as TournamentInputData;
 

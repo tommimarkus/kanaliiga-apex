@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { formatISO } from 'date-fns';
 import { matchEntityToMatchResultsOutput } from '../util/util';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';

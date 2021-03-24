@@ -1,1 +1,2 @@
 backend/ormconfig.json
+backend/.env
