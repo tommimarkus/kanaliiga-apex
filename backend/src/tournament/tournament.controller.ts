@@ -10,7 +10,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import {
   TournamentInputCSVData,
   TournamentInputData,
@@ -19,6 +19,7 @@ import {
 } from './tournament.interface';
 import { TournamentService } from './tournament.service';
 
+@ApiBasicAuth()
 @Controller('tournament')
 export class TournamentController {
   constructor(private readonly tournamentService: TournamentService) {}

@@ -10,11 +10,12 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
 import { MatchInputJSONData, MatchOutputData } from './match.interface';
 import { MatchService } from './match.service';
 
+@ApiBasicAuth()
 @Controller('match')
 export class MatchController {
   constructor(private readonly matchService: MatchService) {}

@@ -4,11 +4,14 @@ import { MulterModule } from '@nestjs/platform-express/multer';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import multer = require('multer');
 import { CsvModule } from 'nest-csv-parser';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MatchModule } from './match/match.module';
 import { TournamentModule } from './tournament/tournament.module';
+import { AuthModule } from './auth/auth.module';
+import { UserModule } from './user/user.module';
 import typeormConfig from './config/config.typeorm';
+import { APP_GUARD } from '@nestjs/core';
+import { BasicAuthGuard } from './auth/basic-auth.guard';
 
 @Module({
   imports: [
@@ -22,8 +25,15 @@ import typeormConfig from './config/config.typeorm';
       }),
     }),
     CsvModule,
+    AuthModule,
+    UserModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: BasicAuthGuard,
+    },
+    AppService,
+  ],
 })
 export class AppModule {}

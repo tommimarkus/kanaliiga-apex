@@ -54,7 +54,7 @@ const TournamentListPage = (props: TournamentListPageProps): ReactElement => {
             {data.map((tournamentListData) => (
               <div>
                 <a
-                  href={`http://localhost:3000/tournament/${tournamentListData.id}`}
+                  href={`/tournament/${tournamentListData.id}`}
                 >
                   {tournamentListData.name}
                 </a>
