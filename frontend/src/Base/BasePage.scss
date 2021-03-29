@@ -2,6 +2,9 @@
   display: flex;
   width: 100vw;
   height: 100vh;
+  &.stream {
+    background-color: rgba(0, 0, 0, 0);
+  }
 }
 
 .column {
@@ -20,7 +23,7 @@
   overflow: hidden;
   align-content: center;
   align-items: center;
-  background-color: rgba(#000000, 0.2);
+  background-color: rgba(0, 0, 0, 0.5);
 }
 
 .right-column {
