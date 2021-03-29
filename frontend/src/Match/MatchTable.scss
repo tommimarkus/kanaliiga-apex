@@ -1,5 +1,6 @@
-$color_light: #fde3c980;
-$color_normal: #bd9d8780;
+$color_light: #fde3c9;
+$color_normal: #bd9d87;
+$color_alpha: 0.75;
 
 .match-table-container {
   display: flex;
@@ -36,10 +37,10 @@ $color_normal: #bd9d8780;
 
 .match-table-data-row {
   &.odd {
-    background-color: rgba($color_light, 0.5);
+    background-color: rgba($color_light, $color_alpha);
   }
   &.even {
-    background-color: rgba($color_normal, 0.5);
+    background-color: rgba($color_normal, $color_alpha);
   }
 }
 
