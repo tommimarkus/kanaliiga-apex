@@ -1,9 +1,4 @@
-import {
-  Column,
-  OneToMany,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { MatchEntity } from '../match/match.entity';
 import { TournamentInputData } from './tournament.interface';
@@ -19,6 +14,12 @@ export class TournamentEntity {
   @Column({ nullable: true })
   name?: string;
 
+  @Column({
+    type: 'timestamp with time zone',
+    nullable: false,
+  })
+  start: Date;
+
   @OneToMany(
     () => MatchEntity,
     match => match.tournament,
@@ -29,6 +30,7 @@ export class TournamentEntity {
   constructor(token?: string, tournamentInputData?: TournamentInputData) {
     if (token && tournamentInputData) {
       this.token = token;
+      this.start = new Date(tournamentInputData.start);
       this.name = tournamentInputData.name;
       this.matches = tournamentInputData.matchTokens.map(matchToken => {
         const matchEntity = new MatchEntity();

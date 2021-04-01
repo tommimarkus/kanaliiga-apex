@@ -3,17 +3,19 @@ import React from 'react';
 import { Router } from '@reach/router';
 
 import './App.scss';
+import NotFoundPage from './Error/NotFoundPage';
 import MatchPage from './Match/MatchPage';
 import RecentMatchesPage from './RecentMatches/RecentMatchesPage';
-import TournamentListPage from './Tournament/TournamentListPage';
+import RecentTournamentsPage from './RecentTournaments/RecentTournamentsPage';
 import TournamentPage from './Tournament/TournamentPage';
 
 const App: React.FC = () => (
   <Router>
-    <RecentMatchesPage path="/" />
+    <NotFoundPage default />
     <MatchPage path="match/:id" />
     <TournamentPage path="tournament/:id" />
-    <TournamentListPage path="tournament" />
+    <RecentMatchesPage path="match" />
+    <RecentTournamentsPage path="tournament" />
   </Router>
 );
 

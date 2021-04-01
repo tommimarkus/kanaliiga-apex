@@ -1,12 +1,30 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsISO8601 } from 'class-validator';
+import { formatISO } from 'date-fns';
+
+// INPUT
+
+export class MatchData {
+  @ApiProperty({
+    type: 'string',
+    format: 'date-time',
+    example: formatISO(new Date()),
+    required: true,
+    nullable: false,
+  })
+  @IsISO8601({ strict: true })
+  start: string;
+}
 
 export class MatchInputJSONData {
-  @ApiProperty()
+  @ApiProperty({ required: true, nullable: false })
   token: string;
 
-  @ApiProperty({ type: 'file' })
+  @ApiProperty({ type: 'file', required: true, nullable: false })
   file: Express.Multer.File;
 }
+
+// OUTPUT
 
 export class MatchResultTeamMemberOutputData {
   @ApiProperty()
@@ -48,10 +66,15 @@ export class MatchResultOutputData {
   teamDamage: number;
 }
 
-export class MatchOutputData {
-  @ApiProperty()
-  start: string;
-
+export class MatchOutputData extends MatchData {
   @ApiProperty()
   results: MatchResultOutputData[];
+}
+
+export class MatchOutputListData extends MatchData {
+  @ApiProperty()
+  id: number;
+
+  @ApiProperty()
+  tournamentName?: string;
 }

@@ -1,11 +1,6 @@
 import { EAMatchData } from '../ea-match-data/ea-match-data.interface';
 import { MatchPlayerEntity } from '../match-player/match-player.entity';
-import {
-  Column,
-  ManyToOne,
-  OneToMany,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { TournamentEntity } from '../tournament/tournament.entity';
 

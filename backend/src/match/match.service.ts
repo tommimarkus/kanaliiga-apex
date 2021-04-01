@@ -1,14 +1,36 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { formatISO } from 'date-fns';
 import { matchEntityToMatchResultsOutput } from '../util/util';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
 import { MatchEntity } from './match.entity';
-import { MatchOutputData } from './match.interface';
+import { MatchOutputData, MatchOutputListData } from './match.interface';
 import { MatchRepository } from './match.repository';
+import { IsNull, Not } from 'typeorm';
 
 @Injectable()
 export class MatchService {
   constructor(private matchRepository: MatchRepository) {}
+
+  async find(): Promise<MatchOutputListData[]> {
+    const matchEntities = await this.matchRepository.find({
+      select: ['id', 'start', 'tournament'],
+      join: {
+        alias: 'match',
+        innerJoinAndSelect: {
+          tournament: 'match.tournament',
+        },
+      },
+      where: { start: Not(IsNull()) },
+    });
+    return matchEntities.map(
+      matchEntity =>
+        ({
+          start: formatISO(matchEntity.start),
+          id: matchEntity.id,
+          tournamentName: matchEntity.tournament?.name,
+        } as MatchOutputListData),
+    );
+  }
 
   async findOne(id: number): Promise<MatchOutputData> | undefined {
     const matchEntity = await this.matchRepository.findOne(id);

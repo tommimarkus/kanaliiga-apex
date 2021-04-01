@@ -9,18 +9,17 @@ import {
   MatchOutputData,
   MatchResultTeamMemberOutputData,
 } from '../interface/match.interface';
+import MatchTable, { MatchTableData } from '../Table/MatchTable';
+import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
-import MatchTable, { MatchTableData } from './MatchTable';
-import PlayerTable from './PlayerTable';
 import './MatchPage.scss';
 
 export interface MatchPageProps extends RouteComponentProps {
   id?: string;
-  showSponsors?: boolean;
 }
 
 const MatchPage = (props: MatchPageProps): ReactElement => {
-  const { id, showSponsors } = props;
+  const { id } = props;
 
   const [data, setData] = useState<MatchOutputData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
@@ -146,8 +145,9 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
 
   return (
     <BasePage
-      showSponsors={showSponsors}
-      subtitles={startMatch ? [new Date(startMatch).toUTCString()] : undefined}
+      subtitles={
+        startMatch ? [Utils.localDateTimeString(startMatch)] : undefined
+      }
       title="Match Started"
     >
       {dataMatch && (
@@ -180,10 +180,6 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
       )}
     </BasePage>
   );
-};
-
-MatchPage.defaultProps = {
-  showSponsors: true,
 };
 
 export default MatchPage;

@@ -13,14 +13,14 @@ import './BasePage.scss';
 export interface BasePageProps {
   title?: string;
   subtitles?: string[];
-  showSponsors?: boolean;
 }
 
 const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
-  const { title, subtitles, showSponsors, children } = props;
+  const { title, subtitles, children } = props;
 
   const query = new URLSearchParams(useLocation().search);
   const stream = query.has('stream');
+  const nosponsors = query.has('nosponsors');
 
   return (
     <div className={classNames('container', { stream })}>
@@ -36,19 +36,18 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
           {title && (
             <div className="title-info">
               {title}
-              {subtitles && (
-                <div className="subtitle-info">
-                  {subtitles.map((subtitleItem) => (
+              {subtitles &&
+                subtitles.map((subtitleItem) => (
+                  <div className="subtitle-info">
                     <div key={subtitleItem}>{subtitleItem}</div>
-                  ))}
-                </div>
-              )}
+                  </div>
+                ))}
             </div>
           )}
           <div className="kanaliiga-logo">
             <img alt="Kanaliiga Logo" src={KanaliigaLogo} />
           </div>
-          {showSponsors === true && (
+          {nosponsors !== true && (
             <>
               <div className="sponsors">
                 <img alt="CGI" src={SponsorCGI} />

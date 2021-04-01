@@ -2,14 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
 import * as helmet from 'helmet';
-//import * as csurf from 'csurf';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet());
-  //app.use(csurf());
   app.enableCors();
   app.setGlobalPrefix('api');
+  app.useGlobalPipes(new ValidationPipe());
 
   const config = new DocumentBuilder()
     .setTitle('Kanaliiga Apex')

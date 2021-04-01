@@ -4,26 +4,26 @@ import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
-import './RecentMatchesPage.scss';
+import './RecentTournamentsPage.scss';
 import BasePage from '../Base/BasePage';
-import { MatchOutputListData } from '../interface/match.interface';
+import { TournamentOutputListData } from '../interface/tournament.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
 import Utils from '../utils';
 
-export interface RecentMatchesPageProps extends RouteComponentProps {}
+export interface RecentTournamentsPageProps extends RouteComponentProps {}
 
-const RecentMatchesPage = (
+const RecentTournamentsPage = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  props: RecentMatchesPageProps
+  props: RecentTournamentsPageProps
 ): ReactElement => {
-  const entryPoint = '/match';
+  const entryPoint = '/tournament';
 
-  const [data, setData] = useState<MatchOutputListData[] | undefined>();
+  const [data, setData] = useState<TournamentOutputListData[] | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     axios
-      .get<MatchOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
+      .get<TournamentOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
       .then((response) => {
         setData(response.data);
         setLastFetched(new Date());
@@ -31,32 +31,32 @@ const RecentMatchesPage = (
     return () => {};
   }, []);
 
-  const columnsRecentMatches = [
+  const columnsRecentTournaments = [
     { title: 'Date', field: '' },
-    { title: 'Tournament', field: '' },
+    { title: 'Name', field: '' },
   ];
 
-  const dataRecentMatches = data
-    ?.sort((a: MatchOutputListData, b: MatchOutputListData) =>
+  const dataRecentTournaments = data
+    ?.sort((a: TournamentOutputListData, b: TournamentOutputListData) =>
       Utils.sortDateStrings(b.start, a.start)
     )
     .map(
-      (recentMatchesData) =>
+      (recentTournamentsData) =>
         ({
-          name: Utils.localDateTimeString(recentMatchesData.start),
-          value: recentMatchesData.tournamentName || 'Unnamed', // TODO: value
-          link: `${entryPoint}/${recentMatchesData.id}`,
+          name: Utils.localDateTimeString(recentTournamentsData.start),
+          value: recentTournamentsData.name || 'Unnamed',
+          link: `${entryPoint}/${recentTournamentsData.id}`,
         } as LinkTableData)
     );
 
   return (
-    <BasePage title="Recent Matches">
-      {dataRecentMatches && (
+    <BasePage title="Recent Tournaments">
+      {dataRecentTournaments && (
         <div className="right-column">
           <div className="column-content">
             <LinkTable
-              columns={columnsRecentMatches}
-              data={dataRecentMatches}
+              columns={columnsRecentTournaments}
+              data={dataRecentTournaments}
             />
             {lastFetched && (
               <div className="last-fetched">
@@ -70,4 +70,4 @@ const RecentMatchesPage = (
   );
 };
 
-export default RecentMatchesPage;
+export default RecentTournamentsPage;

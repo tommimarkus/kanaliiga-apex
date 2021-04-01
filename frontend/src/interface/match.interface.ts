@@ -1,3 +1,7 @@
+export interface MatchData {
+  start: string;
+}
+
 export interface MatchResultTeamMemberOutputData {
   name: string;
   kills: number;
@@ -16,7 +20,11 @@ export interface MatchResultOutputData {
   teamDamage: number;
 }
 
-export interface MatchOutputData {
-  start: string;
+export interface MatchOutputData extends MatchData {
   results: MatchResultOutputData[];
+}
+
+export interface MatchOutputListData extends MatchData {
+  id: number;
+  tournamentName?: string;
 }

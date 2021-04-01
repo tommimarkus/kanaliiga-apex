@@ -1,0 +1,342 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Kanaliiga Apex",
+    "description": "Kanaliiga Apex API",
+    "version": "1.0",
+    "contact": {}
+  },
+  "tags": [],
+  "servers": [],
+  "components": {
+    "securitySchemes": {
+      "basic": {
+        "type": "http",
+        "scheme": "basic"
+      }
+    },
+    "schemas": {
+      "MatchInputJSONData": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "file": {
+            "type": "file"
+          }
+        },
+        "required": [
+          "token",
+          "file"
+        ]
+      },
+      "EAMatchPlayerResult": {
+        "type": "object",
+        "properties": {
+          "kills": {
+            "type": "number"
+          },
+          "damageDealt": {
+            "type": "number"
+          },
+          "playerName": {
+            "type": "string"
+          },
+          "survivalTime": {
+            "type": "number"
+          },
+          "teamPlacement": {
+            "type": "number"
+          },
+          "teamName": {
+            "type": "string"
+          },
+          "teamNum": {
+            "type": "number"
+          },
+          "assists": {
+            "type": "number"
+          }
+        },
+        "required": [
+          "kills",
+          "damageDealt",
+          "playerName",
+          "survivalTime",
+          "teamPlacement",
+          "teamName",
+          "teamNum",
+          "assists"
+        ]
+      },
+      "EAMatchData": {
+        "type": "object",
+        "properties": {
+          "match_start": {
+            "type": "number"
+          },
+          "player_results": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EAMatchPlayerResult"
+            }
+          }
+        },
+        "required": [
+          "match_start",
+          "player_results"
+        ]
+      },
+      "EAMatchesData": {
+        "type": "object",
+        "properties": {
+          "matches": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EAMatchData"
+            }
+          }
+        },
+        "required": [
+          "matches"
+        ]
+      },
+      "TournamentInputCSVData": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-04-01T14:12:34+03:00"
+          },
+          "name": {
+            "type": "string",
+            "example": "Kanaliiga Apex #1 Game Day 1"
+          },
+          "file": {
+            "type": "file"
+          }
+        },
+        "required": [
+          "startTime",
+          "file"
+        ]
+      },
+      "TournamentInputData": {
+        "type": "object",
+        "properties": {
+          "startTime": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2021-04-01T14:12:34+03:00"
+          },
+          "name": {
+            "type": "string",
+            "example": "Kanaliiga Apex #1 Game Day 1"
+          },
+          "matchTokens": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "startTime",
+          "matchTokens"
+        ]
+      }
+    }
+  },
+  "paths": {
+    "/api/match/{id}": {
+      "get": {
+        "operationId": "MatchController_find",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/match/json": {
+      "post": {
+        "operationId": "MatchController_saveJSON",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/MatchInputJSONData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/match/{token}": {
+      "post": {
+        "operationId": "MatchController_save",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EAMatchesData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/tournament": {
+      "get": {
+        "operationId": "TournamentController_list",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{id}": {
+      "get": {
+        "operationId": "TournamentController_find",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/csv": {
+      "post": {
+        "operationId": "TournamentController_saveCSV",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentInputCSVData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    },
+    "/api/tournament/{token}": {
+      "post": {
+        "operationId": "TournamentController_save",
+        "parameters": [
+          {
+            "name": "token",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/TournamentInputData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": ""
+          }
+        },
+        "security": [
+          {
+            "basic": []
+          }
+        ]
+      }
+    }
+  }
+}

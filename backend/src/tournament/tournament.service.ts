@@ -23,12 +23,13 @@ export class TournamentService {
 
   async find(): Promise<TournamentOutputListData[]> {
     const tournamentEntities = await this.tournamentRepository.find({
-      select: ['id', 'name'],
+      select: ['id', 'name', 'start'],
     });
     return tournamentEntities.map(
       tournamentEntity =>
         ({
           name: tournamentEntity.name,
+          start: formatISO(tournamentEntity.start),
           id: tournamentEntity.id,
         } as TournamentOutputListData),
     );
@@ -39,6 +40,7 @@ export class TournamentService {
     return tournamentEntity
       ? ({
           name: tournamentEntity.name,
+          start: formatISO(tournamentEntity.start),
           matches: tournamentEntity.matches.map(matchEntity => {
             const results = matchEntityToMatchResultsOutput(matchEntity);
             return {
@@ -94,6 +96,7 @@ export class TournamentService {
     const token = tournamentCSVDatas[0].token;
     const tournamentInputData = {
       name: tournamentData.name,
+      start: tournamentData.start,
       matchTokens: tournamentCSVDatas.map(tournamentCSVData =>
         tournamentCSVData.matchToken.trim(),
       ),

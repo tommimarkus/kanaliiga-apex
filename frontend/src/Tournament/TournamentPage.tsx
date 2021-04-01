@@ -11,17 +11,16 @@ import {
   MatchResultTeamMemberOutputData,
 } from '../interface/match.interface';
 import { TournamentOutputData } from '../interface/tournament.interface';
-import MatchTable, { MatchTableData } from '../Match/MatchTable';
-import PlayerTable from '../Match/PlayerTable';
+import MatchTable, { MatchTableData } from '../Table/MatchTable';
+import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
 
 export interface TournamentPageProps extends RouteComponentProps {
   id?: string;
-  showSponsors?: boolean;
 }
 
 const TournamentPage = (props: TournamentPageProps): ReactElement => {
-  const { id, showSponsors } = props;
+  const { id } = props;
 
   const [data, setData] = useState<TournamentOutputData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
@@ -48,6 +47,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   ];
 
   const name = data?.name;
+  const start = data && Utils.localDateTimeString(data.start);
 
   const dataValidMatches = data?.matches?.filter(
     (match): match is MatchOutputData =>
@@ -193,12 +193,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       value: playerData.assists,
     }));
 
+  const subtitles = [name, start].filter(
+    (v): v is string => typeof v === 'string'
+  );
+
   return (
-    <BasePage
-      showSponsors={showSponsors}
-      subtitles={name ? [name] : undefined}
-      title="Tournament"
-    >
+    <BasePage subtitles={subtitles} title="Tournament">
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
@@ -229,10 +229,6 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       )}
     </BasePage>
   );
-};
-
-TournamentPage.defaultProps = {
-  showSponsors: true,
 };
 
 export default TournamentPage;
