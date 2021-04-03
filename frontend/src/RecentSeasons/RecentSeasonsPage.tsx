@@ -4,26 +4,26 @@ import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
-import './RecentMatchesPage.scss';
+import './RecentSeasonsPage.scss';
 import BasePage from '../Base/BasePage';
-import { MatchOutputListData } from '../interface/match.interface';
+import { SeasonOutputListData } from '../interface/season.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
 import Utils from '../utils';
 
-export interface RecentMatchesPageProps extends RouteComponentProps {}
+export interface RecentSeasonsPageProps extends RouteComponentProps {}
 
-const RecentMatchesPage = (
+const RecentSeasonsPage = (
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  props: RecentMatchesPageProps
+  props: RecentSeasonsPageProps
 ): ReactElement => {
-  const entryPoint = '/match';
+  const entryPoint = '/season';
 
-  const [data, setData] = useState<MatchOutputListData[] | undefined>();
+  const [data, setData] = useState<SeasonOutputListData[] | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     axios
-      .get<MatchOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
+      .get<SeasonOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
       .then((response) => {
         setData(response.data);
         setLastFetched(new Date());
@@ -31,34 +31,34 @@ const RecentMatchesPage = (
     return () => {};
   }, []);
 
-  const columnsRecentMatches = [
+  const columnsRecentSeasons = [
     { title: 'Date', field: '' },
-    { title: 'Tournament', field: '' },
+    { title: 'Name', field: '' },
   ];
 
-  const dataRecentMatches = data
-    ?.sort((a: MatchOutputListData, b: MatchOutputListData) =>
+  const dataRecentSeasons = data
+    ?.sort((a: SeasonOutputListData, b: SeasonOutputListData) =>
       Utils.sortDateStrings(b.start || '', a.start || '')
     )
     .map(
-      (recentMatchesData) =>
+      (recentSeasonsData) =>
         ({
           name:
-            recentMatchesData.start &&
-            Utils.localDateTimeString(recentMatchesData.start),
-          value: recentMatchesData.tournamentName || 'Unnamed', // TODO: value
-          link: `${entryPoint}/${recentMatchesData.id}`,
+            recentSeasonsData.start &&
+            Utils.localDateTimeString(recentSeasonsData.start),
+          value: recentSeasonsData.name || 'Unnamed',
+          link: `${entryPoint}/${recentSeasonsData.id}`,
         } as LinkTableData)
     );
 
   return (
-    <BasePage title="Recent Matches">
-      {dataRecentMatches && (
+    <BasePage title="Recent Seasons">
+      {dataRecentSeasons && (
         <div className="right-column">
           <div className="column-content">
             <LinkTable
-              columns={columnsRecentMatches}
-              data={dataRecentMatches}
+              columns={columnsRecentSeasons}
+              data={dataRecentSeasons}
             />
             {lastFetched && (
               <div className="last-fetched">
@@ -72,4 +72,4 @@ const RecentMatchesPage = (
   );
 };
 
-export default RecentMatchesPage;
+export default RecentSeasonsPage;

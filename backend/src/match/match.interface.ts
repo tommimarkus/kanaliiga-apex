@@ -1,19 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { IsISO8601 } from 'class-validator';
 import { formatISO } from 'date-fns';
 
 // INPUT
 
 export class MatchData {
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: 'string',
     format: 'date-time',
     example: formatISO(new Date()),
-    required: true,
-    nullable: false,
+    required: false,
+    nullable: true,
   })
   @IsISO8601({ strict: true })
-  start: string;
+  start?: string;
 }
 
 export class MatchInputJSONData {

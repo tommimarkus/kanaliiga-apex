@@ -47,7 +47,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   ];
 
   const name = data?.name;
-  const start = data && Utils.localDateTimeString(data.start);
+  const start = data && data.start && Utils.localDateTimeString(data.start);
 
   const dataValidMatches = data?.matches?.filter(
     (match): match is MatchOutputData =>

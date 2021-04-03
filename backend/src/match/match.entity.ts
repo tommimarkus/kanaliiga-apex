@@ -32,7 +32,8 @@ export class MatchEntity {
   constructor(token?: string, matchData?: EAMatchData) {
     if (token && matchData) {
       this.token = token;
-      this.start = new Date(matchData.match_start * 1000);
+      this.start =
+        matchData.match_start && new Date(matchData.match_start * 1000);
       this.matchPlayers = matchData.player_results.map(
         playerResult => new MatchPlayerEntity(playerResult),
       );

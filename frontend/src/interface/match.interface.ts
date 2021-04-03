@@ -1,5 +1,5 @@
 export interface MatchData {
-  start: string;
+  start?: string;
 }
 
 export interface MatchResultTeamMemberOutputData {

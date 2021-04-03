@@ -2,7 +2,7 @@ import { MatchOutputData } from './match.interface';
 
 export interface TournamentData {
   name?: string;
-  start: string;
+  start?: string;
 }
 
 export interface TournamentOutputData extends TournamentData {

@@ -6,22 +6,22 @@ import { IsISO8601 } from 'class-validator';
 // INPUT
 
 export class TournamentData {
-  @ApiProperty({
+  @ApiPropertyOptional({
     type: 'string',
     format: 'date-time',
     example: formatISO(new Date()),
-    required: true,
-    nullable: false,
-  })
-  @IsISO8601({ strict: true })
-  start: string;
-
-  @ApiPropertyOptional({
-    example: 'Kanaliiga Apex #1 Game Day 1',
     required: false,
     nullable: true,
   })
-  name?: string;
+  @IsISO8601({ strict: true })
+  start?: string;
+
+  @ApiProperty({
+    example: 'Kanaliiga Apex #1 Game Day 1',
+    required: true,
+    nullable: false,
+  })
+  name: string;
 }
 
 export class TournamentInputData extends TournamentData {

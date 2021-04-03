@@ -29,7 +29,7 @@ export class TournamentService {
       tournamentEntity =>
         ({
           name: tournamentEntity.name,
-          start: formatISO(tournamentEntity.start),
+          start: tournamentEntity.start && formatISO(tournamentEntity.start),
           id: tournamentEntity.id,
         } as TournamentOutputListData),
     );
@@ -40,7 +40,7 @@ export class TournamentService {
     return tournamentEntity
       ? ({
           name: tournamentEntity.name,
-          start: formatISO(tournamentEntity.start),
+          start: tournamentEntity.start && formatISO(tournamentEntity.start),
           matches: tournamentEntity.matches.map(matchEntity => {
             const results = matchEntityToMatchResultsOutput(matchEntity);
             return {

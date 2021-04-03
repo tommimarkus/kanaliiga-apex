@@ -12,6 +12,7 @@ import { UserModule } from './user/user.module';
 import typeormConfig from './config/config.typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { BasicAuthGuard } from './auth/basic-auth.guard';
+import { SeasonModule } from './season/season.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { BasicAuthGuard } from './auth/basic-auth.guard';
     TypeOrmModule.forRoot(typeormConfig()),
     MatchModule,
     TournamentModule,
+    SeasonModule,
     MulterModule.register({
       storage: multer.diskStorage({
         destination: '/tmp/kanaliiga-apex-uploads',
