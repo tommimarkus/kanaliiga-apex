@@ -74,14 +74,16 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
             )
           )
           .reduce((prev: MatchTableData[], curr) =>
-            curr.map((currData) => {
-              const prevData = prev.find((s) => s.id === currData.id);
+            prev.map((prevData) => {
+              const currData = curr.find(
+                (existingData) => existingData.id === prevData.id
+              );
               return {
-                id: prevData?.id || currData.id,
-                name: prevData?.name || currData.name,
-                damage: (prevData?.damage || 0) + currData.damage,
-                kills: (prevData?.kills || 0) + currData.kills,
-                points: (prevData?.points || 0) + currData.points,
+                id: prevData.id,
+                name: prevData.name,
+                damage: prevData.damage + (currData?.damage || 0),
+                kills: prevData.kills + (currData?.kills || 0),
+                points: prevData.points + (currData?.points || 0),
               } as MatchTableData;
             })
           )
