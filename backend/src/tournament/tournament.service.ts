@@ -25,6 +25,7 @@ export class TournamentService {
   async find(): Promise<TournamentOutputListData[]> {
     const tournamentEntities = await this.tournamentRepository.find({
       select: ['id', 'active', 'name', 'start', 'season'],
+      where: { active: true },
     });
     return tournamentEntities.map(
       tournamentEntity =>
@@ -51,6 +52,7 @@ export class TournamentService {
   async findOne(id: number): Promise<TournamentOutputOneData> | undefined {
     const tournamentEntity = await this.tournamentRepository.findOne(id, {
       relations: ['season'],
+      where: { active: true },
     });
     return tournamentEntity
       ? ({

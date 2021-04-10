@@ -18,6 +18,7 @@ export class SeasonService {
   async find(): Promise<SeasonOutputListData[]> {
     const seasonEntities = await this.seasonRepository.find({
       select: ['id', 'active', 'name', 'start', 'end'],
+      where: { active: true },
     });
     return seasonEntities.map(
       seasonEntity =>
@@ -32,7 +33,9 @@ export class SeasonService {
   }
 
   async findOne(id: number): Promise<SeasonOutputOneData> | undefined {
-    const seasonEntity = await this.seasonRepository.findOne(id);
+    const seasonEntity = await this.seasonRepository.findOne(id, {
+      where: { active: true },
+    });
     return seasonEntity
       ? ({
           id: seasonEntity.id,
