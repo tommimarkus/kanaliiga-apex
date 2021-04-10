@@ -45,7 +45,13 @@ export class MatchService {
 
   async findOne(id: number): Promise<MatchOutputOneData> | undefined {
     const matchEntity = await this.matchRepository.findOne(id, {
-      relations: ['tournament'],
+      join: {
+        alias: 'match',
+        innerJoinAndSelect: {
+          tournament: 'match.tournament',
+        },
+      },
+      where: { start: Not(IsNull()), active: true },
     });
     return matchEntity
       ? ({

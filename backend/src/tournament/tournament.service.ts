@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { formatISO } from 'date-fns';
 import { MatchOutputOneData } from '../match/match.interface';
 import { matchEntityToMatchResultsOutput } from '../util/util';
@@ -51,10 +51,15 @@ export class TournamentService {
 
   async findOne(id: number): Promise<TournamentOutputOneData> | undefined {
     const tournamentEntity = await this.tournamentRepository.findOne(id, {
-      relations: ['season'],
+      join: {
+        alias: 'tournament',
+        innerJoinAndSelect: {
+          season: 'tournament.season',
+        },
+      },
       where: { active: true },
     });
-    return tournamentEntity
+    const result =  tournamentEntity
       ? ({
           id: tournamentEntity.id,
           active: tournamentEntity.active,
@@ -82,6 +87,7 @@ export class TournamentService {
           }),
         } as TournamentOutputOneData)
       : undefined;
+      return result;
   }
 
   async save(
