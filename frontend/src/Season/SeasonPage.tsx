@@ -4,36 +4,37 @@ import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
-import './TournamentPage.scss';
+import './SeasonPage.scss';
 import BasePage from '../Base/BasePage';
 import {
   MatchOutputData,
   MatchResultTeamMemberOutputData,
 } from '../interface/match.interface';
+import { SeasonOutputData } from '../interface/season.interface';
 import { TournamentOutputData } from '../interface/tournament.interface';
 import MatchTable, { MatchTableData } from '../Table/MatchTable';
 import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
 
-export interface TournamentPageProps extends RouteComponentProps {
+export interface SeasonPageProps extends RouteComponentProps {
   id?: string;
 }
 
-const TournamentPage = (props: TournamentPageProps): ReactElement => {
+const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const { id } = props;
 
   const query = new URLSearchParams(useLocation().search);
   const stream = query.has('stream');
 
-  const [data, setData] = useState<TournamentOutputData | undefined>();
+  const [data, setData] = useState<SeasonOutputData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     if (id) {
-      const entrypoint = `${Utils.baseUrl}/tournament/${id}`;
+      const entrypoint = `${Utils.baseUrl}/season/${id}`;
       // eslint-disable-next-line no-console
       console.log(entrypoint);
-      axios.get<TournamentOutputData>(entrypoint).then((response) => {
+      axios.get<SeasonOutputData>(entrypoint).then((response) => {
         setData(response.data);
         setLastFetched(new Date());
       });
@@ -51,13 +52,16 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
 
   const name = data?.name;
   const start = data && data.start && Utils.localDateTimeString(data.start);
+  const end = data && data.end && Utils.localDateTimeString(data.end);
 
-  const dataValidMatches = data?.matches?.filter(
-    (match): match is MatchOutputData =>
-      match.results !== undefined &&
-      match.results !== null &&
-      match.results.length > 0
-  );
+  const dataValidMatches = data?.tournaments
+    ?.flatMap((tournament) => tournament.matches)
+    ?.filter(
+      (match): match is MatchOutputData =>
+        match.results !== undefined &&
+        match.results !== null &&
+        match.results.length > 0
+    );
   const dataMatches =
     dataValidMatches && dataValidMatches.length > 0
       ? dataValidMatches
@@ -100,12 +104,14 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
 
   const top = 5;
 
-  const dataValidPlayer = data?.matches?.filter(
-    (match): match is MatchOutputData =>
-      match.results !== undefined &&
-      match.results !== null &&
-      match.results.length > 0
-  );
+  const dataValidPlayer = data?.tournaments
+    ?.flatMap((tournament) => tournament.matches)
+    ?.filter(
+      (match): match is MatchOutputData =>
+        match.results !== undefined &&
+        match.results !== null &&
+        match.results.length > 0
+    );
   const dataPlayer =
     dataValidPlayer && dataValidPlayer.length > 0
       ? dataValidPlayer
@@ -196,12 +202,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       value: playerData.assists,
     }));
 
-  const subtitles = [name, start].filter(
+  const subtitles = [name, start, end].filter(
     (v): v is string => typeof v === 'string'
   );
 
   return (
-    <BasePage subtitles={subtitles} title="Tournament">
+    <BasePage subtitles={subtitles} title="Season">
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
@@ -229,15 +235,19 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
             )}
             {stream !== true && (
               <div className="subset-navigation-links">
-                <div>Matches:</div>
-                {dataValidMatches
+                <div>Tournaments:</div>
+                {data?.tournaments
                   ?.sort(
-                    (a: MatchOutputData, b: MatchOutputData) => a.id - b.id
+                    (a: TournamentOutputData, b: TournamentOutputData) =>
+                      a.id - b.id
                   )
-                  ?.map((match, index) => (
-                    <div className="list" key={`match${match?.id || index}`}>
-                      {match?.id && (
-                        <a href={`/match/${match.id}`}>{index + 1}</a>
+                  ?.map((tournament, index) => (
+                    <div
+                      className="list"
+                      key={`tournament${tournament?.id || index}`}
+                    >
+                      {tournament?.id && (
+                        <a href={`/tournament/${tournament.id}`}>{index + 1}</a>
                       )}
                     </div>
                   ))}
@@ -250,4 +260,4 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   );
 };
 
-export default TournamentPage;
+export default SeasonPage;

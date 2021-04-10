@@ -17,6 +17,12 @@ export class SeasonEntity {
   })
   start: Date;
 
+  @Column({
+    type: 'timestamp with time zone',
+    nullable: false,
+  })
+  end: Date;
+
   @OneToMany(
     () => TournamentEntity,
     tournament => tournament.season,
@@ -27,6 +33,7 @@ export class SeasonEntity {
   constructor(seasonInputData?: SeasonInputData) {
     if (seasonInputData) {
       this.start = seasonInputData.start && new Date(seasonInputData.start);
+      this.end = seasonInputData.end && new Date(seasonInputData.end);
       this.name = seasonInputData.name;
       this.tournaments = [];
     }

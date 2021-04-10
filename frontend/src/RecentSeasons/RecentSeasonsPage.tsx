@@ -32,24 +32,30 @@ const RecentSeasonsPage = (
   }, []);
 
   const columnsRecentSeasons = [
-    { title: 'Date', field: '' },
+    { title: 'Dates', field: '' },
     { title: 'Name', field: '' },
   ];
 
   const dataRecentSeasons = data
     ?.sort((a: SeasonOutputListData, b: SeasonOutputListData) =>
-      Utils.sortDateStrings(b.start || '', a.start || '')
+      Utils.sortDateStrings(b.end || '', a.end || '')
     )
-    .map(
-      (recentSeasonsData) =>
-        ({
-          name:
-            recentSeasonsData.start &&
-            Utils.localDateTimeString(recentSeasonsData.start),
-          value: recentSeasonsData.name || 'Unnamed',
-          link: `${entryPoint}/${recentSeasonsData.id}`,
-        } as LinkTableData)
-    );
+    .map((recentSeasonsData) => {
+      let dateString = '';
+      if (recentSeasonsData.start) {
+        dateString = Utils.localDateString(recentSeasonsData.start);
+        if (recentSeasonsData.end) {
+          dateString = `${dateString} to ${Utils.localDateString(
+            recentSeasonsData.end
+          )}`;
+        }
+      }
+      return {
+        name: dateString,
+        value: recentSeasonsData.name || 'Unnamed',
+        link: `${entryPoint}/${recentSeasonsData.id}`,
+      } as LinkTableData;
+    });
 
   return (
     <BasePage title="Recent Seasons">

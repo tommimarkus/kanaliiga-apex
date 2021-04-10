@@ -103,3 +103,18 @@
   bottom: 0.8em;
   color: #ffffff;
 }
+
+.subset-navigation-links {
+  display: flex;
+  color: #ffffff;
+  .list {
+    margin-left: 0.5rem;
+  }
+  a {
+    color: #ffffff;
+    text-decoration: none;
+    &:hover {
+      filter: brightness(75%);
+    }
+  }
+}

@@ -21,6 +21,7 @@ export interface MatchResultOutputData {
 }
 
 export interface MatchOutputData extends MatchData {
+  id: number;
   results: MatchResultOutputData[];
 }
 

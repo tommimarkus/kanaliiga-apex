@@ -16,8 +16,18 @@ export class SeasonData {
   @IsISO8601({ strict: true })
   start?: string;
 
+  @ApiPropertyOptional({
+    type: 'string',
+    format: 'date-time',
+    example: formatISO(new Date()),
+    required: false,
+    nullable: true,
+  })
+  @IsISO8601({ strict: true })
+  end?: string;
+
   @ApiProperty({
-    example: 'Kanaliiga Apex S1',
+    example: 'Kanaliiga Apex S2',
     required: true,
     nullable: false,
   })
@@ -29,6 +39,9 @@ export class SeasonInputData extends SeasonData {}
 // OUTPUT
 
 export class SeasonOutputData extends SeasonData {
+  @ApiProperty()
+  id: number;
+
   @ApiProperty({ type: [TournamentOutputData] })
   tournaments: TournamentOutputData[];
 }

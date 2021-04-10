@@ -9,26 +9,23 @@ import {
   SeasonOutputListData,
 } from './season.interface';
 import { SeasonRepository } from './season.repository';
-import { CsvParser } from 'nest-csv-parser';
 import { TournamentOutputData } from '../tournament/tournament.interface';
 
 @Injectable()
 export class SeasonService {
-  constructor(
-    private seasonRepository: SeasonRepository,
-    private readonly csvParser: CsvParser,
-  ) {}
+  constructor(private seasonRepository: SeasonRepository) {}
 
   async find(): Promise<SeasonOutputListData[]> {
     const seasonEntities = await this.seasonRepository.find({
-      select: ['id', 'name', 'start'],
+      select: ['id', 'name', 'start', 'end'],
     });
     return seasonEntities.map(
       seasonEntity =>
         ({
+          id: seasonEntity.id,
           name: seasonEntity.name,
           start: formatISO(seasonEntity.start),
-          id: seasonEntity.id,
+          end: formatISO(seasonEntity.end),
         } as SeasonOutputListData),
     );
   }
@@ -37,10 +34,13 @@ export class SeasonService {
     const seasonEntity = await this.seasonRepository.findOne(id);
     return seasonEntity
       ? ({
+          id: seasonEntity.id,
           name: seasonEntity.name,
           start: seasonEntity.start && formatISO(seasonEntity.start),
+          end: seasonEntity.end && formatISO(seasonEntity.end),
           tournaments: seasonEntity.tournaments.map(tournamentEntity => {
             return {
+              id: tournamentEntity.id,
               name: tournamentEntity.name,
               start:
                 tournamentEntity.start && formatISO(tournamentEntity.start),
@@ -63,10 +63,13 @@ export class SeasonService {
     const savedSeasonEntity = await this.seasonRepository.save(seasonEntity);
 
     const seasonOutputData = {
+      id: seasonEntity.id,
       name: savedSeasonEntity.name,
       start: savedSeasonEntity.start && formatISO(savedSeasonEntity.start),
+      end: savedSeasonEntity.end && formatISO(savedSeasonEntity.end),
       tournaments: savedSeasonEntity.tournaments.map(tournamentEntity => {
         return {
+          id: tournamentEntity.id,
           name: tournamentEntity.name,
           start: tournamentEntity.start && formatISO(tournamentEntity.start),
           matches: tournamentEntity.matches.map(matchEntity => {

@@ -28,13 +28,20 @@ export default class Utils {
     }
     return `${this.localDateString(dateTimeString)} ${new Date(
       dateTimeString
-    ).toLocaleTimeString()}`;
+    ).toLocaleTimeString(Intl.DateTimeFormat().resolvedOptions().locale, {
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    })}`;
   }
 
   static localDateString(dateString: string): string {
     if (!isISO8601(dateString)) {
       return dateString;
     }
-    return new Date(dateString).toLocaleDateString();
+    return new Date(dateString).toLocaleDateString(
+      Intl.DateTimeFormat().resolvedOptions().locale,
+      {
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      }
+    );
   }
 }

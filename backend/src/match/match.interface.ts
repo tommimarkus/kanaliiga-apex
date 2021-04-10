@@ -68,6 +68,9 @@ export class MatchResultOutputData {
 
 export class MatchOutputData extends MatchData {
   @ApiProperty()
+  id: number;
+
+  @ApiProperty()
   results: MatchResultOutputData[];
 }
 

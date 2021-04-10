@@ -6,6 +6,7 @@ export interface TournamentData {
 }
 
 export interface TournamentOutputData extends TournamentData {
+  id: number;
   matches: MatchOutputData[];
 }
 

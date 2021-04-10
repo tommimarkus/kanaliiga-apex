@@ -25,8 +25,8 @@ export class MatchService {
     return matchEntities.map(
       matchEntity =>
         ({
-          start: formatISO(matchEntity.start),
           id: matchEntity.id,
+          start: formatISO(matchEntity.start),
           tournamentName: matchEntity.tournament?.name,
         } as MatchOutputListData),
     );
@@ -36,6 +36,7 @@ export class MatchService {
     const matchEntity = await this.matchRepository.findOne(id);
     return matchEntity
       ? ({
+          id: matchEntity.id,
           start: formatISO(matchEntity.start),
           results: matchEntityToMatchResultsOutput(matchEntity),
         } as MatchOutputData)
@@ -63,6 +64,7 @@ export class MatchService {
     const matchOutputDatas = savedMatchEntities.map(matchEntity => {
       const results = matchEntityToMatchResultsOutput(matchEntity);
       return {
+        id: matchEntity.id,
         start: formatISO(matchEntity.start),
         results,
       } as MatchOutputData;

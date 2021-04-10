@@ -28,9 +28,9 @@ export class TournamentService {
     return tournamentEntities.map(
       tournamentEntity =>
         ({
+          id: tournamentEntity.id,
           name: tournamentEntity.name,
           start: tournamentEntity.start && formatISO(tournamentEntity.start),
-          id: tournamentEntity.id,
         } as TournamentOutputListData),
     );
   }
@@ -39,11 +39,13 @@ export class TournamentService {
     const tournamentEntity = await this.tournamentRepository.findOne(id);
     return tournamentEntity
       ? ({
+          id: tournamentEntity.id,
           name: tournamentEntity.name,
           start: tournamentEntity.start && formatISO(tournamentEntity.start),
           matches: tournamentEntity.matches.map(matchEntity => {
             const results = matchEntityToMatchResultsOutput(matchEntity);
             return {
+              id: matchEntity.id,
               start: matchEntity.start && formatISO(matchEntity.start),
               results,
             } as MatchOutputData;
@@ -62,10 +64,12 @@ export class TournamentService {
     );
 
     const tournamentOutputData = {
+      id: tournamentEntity.id,
       name: savedTournamentEntity.name,
       matches: tournamentEntity.matches.map(matchEntity => {
         const results = matchEntityToMatchResultsOutput(matchEntity);
         return {
+          id: matchEntity.id,
           start: matchEntity.start && formatISO(matchEntity.start),
           results,
         } as MatchOutputData;
@@ -108,10 +112,12 @@ export class TournamentService {
     );
 
     const tournamentOutputData = {
+      id: tournamentEntity.id,
       name: savedTournamentEntity.name,
       matches: tournamentEntity.matches.map(matchEntity => {
         const results = matchEntityToMatchResultsOutput(matchEntity);
         return {
+          id: matchEntity.id,
           start: matchEntity.start && formatISO(matchEntity.start),
           results,
         } as MatchOutputData;

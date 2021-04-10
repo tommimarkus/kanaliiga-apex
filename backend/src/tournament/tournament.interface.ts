@@ -51,6 +51,9 @@ export class TournamentCSVData {
 // OUTPUT
 
 export class TournamentOutputData extends TournamentData {
+  @ApiProperty()
+  id: number;
+
   @ApiProperty({ type: [MatchOutputData] })
   matches: MatchOutputData[];
 }
