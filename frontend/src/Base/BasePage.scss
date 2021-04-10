@@ -106,7 +106,24 @@
 
 .subset-navigation-links {
   display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-content: flex-start;
+  align-items: flex-start;
   color: #ffffff;
+  background-color: rgba(#000000, 0.5);
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-bottom: 0.15em;
+  text-align: start;
+  .item {
+    display: flex;
+    margin-right: 3rem;
+    &.end {
+      margin-left: auto;
+      margin-right: 0;
+    }
+  }
   .list {
     margin-left: 0.5rem;
   }

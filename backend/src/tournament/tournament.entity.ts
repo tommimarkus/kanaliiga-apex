@@ -9,6 +9,9 @@ export class TournamentEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: false, default: true })
+  active: boolean;
+
   @Column({ unique: true, nullable: false })
   token: string;
 

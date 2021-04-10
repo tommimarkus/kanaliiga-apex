@@ -6,7 +6,7 @@ import { formatISO } from 'date-fns';
 
 import './RecentSeasonsPage.scss';
 import BasePage from '../Base/BasePage';
-import { SeasonOutputListData } from '../interface/season.interface';
+import { SeasonOutputListData } from '../interface/season/season-output-list.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
 import Utils from '../utils';
 
@@ -37,6 +37,7 @@ const RecentSeasonsPage = (
   ];
 
   const dataRecentSeasons = data
+    ?.filter((season) => season.active)
     ?.sort((a: SeasonOutputListData, b: SeasonOutputListData) =>
       Utils.sortDateStrings(b.end || '', a.end || '')
     )

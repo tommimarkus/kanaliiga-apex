@@ -1,18 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { formatISO } from 'date-fns';
-import { MatchOutputData } from '../match/match.interface';
+import { MatchOutputOneData } from '../match/match.interface';
 import { matchEntityToMatchResultsOutput } from '../util/util';
 import { TournamentEntity } from './tournament.entity';
 import {
   TournamentCSVData,
   TournamentData,
   TournamentInputData,
-  TournamentOutputData,
+  TournamentOutputOneData,
   TournamentOutputListData,
 } from './tournament.interface';
 import { TournamentRepository } from './tournament.repository';
 import { CsvParser } from 'nest-csv-parser';
 import { Readable } from 'stream';
+import { SeasonOutputData } from '../season/season.interface';
 
 @Injectable()
 export class TournamentService {
@@ -23,41 +24,68 @@ export class TournamentService {
 
   async find(): Promise<TournamentOutputListData[]> {
     const tournamentEntities = await this.tournamentRepository.find({
-      select: ['id', 'name', 'start'],
+      select: ['id', 'active', 'name', 'start', 'season'],
     });
     return tournamentEntities.map(
       tournamentEntity =>
         ({
           id: tournamentEntity.id,
+          active: tournamentEntity.active,
           name: tournamentEntity.name,
           start: tournamentEntity.start && formatISO(tournamentEntity.start),
+          season: {
+            id: tournamentEntity.season?.id,
+            active: tournamentEntity.season?.active,
+            start:
+              tournamentEntity.season?.start &&
+              formatISO(tournamentEntity.season?.start),
+            end:
+              tournamentEntity.season?.end &&
+              formatISO(tournamentEntity.season?.end),
+            name: tournamentEntity.season?.name,
+          } as SeasonOutputData,
         } as TournamentOutputListData),
     );
   }
 
-  async findOne(id: number): Promise<TournamentOutputData> | undefined {
-    const tournamentEntity = await this.tournamentRepository.findOne(id);
+  async findOne(id: number): Promise<TournamentOutputOneData> | undefined {
+    const tournamentEntity = await this.tournamentRepository.findOne(id, {
+      relations: ['season'],
+    });
     return tournamentEntity
       ? ({
           id: tournamentEntity.id,
+          active: tournamentEntity.active,
           name: tournamentEntity.name,
           start: tournamentEntity.start && formatISO(tournamentEntity.start),
+          season: {
+            id: tournamentEntity.season?.id,
+            active: tournamentEntity.season?.active,
+            start:
+              tournamentEntity.season?.start &&
+              formatISO(tournamentEntity.season?.start),
+            end:
+              tournamentEntity.season?.end &&
+              formatISO(tournamentEntity.season?.end),
+            name: tournamentEntity.season?.name,
+          } as SeasonOutputData,
           matches: tournamentEntity.matches.map(matchEntity => {
             const results = matchEntityToMatchResultsOutput(matchEntity);
             return {
               id: matchEntity.id,
+              active: matchEntity.active,
               start: matchEntity.start && formatISO(matchEntity.start),
               results,
-            } as MatchOutputData;
+            } as MatchOutputOneData;
           }),
-        } as TournamentOutputData)
+        } as TournamentOutputOneData)
       : undefined;
   }
 
   async save(
     token: string,
     tournamentInputData: TournamentInputData,
-  ): Promise<TournamentOutputData> | undefined {
+  ): Promise<TournamentOutputOneData> | undefined {
     const tournamentEntity = new TournamentEntity(token, tournamentInputData);
     const savedTournamentEntity = await this.tournamentRepository.save(
       tournamentEntity,
@@ -65,16 +93,18 @@ export class TournamentService {
 
     const tournamentOutputData = {
       id: tournamentEntity.id,
+      active: tournamentEntity.active,
       name: savedTournamentEntity.name,
       matches: tournamentEntity.matches.map(matchEntity => {
         const results = matchEntityToMatchResultsOutput(matchEntity);
         return {
           id: matchEntity.id,
+          active: matchEntity.active,
           start: matchEntity.start && formatISO(matchEntity.start),
           results,
-        } as MatchOutputData;
+        } as MatchOutputOneData;
       }),
-    } as TournamentOutputData;
+    } as TournamentOutputOneData;
 
     return tournamentOutputData;
   }
@@ -82,7 +112,7 @@ export class TournamentService {
   async saveCSV(
     file: Express.Multer.File,
     tournamentData: TournamentData,
-  ): Promise<TournamentOutputData> | undefined {
+  ): Promise<TournamentOutputOneData> | undefined {
     const stream = new Readable();
     stream.push(file.buffer);
     stream.push(null);
@@ -113,16 +143,18 @@ export class TournamentService {
 
     const tournamentOutputData = {
       id: tournamentEntity.id,
+      active: tournamentEntity.active,
       name: savedTournamentEntity.name,
       matches: tournamentEntity.matches.map(matchEntity => {
         const results = matchEntityToMatchResultsOutput(matchEntity);
         return {
           id: matchEntity.id,
+          active: matchEntity.active,
           start: matchEntity.start && formatISO(matchEntity.start),
           results,
-        } as MatchOutputData;
+        } as MatchOutputOneData;
       }),
-    } as TournamentOutputData;
+    } as TournamentOutputOneData;
 
     return tournamentOutputData;
   }

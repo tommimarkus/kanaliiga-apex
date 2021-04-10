@@ -6,11 +6,9 @@ import { formatISO } from 'date-fns';
 
 import './TournamentPage.scss';
 import BasePage from '../Base/BasePage';
-import {
-  MatchOutputData,
-  MatchResultTeamMemberOutputData,
-} from '../interface/match.interface';
-import { TournamentOutputData } from '../interface/tournament.interface';
+import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
+import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
+import { TournamentOutputOneData } from '../interface/tournament/tournament-output-one.interface';
 import MatchTable, { MatchTableData } from '../Table/MatchTable';
 import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
@@ -25,7 +23,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const query = new URLSearchParams(useLocation().search);
   const stream = query.has('stream');
 
-  const [data, setData] = useState<TournamentOutputData | undefined>();
+  const [data, setData] = useState<TournamentOutputOneData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
@@ -33,7 +31,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       const entrypoint = `${Utils.baseUrl}/tournament/${id}`;
       // eslint-disable-next-line no-console
       console.log(entrypoint);
-      axios.get<TournamentOutputData>(entrypoint).then((response) => {
+      axios.get<TournamentOutputOneData>(entrypoint).then((response) => {
         setData(response.data);
         setLastFetched(new Date());
       });
@@ -53,7 +51,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const start = data && data.start && Utils.localDateTimeString(data.start);
 
   const dataValidMatches = data?.matches?.filter(
-    (match): match is MatchOutputData =>
+    (match): match is MatchOutputOneData =>
       match.results !== undefined &&
       match.results !== null &&
       match.results.length > 0
@@ -103,7 +101,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const top = 5;
 
   const dataValidPlayer = data?.matches?.filter(
-    (match): match is MatchOutputData =>
+    (match): match is MatchOutputOneData =>
       match.results !== undefined &&
       match.results !== null &&
       match.results.length > 0
@@ -231,18 +229,29 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
             )}
             {stream !== true && (
               <div className="subset-navigation-links">
-                <div>Matches:</div>
-                {dataValidMatches
-                  ?.sort(
-                    (a: MatchOutputData, b: MatchOutputData) => a.id - b.id
-                  )
-                  ?.map((match, index) => (
-                    <div className="list" key={`match${match?.id || index}`}>
-                      {match?.id && (
-                        <a href={`/match/${match.id}`}>{index + 1}</a>
-                      )}
-                    </div>
-                  ))}
+                {data?.season?.id && (
+                  <div className="item">
+                    <a href={`/season/${data?.season?.id}`}>Back to Season</a>
+                  </div>
+                )}
+                <div className="item">
+                  <div>Matches:</div>
+                  {dataValidMatches
+                    ?.sort(
+                      (a: MatchOutputOneData, b: MatchOutputOneData) =>
+                        a.id - b.id
+                    )
+                    ?.map((match, index) => (
+                      <div className="list" key={`match${match?.id || index}`}>
+                        {match?.id && (
+                          <a href={`/match/${match.id}`}>{index + 1}</a>
+                        )}
+                      </div>
+                    ))}
+                </div>
+                <div className="item end">
+                  <a href="/tournament/">Recent Tournaments</a>
+                </div>
               </div>
             )}
           </div>

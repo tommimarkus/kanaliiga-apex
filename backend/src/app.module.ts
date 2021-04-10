@@ -13,6 +13,7 @@ import typeormConfig from './config/config.typeorm';
 import { APP_GUARD } from '@nestjs/core';
 import { BasicAuthGuard } from './auth/basic-auth.guard';
 import { SeasonModule } from './season/season.module';
+import { RolesGuard } from './auth/role.guard';
 
 @Module({
   imports: [
@@ -34,6 +35,10 @@ import { SeasonModule } from './season/season.module';
     {
       provide: APP_GUARD,
       useClass: BasicAuthGuard,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
     AppService,
   ],

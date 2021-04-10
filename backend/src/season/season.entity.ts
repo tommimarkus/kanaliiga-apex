@@ -8,6 +8,9 @@ export class SeasonEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: false, default: true })
+  active: boolean;
+
   @Column({ nullable: true })
   name: string;
 

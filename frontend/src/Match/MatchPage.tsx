@@ -1,14 +1,12 @@
 import React, { ReactElement, useEffect, useState } from 'react';
 
-import { RouteComponentProps } from '@reach/router';
+import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
 import { formatISO } from 'date-fns';
 
 import BasePage from '../Base/BasePage';
-import {
-  MatchOutputData,
-  MatchResultTeamMemberOutputData,
-} from '../interface/match.interface';
+import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
+import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
 import MatchTable, { MatchTableData } from '../Table/MatchTable';
 import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
@@ -21,13 +19,16 @@ export interface MatchPageProps extends RouteComponentProps {
 const MatchPage = (props: MatchPageProps): ReactElement => {
   const { id } = props;
 
-  const [data, setData] = useState<MatchOutputData | undefined>();
+  const query = new URLSearchParams(useLocation().search);
+  const stream = query.has('stream');
+
+  const [data, setData] = useState<MatchOutputOneData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     if (id) {
       axios
-        .get<MatchOutputData>(`${Utils.baseUrl}/match/${id}`)
+        .get<MatchOutputOneData>(`${Utils.baseUrl}/match/${id}`)
         .then((response) => {
           setData(response.data);
           setLastFetched(new Date());
@@ -173,6 +174,18 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
             {lastFetched && (
               <div className="last-fetched">
                 Last fetched: {formatISO(lastFetched)}
+              </div>
+            )}
+            {stream !== true && data?.tournament?.id && (
+              <div className="subset-navigation-links">
+                <div className="item">
+                  <a href={`/tournament/${data?.tournament.id}`}>
+                    Back to Tournament
+                  </a>
+                </div>
+                <div className="item end">
+                  <a href="/match/">Recent Matches</a>
+                </div>
               </div>
             )}
           </div>

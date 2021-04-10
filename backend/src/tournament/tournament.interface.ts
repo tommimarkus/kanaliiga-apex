@@ -1,7 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { formatISO } from 'date-fns';
-import { MatchOutputData } from '../match/match.interface';
+import { MatchOutputOneData } from '../match/match.interface';
 import { IsISO8601 } from 'class-validator';
+import { SeasonOutputData } from '../season/season.interface';
 
 // INPUT
 
@@ -54,11 +55,16 @@ export class TournamentOutputData extends TournamentData {
   @ApiProperty()
   id: number;
 
-  @ApiProperty({ type: [MatchOutputData] })
-  matches: MatchOutputData[];
+  @ApiProperty()
+  active: boolean;
+
+  @ApiProperty()
+  season?: SeasonOutputData;
 }
 
-export class TournamentOutputListData extends TournamentData {
-  @ApiProperty()
-  id: number;
+export class TournamentOutputOneData extends TournamentOutputData {
+  @ApiProperty({ type: [MatchOutputOneData] })
+  matches: MatchOutputOneData[];
 }
+
+export class TournamentOutputListData extends TournamentOutputData {}

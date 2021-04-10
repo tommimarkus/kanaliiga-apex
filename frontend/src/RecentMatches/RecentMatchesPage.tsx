@@ -6,7 +6,7 @@ import { formatISO } from 'date-fns';
 
 import './RecentMatchesPage.scss';
 import BasePage from '../Base/BasePage';
-import { MatchOutputListData } from '../interface/match.interface';
+import { MatchOutputListData } from '../interface/match/match-output-list.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
 import Utils from '../utils';
 
@@ -36,20 +36,16 @@ const RecentMatchesPage = (
     { title: 'Tournament', field: '' },
   ];
 
-  const dataRecentMatches = data
-    ?.sort((a: MatchOutputListData, b: MatchOutputListData) =>
-      Utils.sortDateStrings(b.start || '', a.start || '')
-    )
-    .map(
-      (recentMatchesData) =>
-        ({
-          name:
-            recentMatchesData.start &&
-            Utils.localDateTimeString(recentMatchesData.start),
-          value: recentMatchesData.tournamentName || 'Unnamed', // TODO: value
-          link: `${entryPoint}/${recentMatchesData.id}`,
-        } as LinkTableData)
-    );
+  const dataRecentMatches = data?.map(
+    (recentMatchesData) =>
+      ({
+        name:
+          recentMatchesData.start &&
+          Utils.localDateTimeString(recentMatchesData.start),
+        value: recentMatchesData.tournament?.name || 'Unnamed',
+        link: `${entryPoint}/${recentMatchesData.id}`,
+      } as LinkTableData)
+  );
 
   return (
     <BasePage title="Recent Matches">

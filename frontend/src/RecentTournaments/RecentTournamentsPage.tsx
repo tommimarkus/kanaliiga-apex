@@ -6,7 +6,7 @@ import { formatISO } from 'date-fns';
 
 import './RecentTournamentsPage.scss';
 import BasePage from '../Base/BasePage';
-import { TournamentOutputListData } from '../interface/tournament.interface';
+import { TournamentOutputListData } from '../interface/tournament/tournament-output-list.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
 import Utils from '../utils';
 

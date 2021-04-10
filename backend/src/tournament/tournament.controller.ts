@@ -11,10 +11,12 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBasicAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { Role } from '../auth/role.constant';
+import { Roles } from '../auth/role.decorator';
 import {
   TournamentInputCSVData,
   TournamentInputData,
-  TournamentOutputData,
+  TournamentOutputOneData,
   TournamentOutputListData,
 } from './tournament.interface';
 import { TournamentService } from './tournament.service';
@@ -25,18 +27,21 @@ export class TournamentController {
   constructor(private readonly tournamentService: TournamentService) {}
 
   @Get()
+  @Roles(Role.USER, Role.ADMIN)
   async list(): Promise<TournamentOutputListData[]> {
     return await this.tournamentService.find();
   }
 
   @Get(':id')
+  @Roles(Role.USER, Role.ADMIN)
   async find(
     @Param('id', ParseIntPipe) id: number,
-  ): Promise<TournamentOutputData> | undefined {
+  ): Promise<TournamentOutputOneData> | undefined {
     return await this.tournamentService.findOne(id);
   }
 
   @Post('csv')
+  @Roles(Role.ADMIN)
   @UseInterceptors(
     FileInterceptor('file', {
       fileFilter: (_req, file, callback) =>
@@ -48,7 +53,7 @@ export class TournamentController {
   async saveCSV(
     @Body() body: TournamentInputCSVData,
     @UploadedFile() file: Express.Multer.File,
-  ): Promise<TournamentOutputData> | undefined {
+  ): Promise<TournamentOutputOneData> | undefined {
     Logger.log(
       `save csv ${file.originalname}: ${JSON.stringify(body, null, 2)}`,
     );
@@ -56,11 +61,12 @@ export class TournamentController {
   }
 
   @Post(':token')
+  @Roles(Role.ADMIN)
   @ApiBody({ type: TournamentInputData })
   async save(
     @Param('token') token: string,
     @Body() body: TournamentInputData,
-  ): Promise<TournamentOutputData> | undefined {
+  ): Promise<TournamentOutputOneData> | undefined {
     Logger.log(`save ${token}: ${JSON.stringify(body, null, 2)}`);
     return await this.tournamentService.save(token, body);
   }

@@ -6,12 +6,10 @@ import { formatISO } from 'date-fns';
 
 import './SeasonPage.scss';
 import BasePage from '../Base/BasePage';
-import {
-  MatchOutputData,
-  MatchResultTeamMemberOutputData,
-} from '../interface/match.interface';
-import { SeasonOutputData } from '../interface/season.interface';
-import { TournamentOutputData } from '../interface/tournament.interface';
+import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
+import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
+import { SeasonOutputOneData } from '../interface/season/season-output-one.interface';
+import { TournamentOutputOneData } from '../interface/tournament/tournament-output-one.interface';
 import MatchTable, { MatchTableData } from '../Table/MatchTable';
 import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
@@ -26,7 +24,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const query = new URLSearchParams(useLocation().search);
   const stream = query.has('stream');
 
-  const [data, setData] = useState<SeasonOutputData | undefined>();
+  const [data, setData] = useState<SeasonOutputOneData | undefined>();
   const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
@@ -34,7 +32,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
       const entrypoint = `${Utils.baseUrl}/season/${id}`;
       // eslint-disable-next-line no-console
       console.log(entrypoint);
-      axios.get<SeasonOutputData>(entrypoint).then((response) => {
+      axios.get<SeasonOutputOneData>(entrypoint).then((response) => {
         setData(response.data);
         setLastFetched(new Date());
       });
@@ -57,7 +55,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const dataValidMatches = data?.tournaments
     ?.flatMap((tournament) => tournament.matches)
     ?.filter(
-      (match): match is MatchOutputData =>
+      (match): match is MatchOutputOneData =>
         match.results !== undefined &&
         match.results !== null &&
         match.results.length > 0
@@ -109,7 +107,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const dataValidPlayer = data?.tournaments
     ?.flatMap((tournament) => tournament.matches)
     ?.filter(
-      (match): match is MatchOutputData =>
+      (match): match is MatchOutputOneData =>
         match.results !== undefined &&
         match.results !== null &&
         match.results.length > 0
@@ -237,22 +235,31 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
             )}
             {stream !== true && (
               <div className="subset-navigation-links">
-                <div>Tournaments:</div>
-                {data?.tournaments
-                  ?.sort(
-                    (a: TournamentOutputData, b: TournamentOutputData) =>
-                      a.id - b.id
-                  )
-                  ?.map((tournament, index) => (
-                    <div
-                      className="list"
-                      key={`tournament${tournament?.id || index}`}
-                    >
-                      {tournament?.id && (
-                        <a href={`/tournament/${tournament.id}`}>{index + 1}</a>
-                      )}
-                    </div>
-                  ))}
+                <div className="item">
+                  <div>Tournaments:</div>
+                  {data?.tournaments
+                    ?.sort(
+                      (
+                        a: TournamentOutputOneData,
+                        b: TournamentOutputOneData
+                      ) => a.id - b.id
+                    )
+                    ?.map((tournament, index) => (
+                      <div
+                        className="list"
+                        key={`tournament${tournament?.id || index}`}
+                      >
+                        {tournament?.id && (
+                          <a href={`/tournament/${tournament.id}`}>
+                            {index + 1}
+                          </a>
+                        )}
+                      </div>
+                    ))}
+                </div>
+                <div className="item end">
+                  <a href="/season/">Recent Seasons</a>
+                </div>
               </div>
             )}
           </div>
