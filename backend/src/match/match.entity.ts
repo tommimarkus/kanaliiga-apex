@@ -3,6 +3,7 @@ import { MatchPlayerEntity } from '../match-player/match-player.entity';
 import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { TournamentEntity } from '../tournament/tournament.entity';
+import { GroupEntity } from '../group/group.entity';
 
 @Entity('match')
 export class MatchEntity {
@@ -31,6 +32,13 @@ export class MatchEntity {
     { nullable: true },
   )
   tournament?: TournamentEntity;
+
+  @ManyToOne(
+    () => GroupEntity,
+    group => group.matches,
+    { nullable: true },
+  )
+  group?: GroupEntity;
 
   constructor(token?: string, matchData?: EAMatchData) {
     if (token && matchData) {

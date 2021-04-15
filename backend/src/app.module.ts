@@ -14,12 +14,15 @@ import { APP_GUARD } from '@nestjs/core';
 import { BasicAuthGuard } from './auth/basic-auth.guard';
 import { SeasonModule } from './season/season.module';
 import { RolesGuard } from './auth/role.guard';
+import { ScoreModule } from './score/score.module';
+import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ envFilePath: '.env', load: [typeormConfig] }),
     TypeOrmModule.forRoot(typeormConfig()),
     MatchModule,
+    GroupModule,
     TournamentModule,
     SeasonModule,
     MulterModule.register({
@@ -30,6 +33,7 @@ import { RolesGuard } from './auth/role.guard';
     CsvModule,
     AuthModule,
     UserModule,
+    ScoreModule,
   ],
   providers: [
     {

@@ -1,12 +1,11 @@
 import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
-import { GroupEntity } from '../group/group.entity';
 import { MatchEntity } from '../match/match.entity';
-import { SeasonEntity } from '../season/season.entity';
-import { TournamentInputData } from './tournament.interface';
+import { TournamentEntity } from '../tournament/tournament.entity';
+import { GroupInputData } from './group.interface';
 
-@Entity('tournament')
-export class TournamentEntity {
+@Entity('group')
+export class GroupEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -27,35 +26,27 @@ export class TournamentEntity {
 
   @OneToMany(
     () => MatchEntity,
-    match => match.tournament,
+    match => match.group,
     { eager: true, cascade: true, nullable: false },
   )
   matches: MatchEntity[];
 
-  @OneToMany(
-    () => GroupEntity,
-    group => group.tournament,
-    { eager: true, cascade: true, nullable: false },
-  )
-  groups: GroupEntity[];
-
   @ManyToOne(
-    () => SeasonEntity,
-    season => season.tournaments,
+    () => TournamentEntity,
+    tournament => tournament.groups,
     { nullable: true },
   )
-  season?: SeasonEntity;
+  tournament?: TournamentEntity;
 
-  constructor(token?: string, tournamentInputData?: TournamentInputData) {
-    if (token && tournamentInputData) {
+  constructor(token?: string, groupInputData?: GroupInputData) {
+    if (token && groupInputData) {
       this.token = token;
-      this.start =
-        tournamentInputData.start && new Date(tournamentInputData.start);
-      this.name = tournamentInputData.name;
-      this.matches = tournamentInputData.matchTokens.map(matchToken => {
+      this.start = groupInputData.start && new Date(groupInputData.start);
+      this.name = groupInputData.name;
+      this.matches = groupInputData.matchTokens.map(matchToken => {
         const matchEntity = new MatchEntity();
         matchEntity.token = matchToken;
-        matchEntity.tournament = this;
+        matchEntity.group = this;
         matchEntity.matchPlayers = [];
         return matchEntity;
       });
