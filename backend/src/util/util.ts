@@ -2,7 +2,7 @@ import { MatchEntity } from '../match/match.entity';
 import {
   MatchResultOutputData,
   MatchResultTeamMemberOutputData,
-} from '../match/match.interface';
+} from '../match/match-output.interface';
 
 export const matchEntityToMatchResultsOutput = (
   matchEntity: MatchEntity,

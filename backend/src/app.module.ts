@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import multer = require('multer');
-import { CsvModule } from 'nest-csv-parser';
 import { AppService } from './app.service';
 import { MatchModule } from './match/match.module';
 import { TournamentModule } from './tournament/tournament.module';
@@ -30,7 +29,6 @@ import { GroupModule } from './group/group.module';
         destination: '/tmp/kanaliiga-apex-uploads',
       }),
     }),
-    CsvModule,
     AuthModule,
     UserModule,
     ScoreModule,

@@ -10,11 +10,11 @@ import {
 import { ApiBasicAuth, ApiBody } from '@nestjs/swagger';
 import { Role } from '../auth/role.constant';
 import { Roles } from '../auth/role.decorator';
+import { SeasonInputData } from './season-input.interface';
 import {
-  SeasonInputData,
   SeasonOutputOneData,
   SeasonOutputListData,
-} from './season.interface';
+} from './season-output.interface';
 import { SeasonService } from './season.service';
 
 @ApiBasicAuth()
@@ -25,7 +25,24 @@ export class SeasonController {
   @Get()
   @Roles(Role.USER, Role.ADMIN)
   async list(): Promise<SeasonOutputListData[]> {
-    return await this.seasonService.find();
+    const seasonEntities = await this.seasonService.find();
+    return seasonEntities.map(
+      seasonEntity => new SeasonOutputListData(seasonEntity),
+    );
+  }
+
+  @Post()
+  @Roles(Role.ADMIN)
+  @ApiBody({ type: SeasonInputData })
+  async save(
+    @Body() body: SeasonInputData,
+  ): Promise<SeasonOutputOneData> | undefined {
+    Logger.log(`save: ${JSON.stringify(body, null, 2)}`);
+
+    const savedSeasonEntity = await this.seasonService.save(body);
+    return savedSeasonEntity
+      ? new SeasonOutputOneData(savedSeasonEntity)
+      : undefined;
   }
 
   @Get(':id')
@@ -33,16 +50,7 @@ export class SeasonController {
   async find(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<SeasonOutputOneData> | undefined {
-    return await this.seasonService.findOne(id);
-  }
-
-  @Post('new')
-  @Roles(Role.ADMIN)
-  @ApiBody({ type: SeasonInputData })
-  async save(
-    @Body() body: SeasonInputData,
-  ): Promise<SeasonOutputOneData> | undefined {
-    Logger.log(`save: ${JSON.stringify(body, null, 2)}`);
-    return await this.seasonService.save(body);
+    const seasonEntity = await this.seasonService.findOne(id);
+    return seasonEntity ? new SeasonOutputOneData(seasonEntity) : undefined;
   }
 }

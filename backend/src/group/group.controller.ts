@@ -10,11 +10,11 @@ import {
 import { ApiBasicAuth, ApiBody } from '@nestjs/swagger';
 import { Role } from '../auth/role.constant';
 import { Roles } from '../auth/role.decorator';
+import { GroupInputData } from './group-input.interface';
 import {
-  GroupInputData,
   GroupOutputOneData,
   GroupOutputListData,
-} from './group.interface';
+} from './group-output.interface';
 import { GroupService } from './group.service';
 
 @ApiBasicAuth()
@@ -25,7 +25,24 @@ export class GroupController {
   @Get()
   @Roles(Role.USER, Role.ADMIN)
   async list(): Promise<GroupOutputListData[]> {
-    return await this.groupService.find();
+    const groupEntities = await this.groupService.find();
+    return groupEntities.map(
+      groupEntity => new GroupOutputListData(groupEntity),
+    );
+  }
+
+  @Post()
+  @Roles(Role.ADMIN)
+  @ApiBody({ type: GroupInputData })
+  async save(
+    @Body() body: GroupInputData,
+  ): Promise<GroupOutputOneData> | undefined {
+    Logger.log(`save ${JSON.stringify(body, null, 2)}`);
+
+    const savedGroupEntity = await this.groupService.save(body);
+    return savedGroupEntity
+      ? new GroupOutputOneData(savedGroupEntity)
+      : undefined;
   }
 
   @Get(':id')
@@ -33,17 +50,7 @@ export class GroupController {
   async find(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<GroupOutputOneData> | undefined {
-    return await this.groupService.findOne(id);
-  }
-
-  @Post(':token')
-  @Roles(Role.ADMIN)
-  @ApiBody({ type: GroupInputData })
-  async save(
-    @Param('token') token: string,
-    @Body() body: GroupInputData,
-  ): Promise<GroupOutputOneData> | undefined {
-    Logger.log(`save ${token}: ${JSON.stringify(body, null, 2)}`);
-    return await this.groupService.save(token, body);
+    const groupEntity = await this.groupService.findOne(id);
+    return groupEntity ? new GroupOutputOneData(groupEntity) : undefined;
   }
 }

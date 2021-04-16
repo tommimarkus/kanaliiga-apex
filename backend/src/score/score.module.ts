@@ -8,5 +8,6 @@ import { ScoreService } from './score.service';
   imports: [TypeOrmModule.forFeature([ScoreRepository])],
   providers: [ScoreService],
   controllers: [ScoreController],
+  exports: [ScoreService],
 })
 export class ScoreModule {}

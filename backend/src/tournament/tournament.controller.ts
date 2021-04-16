@@ -6,19 +6,15 @@ import {
   Param,
   ParseIntPipe,
   Post,
-  UploadedFile,
-  UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiBasicAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
+import { ApiBasicAuth, ApiBody } from '@nestjs/swagger';
 import { Role } from '../auth/role.constant';
 import { Roles } from '../auth/role.decorator';
+import { TournamentInputData } from './tournament-input.interface';
 import {
-  TournamentInputCSVData,
-  TournamentInputData,
   TournamentOutputOneData,
   TournamentOutputListData,
-} from './tournament.interface';
+} from './tournament-output.interface';
 import { TournamentService } from './tournament.service';
 
 @ApiBasicAuth()
@@ -29,7 +25,10 @@ export class TournamentController {
   @Get()
   @Roles(Role.USER, Role.ADMIN)
   async list(): Promise<TournamentOutputListData[]> {
-    return await this.tournamentService.find();
+    const tournamentEntities = await this.tournamentService.find();
+    return tournamentEntities.map(
+      tournamentEntity => new TournamentOutputListData(tournamentEntity),
+    );
   }
 
   @Get(':id')
@@ -37,27 +36,10 @@ export class TournamentController {
   async find(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<TournamentOutputOneData> | undefined {
-    return await this.tournamentService.findOne(id);
-  }
-
-  @Post('csv')
-  @Roles(Role.ADMIN)
-  @UseInterceptors(
-    FileInterceptor('file', {
-      fileFilter: (_req, file, callback) =>
-        callback(null, file.originalname.match(/\.(csv)$/) !== null),
-    }),
-  )
-  @ApiConsumes('multipart/form-data')
-  @ApiBody({ type: TournamentInputCSVData })
-  async saveCSV(
-    @Body() body: TournamentInputCSVData,
-    @UploadedFile() file: Express.Multer.File,
-  ): Promise<TournamentOutputOneData> | undefined {
-    Logger.log(
-      `save csv ${file.originalname}: ${JSON.stringify(body, null, 2)}`,
-    );
-    return await this.tournamentService.saveCSV(file, body);
+    const tournamentEntity = await this.tournamentService.findOne(id);
+    return tournamentEntity
+      ? new TournamentOutputOneData(tournamentEntity)
+      : undefined;
   }
 
   @Post(':token')
@@ -68,6 +50,13 @@ export class TournamentController {
     @Body() body: TournamentInputData,
   ): Promise<TournamentOutputOneData> | undefined {
     Logger.log(`save ${token}: ${JSON.stringify(body, null, 2)}`);
-    return await this.tournamentService.save(token, body);
+
+    const savedTournamentEntity = await this.tournamentService.save(
+      token,
+      body,
+    );
+    return savedTournamentEntity
+      ? new TournamentOutputOneData(savedTournamentEntity)
+      : undefined;
   }
 }

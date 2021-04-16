@@ -14,11 +14,11 @@ import { ApiBasicAuth, ApiBody, ApiConsumes } from '@nestjs/swagger';
 import { Role } from '../auth/role.constant';
 import { Roles } from '../auth/role.decorator';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
+import { MatchInputJSONData } from './match-input.interface';
 import {
-  MatchInputJSONData,
   MatchOutputOneData,
   MatchOutputListData,
-} from './match.interface';
+} from './match-output.interface';
 import { MatchService } from './match.service';
 
 @ApiBasicAuth()
@@ -29,7 +29,10 @@ export class MatchController {
   @Get()
   @Roles(Role.USER, Role.ADMIN)
   async list(): Promise<MatchOutputListData[]> {
-    return await this.matchService.find();
+    const matchEntities = await this.matchService.find();
+    return matchEntities.map(
+      matchEntity => new MatchOutputListData(matchEntity),
+    );
   }
 
   @Get(':id')
@@ -37,7 +40,8 @@ export class MatchController {
   async find(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<MatchOutputOneData> | undefined {
-    return await this.matchService.findOne(id);
+    const matchEntity = await this.matchService.findOne(id);
+    return matchEntity ? new MatchOutputOneData(matchEntity) : undefined;
   }
 
   @Post('json')
@@ -57,7 +61,16 @@ export class MatchController {
     Logger.log(
       `save json ${file.originalname}: ${JSON.stringify(body, null, 2)}`,
     );
-    return await this.matchService.saveJSON(file, body.token);
+
+    const savedMatchEntities = await this.matchService.saveJSON(
+      file,
+      body.token,
+    );
+    return savedMatchEntities
+      ? savedMatchEntities.map(
+          matchEntity => new MatchOutputOneData(matchEntity),
+        )
+      : undefined;
   }
 
   @Post(':token')
@@ -68,6 +81,12 @@ export class MatchController {
     @Body() body: EAMatchesData,
   ): Promise<MatchOutputOneData[]> | undefined {
     Logger.log(`save ${token}: ${JSON.stringify(body, null, 2)}`);
-    return await this.matchService.save(token, body);
+
+    const savedMatchEntities = await this.matchService.save(token, body);
+    return savedMatchEntities
+      ? savedMatchEntities.map(
+          matchEntity => new MatchOutputOneData(matchEntity),
+        )
+      : undefined;
   }
 }

@@ -1,7 +1,7 @@
 import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { TournamentEntity } from '../tournament/tournament.entity';
-import { SeasonInputData } from './season.interface';
+import { SeasonInputData } from './season-input.interface';
 
 @Entity('season')
 export class SeasonEntity {

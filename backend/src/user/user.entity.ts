@@ -17,7 +17,6 @@ export class UserEntity {
     enum: Role,
     nullable: false,
     array: true,
-    default: [Role.USER],
   })
   roles: Role;
 }

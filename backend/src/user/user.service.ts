@@ -6,7 +6,7 @@ import { UserRepository } from './user.repository';
 export class UserService {
   constructor(private userRepository: UserRepository) {}
 
-  async findOne(username: string): Promise<UserEntity | undefined> {
+  async findOne(username: string): Promise<UserEntity> | undefined {
     return this.userRepository.findOne({ where: { username } });
   }
 }

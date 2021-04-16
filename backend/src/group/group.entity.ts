@@ -1,10 +1,17 @@
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  Unique,
+} from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { MatchEntity } from '../match/match.entity';
 import { TournamentEntity } from '../tournament/tournament.entity';
-import { GroupInputData } from './group.interface';
+import { GroupInputData } from './group-input.interface';
 
 @Entity('group')
+@Unique('tournament_order', ['tournament', 'order'])
 export class GroupEntity {
   @PrimaryGeneratedColumn()
   id: number;
@@ -12,17 +19,8 @@ export class GroupEntity {
   @Column({ nullable: false, default: true })
   active: boolean;
 
-  @Column({ unique: true, nullable: false })
-  token: string;
-
-  @Column({ unique: true, nullable: false })
-  name: string;
-
-  @Column({
-    type: 'timestamp with time zone',
-    nullable: false,
-  })
-  start: Date;
+  @Column({ nullable: false })
+  order: number;
 
   @OneToMany(
     () => MatchEntity,
@@ -34,22 +32,17 @@ export class GroupEntity {
   @ManyToOne(
     () => TournamentEntity,
     tournament => tournament.groups,
-    { nullable: true },
+    { nullable: false },
   )
-  tournament?: TournamentEntity;
+  tournament: TournamentEntity;
 
-  constructor(token?: string, groupInputData?: GroupInputData) {
-    if (token && groupInputData) {
-      this.token = token;
-      this.start = groupInputData.start && new Date(groupInputData.start);
-      this.name = groupInputData.name;
-      this.matches = groupInputData.matchTokens.map(matchToken => {
-        const matchEntity = new MatchEntity();
-        matchEntity.token = matchToken;
-        matchEntity.group = this;
-        matchEntity.matchPlayers = [];
-        return matchEntity;
-      });
+  constructor(groupInputData?: GroupInputData, tournament?: TournamentEntity) {
+    if (groupInputData) {
+      this.order = groupInputData.order;
+      this.matches = [];
+      if (tournament) {
+        this.tournament = tournament;
+      }
     }
   }
 }
