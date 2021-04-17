@@ -1,33 +1,33 @@
 import { ApiProperty } from '@nestjs/swagger';
 
 export class EAMatchPlayerResult {
-  @ApiProperty()
+  @ApiProperty({ example: 16 })
   kills: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 3926 })
   damageDealt: number;
 
   @ApiProperty()
   playerName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1392 })
   survivalTime: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 1 })
   teamPlacement: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 'Vincit' })
   teamName: string;
 
-  @ApiProperty()
+  @ApiProperty({ example: 8 })
   teamNum: number;
 
-  @ApiProperty()
+  @ApiProperty({ example: 9 })
   assists: number;
 }
 
 export class EAMatchData {
-  @ApiProperty()
+  @ApiProperty({ example: 1618683819 })
   match_start: number;
 
   @ApiProperty({ type: [EAMatchPlayerResult] })

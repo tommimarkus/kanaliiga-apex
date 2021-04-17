@@ -89,4 +89,22 @@ export class MatchController {
         )
       : undefined;
   }
+
+  @Post(':token/:group')
+  @Roles(Role.ADMIN)
+  @ApiBody({ type: EAMatchesData })
+  async saveWithGroup(
+    @Param('token') token: string,
+    @Param('group', ParseIntPipe) group: number,
+    @Body() body: EAMatchesData,
+  ): Promise<MatchOutputOneData[]> | undefined {
+    Logger.log(`save ${token} ${group}: ${JSON.stringify(body, null, 2)}`);
+
+    const savedMatchEntities = await this.matchService.save(token, body, group);
+    return savedMatchEntities
+      ? savedMatchEntities.map(
+          matchEntity => new MatchOutputOneData(matchEntity),
+        )
+      : undefined;
+  }
 }

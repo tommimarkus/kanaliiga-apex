@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { GroupModule } from '../group/group.module';
 import { ScoreModule } from '../score/score.module';
 import { SeasonModule } from '../season/season.module';
 import { TournamentController } from './tournament.controller';
@@ -12,9 +11,9 @@ import { TournamentService } from './tournament.service';
     TypeOrmModule.forFeature([TournamentRepository]),
     forwardRef(() => ScoreModule),
     forwardRef(() => SeasonModule),
-    forwardRef(() => GroupModule),
   ],
   providers: [TournamentService],
   controllers: [TournamentController],
+  exports: [TournamentService],
 })
 export class TournamentModule {}

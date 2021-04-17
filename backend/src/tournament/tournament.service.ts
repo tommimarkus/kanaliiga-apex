@@ -9,7 +9,7 @@ import { TournamentInputData } from './tournament-input.interface';
 import { TournamentRepository } from './tournament.repository';
 import { ScoreService } from '../score/score.service';
 import { SeasonService } from '../season/season.service';
-import { GroupService } from '../group/group.service';
+import { FindOneOptions } from 'typeorm';
 
 @Injectable()
 export class TournamentService {
@@ -21,72 +21,59 @@ export class TournamentService {
 
     @Inject(forwardRef(() => SeasonService))
     private seasonService: SeasonService,
-
-    @Inject(forwardRef(() => GroupService))
-    private groupService: GroupService,
   ) {}
 
+  private readonly findOneOptions: FindOneOptions<TournamentEntity> = {
+    join: {
+      alias: 'tournament',
+      innerJoinAndSelect: {
+        season: 'tournament.season',
+      },
+    },
+    where: { active: true },
+  };
+  private readonly findManyOptions: FindOneOptions<TournamentEntity> = {
+    ...this.findOneOptions,
+    join: undefined,
+  };
+
   async find(): Promise<TournamentEntity[]> {
-    return await this.tournamentRepository.find({
-      select: ['id', 'active', 'name', 'start', 'season'],
-      where: { active: true },
-    });
+    return await this.tournamentRepository.find(this.findManyOptions);
   }
 
   async findOne(id: number): Promise<TournamentEntity> | undefined {
-    return await this.tournamentRepository.findOne(id, {
-      join: {
-        alias: 'tournament',
-        innerJoinAndSelect: {
-          season: 'tournament.season',
-        },
-      },
-      where: { active: true },
-    });
+    return await this.tournamentRepository.findOne(id, this.findOneOptions);
+  }
+
+  async findOneOrFail(id: number): Promise<TournamentEntity> {
+    return await this.tournamentRepository.findOneOrFail(
+      id,
+      this.findOneOptions,
+    );
   }
 
   async save(
     token: string,
     tournamentInputData: TournamentInputData,
   ): Promise<TournamentEntity> | undefined {
-    let tournamentEntity: TournamentEntity;
     try {
-      tournamentEntity = new TournamentEntity(token, tournamentInputData);
+      const seasonEntity = await this.seasonService.findOneOrFail(
+        tournamentInputData.season,
+      );
+      const scoreEntity =
+        typeof tournamentInputData.score === 'number'
+          ? await this.scoreService.findOneOrFail(tournamentInputData.score)
+          : undefined;
+
+      const tournamentEntity = new TournamentEntity(
+        token,
+        tournamentInputData,
+        seasonEntity,
+        scoreEntity,
+      );
+      return await this.tournamentRepository.save(tournamentEntity);
     } catch (exception) {
       throw new BadRequestException(`${exception.name}: ${exception.message}`);
     }
-
-    const groups = await Promise.all(
-      tournamentInputData.groups.map(
-        async groupInputData => await this.groupService.save(groupInputData),
-      ),
-    );
-    if (!groups || groups.length < 1) {
-      throw new BadRequestException(
-        `Groups with input ${JSON.stringify(
-          tournamentInputData.groups,
-        )} could not be created!`,
-      );
-    }
-
-    const season = await this.seasonService.findOne(tournamentInputData.season);
-    if (!season) {
-      throw new BadRequestException(
-        `Season with id ${tournamentInputData.season} not found!`,
-      );
-    }
-    tournamentEntity.season = season;
-
-    const scoreEntity = await this.scoreService.findOrCreateOne(
-      tournamentInputData.score,
-    );
-    if (!scoreEntity) {
-      throw new BadRequestException(
-        `Score with id ${tournamentInputData.score} not found!`,
-      );
-    }
-    tournamentEntity.score = scoreEntity;
-
-    return await this.tournamentRepository.save(tournamentEntity);
   }
 }

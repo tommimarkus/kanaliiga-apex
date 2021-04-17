@@ -15,19 +15,12 @@ export class ScoreService {
     return await this.scoreRepository.findOne(id);
   }
 
+  async findOneOrFail(id: number): Promise<ScoreEntity> {
+    return await this.scoreRepository.findOneOrFail(id);
+  }
+
   async save(scoreInputData: ScoreInputData): Promise<ScoreEntity> | undefined {
     const scoreEntity = new ScoreEntity(scoreInputData);
     return await this.scoreRepository.save(scoreEntity);
-  }
-
-  async findOrCreateOne(
-    input: number | ScoreInputData,
-  ): Promise<ScoreEntity> | undefined {
-    if (typeof input === 'number') {
-      return await this.findOne(input);
-    } else if (input instanceof ScoreInputData) {
-      return await this.save(input);
-    }
-    return undefined;
   }
 }

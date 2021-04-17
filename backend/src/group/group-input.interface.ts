@@ -15,4 +15,15 @@ export class GroupData {
   }
 }
 
-export class GroupInputData extends GroupData {}
+export class GroupInputData extends GroupData {
+  @ApiProperty({ nullable: false, example: 1 })
+  tournament: number;
+
+  constructor(entity?: GroupEntity) {
+    super(entity);
+
+    if (entity) {
+      this.tournament = entity.tournament.id;
+    }
+  }
+}
