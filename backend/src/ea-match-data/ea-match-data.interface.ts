@@ -1,6 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class EAMatchPlayerResult {
+export interface IEAMatchPlayerResult {
+  kills: number;
+  damageDealt: number;
+  playerName: string;
+  survivalTime: number;
+  teamPlacement: number;
+  teamName: string;
+  teamNum: number;
+  assists: number;
+}
+
+export class EAMatchPlayerResult implements IEAMatchPlayerResult {
   @ApiProperty({ example: 16 })
   kills: number;
 

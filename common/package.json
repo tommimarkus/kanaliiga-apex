@@ -1,0 +1,17 @@
+{
+  "name": "common",
+  "version": "1.0.0",
+  "description": "Common for kanaliiga-apex",
+  "main": "index.ts",
+  "types": "index.d.ts",
+  "scripts": {
+    "build": "tsc index.ts -d"
+  },
+  "keywords": [],
+  "author": "Tommi Leikomaa",
+  "license": "All Rights Reserved",
+  "devDependencies": {
+    "tsc": "^1.20150623.0"
+  },
+  "private": true
+}

@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
 import { MatchEntity } from './match.entity';
@@ -21,7 +22,7 @@ export class MatchService {
   private readonly findOneOptions: FindOneOptions<MatchEntity> = {
     join: {
       alias: 'match',
-      innerJoinAndSelect: {
+      leftJoinAndSelect: {
         group: 'match.group',
       },
     },
@@ -34,6 +35,7 @@ export class MatchService {
   };
 
   async find(): Promise<MatchEntity[]> {
+    Logger.debug(JSON.stringify(this.findManyOptions));
     return await this.matchRepository.find(this.findManyOptions);
   }
 
