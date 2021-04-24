@@ -19,7 +19,7 @@ module.exports = {
     production: {
       user: "kanapex",
       host: "95.216.174.76",
-      ref: "origin/main",
+      ref: "origin/same-token-multiple-games",
       repo: "git@github.com:tommimarkus/kanaliiga-apex.git",
       path: "/var/opt/apps/kanaliiga-apex",
       "pre-deploy-local": "",
