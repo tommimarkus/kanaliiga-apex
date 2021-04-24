@@ -76,11 +76,11 @@ export class MatchService {
     matchesData: EAMatchesData,
   ): Promise<MatchOutputOneData[]> | undefined {
     const savedMatchEntities = await Promise.all(
-      matchesData.matches.map(async matchData => {
-        const matchEntity = new MatchEntity(token, matchData);
+      matchesData.matches.map(async (matchData, index) => {
+        const matchEntity = new MatchEntity(token, index, matchData);
         const existingMatchEntity = await this.matchRepository.findOne({
-          select: ['id', 'token'],
-          where: { token },
+          select: ['id', 'token', 'index'],
+          where: { token, index },
         });
         if (existingMatchEntity) {
           matchEntity.id = existingMatchEntity.id;

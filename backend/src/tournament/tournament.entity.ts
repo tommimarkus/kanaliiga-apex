@@ -44,12 +44,15 @@ export class TournamentEntity {
       this.start =
         tournamentInputData.start && new Date(tournamentInputData.start);
       this.name = tournamentInputData.name;
-      this.matches = tournamentInputData.matchTokens.map(matchToken => {
-        const matchEntity = new MatchEntity();
-        matchEntity.token = matchToken;
-        matchEntity.tournament = this;
-        matchEntity.matchPlayers = [];
-        return matchEntity;
+      this.matches = tournamentInputData.matchTokens.flatMap(matchToken => {
+        return [...Array(10).keys()].map(index => {
+          const matchEntity = new MatchEntity();
+          matchEntity.token = matchToken;
+          matchEntity.index = index;
+          matchEntity.tournament = this;
+          matchEntity.matchPlayers = [];
+          return matchEntity;
+        });
       });
     }
   }
