@@ -58,15 +58,16 @@ export class MatchService {
           ? await this.groupService.findOneOrFail(group)
           : undefined;
       return await Promise.all(
-        matchesData.matches.map(async matchData => {
+        matchesData.matches.map(async (matchData, index) => {
           const matchEntity = new MatchEntity({
             token,
             matchData,
             group: groupEntity,
+	    index
           });
           const existingMatchEntity = await this.matchRepository.findOne({
-            select: ['id', 'token'],
-            where: { token },
+            select: ['id', 'token', 'index'],
+            where: { token, index },
           });
           if (existingMatchEntity) {
             matchEntity.id = existingMatchEntity.id;
