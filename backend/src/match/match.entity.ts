@@ -9,7 +9,6 @@ import {
 } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { GroupEntity } from '../group/group.entity';
-import { Logger } from '@nestjs/common';
 
 @Entity('match')
 @Unique('unique_token_index', ['token', 'index'])
