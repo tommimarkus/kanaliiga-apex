@@ -76,7 +76,9 @@ export class MatchService {
         }),
       );
     } catch (exception) {
-      throw new BadRequestException(`${exception.name}: ${exception.message}`);
+      const message = `${exception.name}: ${exception.message}`;
+      Logger.error(`${message} ${exception.stack}`);
+      throw new BadRequestException(message);
     }
   }
 

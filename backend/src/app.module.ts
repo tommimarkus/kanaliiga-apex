@@ -18,7 +18,7 @@ import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.env', load: [typeormConfig] }),
+    ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot(typeormConfig()),
     MatchModule,
     GroupModule,

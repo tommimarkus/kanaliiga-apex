@@ -46,7 +46,7 @@ export class MatchEntity {
     token: string;
     matchData?: EAMatchData;
     group?: GroupEntity;
-    index?: number;
+    index: number;
   }) {
     if (params) {
       const { token, matchData, group, index } = params;

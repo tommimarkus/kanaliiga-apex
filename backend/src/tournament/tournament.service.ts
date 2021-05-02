@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { TournamentEntity } from './tournament.entity';
 import { TournamentInputData } from './tournament-input.interface';
@@ -73,7 +74,9 @@ export class TournamentService {
       );
       return await this.tournamentRepository.save(tournamentEntity);
     } catch (exception) {
-      throw new BadRequestException(`${exception.name}: ${exception.message}`);
+      const message = `${exception.name}: ${exception.message}`;
+      Logger.error(`${message} ${exception.stack}`);
+      throw new BadRequestException(message);
     }
   }
 }

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { SeasonEntity } from './season.entity';
 import { SeasonInputData } from './season-input.interface';
 import { SeasonRepository } from './season.repository';
@@ -33,7 +33,9 @@ export class SeasonService {
       const seasonEntity = new SeasonEntity(seasonInputData);
       return await this.seasonRepository.save(seasonEntity);
     } catch (exception) {
-      throw new BadRequestException(`${exception.name}: ${exception.message}`);
+      const message = `${exception.name}: ${exception.message}`;
+      Logger.error(`${message} ${exception.stack}`);
+      throw new BadRequestException(message);
     }
   }
 }

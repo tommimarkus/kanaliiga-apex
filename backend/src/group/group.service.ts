@@ -3,6 +3,7 @@ import {
   forwardRef,
   Inject,
   Injectable,
+  Logger,
 } from '@nestjs/common';
 import { GroupEntity } from './group.entity';
 import { GroupInputData } from './group-input.interface';
@@ -55,7 +56,9 @@ export class GroupService {
       const groupEntity = new GroupEntity(groupInputData, tournamentEntity);
       return await this.groupRepository.save(groupEntity);
     } catch (exception) {
-      throw new BadRequestException(`${exception.name}: ${exception.message}`);
+      const message = `${exception.name}: ${exception.message}`;
+      Logger.error(`${message} ${exception.stack}`);
+      throw new BadRequestException(message);
     }
   }
 }
