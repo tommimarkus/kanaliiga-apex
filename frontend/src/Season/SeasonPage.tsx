@@ -53,7 +53,9 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const end = data && data.end && Utils.localDateTimeString(data.end);
 
   const dataValidMatches = data?.tournaments
-    ?.flatMap((tournament) => tournament.matches)
+    ?.flatMap((tournament) =>
+      tournament.groups.flatMap((group) => group.matches)
+    )
     ?.filter(
       (match): match is MatchOutputOneData =>
         match.results !== undefined &&
@@ -105,7 +107,9 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const top = 5;
 
   const dataValidPlayer = data?.tournaments
-    ?.flatMap((tournament) => tournament.matches)
+    ?.flatMap((tournament) =>
+      tournament.groups.flatMap((group) => group.matches)
+    )
     ?.filter(
       (match): match is MatchOutputOneData =>
         match.results !== undefined &&

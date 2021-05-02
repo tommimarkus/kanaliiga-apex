@@ -27,10 +27,7 @@ export class MatchInputJSONData {
   })
   token: string;
 
-  @ApiPropertyOptional({
-    nullable: true,
-    example: 1,
-  })
+  @ApiPropertyOptional({ nullable: true, example: 1 })
   group?: number;
 
   @ApiProperty({ type: 'file', nullable: false })

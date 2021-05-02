@@ -27,8 +27,12 @@ export class TournamentService {
   private readonly findOneOptions: FindOneOptions<TournamentEntity> = {
     join: {
       alias: 'tournament',
-      innerJoinAndSelect: {
+      leftJoinAndSelect: {
         season: 'tournament.season',
+        groups: 'tournament.groups',
+        groupsMatches: 'groups.matches',
+        matchesPlayers: 'groupsMatches.matchPlayers',
+        score: 'tournament.score',
       },
     },
     where: { active: true },

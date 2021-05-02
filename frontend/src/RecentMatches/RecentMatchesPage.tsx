@@ -42,7 +42,7 @@ const RecentMatchesPage = (
         name:
           recentMatchesData.start &&
           Utils.localDateTimeString(recentMatchesData.start),
-        value: recentMatchesData.tournament?.name || 'Unnamed',
+        value: recentMatchesData.group?.tournament?.name || 'Unnamed',
         link: `${entryPoint}/${recentMatchesData.id}`,
       } as LinkTableData)
   );

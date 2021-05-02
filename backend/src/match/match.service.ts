@@ -23,7 +23,9 @@ export class MatchService {
     join: {
       alias: 'match',
       leftJoinAndSelect: {
+        matchPlayers: 'match.matchPlayers',
         group: 'match.group',
+        groupTournament: 'group.tournament',
       },
     },
     where: { start: Not(IsNull()), active: true },
@@ -63,7 +65,7 @@ export class MatchService {
             token,
             matchData,
             group: groupEntity,
-	    index
+            index,
           });
           const existingMatchEntity = await this.matchRepository.findOne({
             select: ['id', 'token', 'index'],
@@ -85,10 +87,12 @@ export class MatchService {
   async saveJSON(
     file: Express.Multer.File,
     token: string,
+    group?: number,
   ): Promise<MatchEntity[]> | undefined {
     return await this.save(
       token,
       JSON.parse(file.buffer.toString()) as EAMatchesData,
+      group,
     );
   }
 }

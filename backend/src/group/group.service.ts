@@ -23,8 +23,9 @@ export class GroupService {
   private readonly findOneOptions: FindOneOptions<GroupEntity> = {
     join: {
       alias: 'group',
-      innerJoinAndSelect: {
-        season: 'group.season',
+      leftJoinAndSelect: {
+        tournament: 'group.tournament',
+        matches: 'group.matches'
       },
     },
     where: { active: true },

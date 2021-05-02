@@ -70,9 +70,10 @@ export class ScoreEntity {
   @Column({ nullable: false })
   placement20: number;
 
+
   @OneToMany(
     () => TournamentEntity,
-    tournament => tournament.score,
+    tournament => tournament.season,
     { nullable: false },
   )
   tournaments: TournamentEntity[];

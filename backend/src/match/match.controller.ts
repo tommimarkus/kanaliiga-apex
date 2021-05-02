@@ -43,7 +43,6 @@ export class MatchController {
     Logger.log(`find ${id}`);
 
     const matchEntity = await this.matchService.findOne(id);
-    Logger.log(`found: ${JSON.stringify(matchEntity)}`);
     return matchEntity ? new MatchOutputOneData(matchEntity) : undefined;
   }
 
@@ -68,6 +67,7 @@ export class MatchController {
     const savedMatchEntities = await this.matchService.saveJSON(
       file,
       body.token,
+      body.group,
     );
     return savedMatchEntities
       ? savedMatchEntities.map(

@@ -31,6 +31,10 @@ export class GroupOutputOneData extends GroupOutputData {
 
   constructor(entity?: GroupEntity) {
     super(entity);
+
+    if (entity) {
+      this.matches = entity.matches.map(match => new MatchOutputOneData(match));
+    }
   }
 }
 

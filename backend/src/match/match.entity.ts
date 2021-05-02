@@ -9,6 +9,7 @@ import {
 } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
 import { GroupEntity } from '../group/group.entity';
+import { Logger } from '@nestjs/common';
 
 @Entity('match')
 @Unique('unique_token_index', ['token', 'index'])
@@ -31,7 +32,7 @@ export class MatchEntity {
   @OneToMany(
     () => MatchPlayerEntity,
     matchPlayer => matchPlayer.match,
-    { eager: true, cascade: true },
+    { cascade: ['insert'] },
   )
   matchPlayers: MatchPlayerEntity[];
 
@@ -50,7 +51,13 @@ export class MatchEntity {
   }) {
     if (params) {
       const { token, matchData, group, index } = params;
-      if (typeof token === 'string' && matchData && group && typeof index === 'number') {
+      Logger.debug(JSON.stringify({ ...params, matchData: undefined }));
+      if (
+        typeof token === 'string' &&
+        matchData &&
+        group &&
+        typeof index === 'number'
+      ) {
         this.token = token;
         this.index = index;
         this.start =

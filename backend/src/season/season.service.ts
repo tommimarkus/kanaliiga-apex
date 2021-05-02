@@ -9,6 +9,15 @@ export class SeasonService {
   constructor(private seasonRepository: SeasonRepository) {}
 
   private readonly findOneOptions: FindOneOptions<SeasonEntity> = {
+    join: {
+      alias: 'season',
+      leftJoinAndSelect: {
+        tournaments: 'season.tournaments',
+        tournamentsGroups: 'tournaments.groups',
+        groupsMatches: 'tournamentsGroups.matches',
+        matchesPlayers: 'groupsMatches.matchPlayers',
+      },
+    },
     where: { active: true },
   };
   private readonly findManyOptions: FindManyOptions<SeasonEntity> = this

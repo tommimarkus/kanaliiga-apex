@@ -29,7 +29,7 @@ export class SeasonEntity {
   @OneToMany(
     () => TournamentEntity,
     tournament => tournament.season,
-    { eager: true, cascade: true, nullable: false },
+    { nullable: false },
   )
   tournaments: TournamentEntity[];
 

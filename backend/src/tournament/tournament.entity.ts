@@ -29,7 +29,7 @@ export class TournamentEntity {
   @OneToMany(
     () => GroupEntity,
     group => group.tournament,
-    { cascade: ['insert'], nullable: false },
+    { cascade: ['insert'] },
   )
   groups: GroupEntity[];
 
@@ -43,7 +43,7 @@ export class TournamentEntity {
   @ManyToOne(
     () => ScoreEntity,
     score => score.tournaments,
-    { cascade: ['insert'], nullable: false },
+    { cascade: ['insert'] },
   )
   score: ScoreEntity;
 

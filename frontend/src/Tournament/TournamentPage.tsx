@@ -50,7 +50,9 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const name = data?.name;
   const start = data && data.start && Utils.localDateTimeString(data.start);
 
-  const dataValidMatches = data?.matches?.filter(
+  const groupsMatches = data?.groups?.flatMap((group) => group.matches);
+
+  const dataValidMatches = groupsMatches?.filter(
     (match): match is MatchOutputOneData =>
       match.results !== undefined &&
       match.results !== null &&
@@ -100,7 +102,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
 
   const top = 5;
 
-  const dataValidPlayer = data?.matches?.filter(
+  const dataValidPlayer = groupsMatches?.filter(
     (match): match is MatchOutputOneData =>
       match.results !== undefined &&
       match.results !== null &&

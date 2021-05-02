@@ -176,10 +176,10 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
                 Last fetched: {formatISO(lastFetched)}
               </div>
             )}
-            {stream !== true && data?.tournament?.id && (
+            {stream !== true && data?.group?.tournament?.id && (
               <div className="subset-navigation-links">
                 <div className="item">
-                  <a href={`/tournament/${data?.tournament.id}`}>
+                  <a href={`/tournament/${data?.group?.tournament.id}`}>
                     Back to Tournament
                   </a>
                 </div>

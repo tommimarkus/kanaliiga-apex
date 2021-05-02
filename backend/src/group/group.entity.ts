@@ -25,7 +25,7 @@ export class GroupEntity {
   @OneToMany(
     () => MatchEntity,
     match => match.group,
-    { eager: true, cascade: true, nullable: false },
+    { cascade: ['insert'] },
   )
   matches: MatchEntity[];
 
