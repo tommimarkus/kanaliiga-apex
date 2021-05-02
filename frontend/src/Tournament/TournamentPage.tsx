@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import './TournamentPage.scss';
 import BasePage from '../Base/BasePage';
@@ -24,7 +23,6 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const stream = query.has('stream');
 
   const [data, setData] = useState<TournamentOutputOneData | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     if (id) {
@@ -33,7 +31,6 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       console.log(entrypoint);
       axios.get<TournamentOutputOneData>(entrypoint).then((response) => {
         setData(response.data);
-        setLastFetched(new Date());
       });
     }
     return () => {};
@@ -222,11 +219,6 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
                   columns={columnsPlayerAssists}
                   data={dataPlayerAssists}
                 />
-              </div>
-            )}
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
               </div>
             )}
             {stream !== true && (

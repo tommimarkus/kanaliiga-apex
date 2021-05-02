@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import './RecentSeasonsPage.scss';
 import BasePage from '../Base/BasePage';
@@ -19,14 +18,12 @@ const RecentSeasonsPage = (
   const entryPoint = '/season';
 
   const [data, setData] = useState<SeasonOutputListData[] | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     axios
       .get<SeasonOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
       .then((response) => {
         setData(response.data);
-        setLastFetched(new Date());
       });
     return () => {};
   }, []);
@@ -67,11 +64,6 @@ const RecentSeasonsPage = (
               columns={columnsRecentSeasons}
               data={dataRecentSeasons}
             />
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
-              </div>
-            )}
           </div>
         </div>
       )}

@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import './SeasonPage.scss';
 import BasePage from '../Base/BasePage';
@@ -25,7 +24,6 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   const stream = query.has('stream');
 
   const [data, setData] = useState<SeasonOutputOneData | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     if (id) {
@@ -34,7 +32,6 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
       console.log(entrypoint);
       axios.get<SeasonOutputOneData>(entrypoint).then((response) => {
         setData(response.data);
-        setLastFetched(new Date());
       });
     }
     return () => {};
@@ -230,11 +227,6 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
                   columns={columnsPlayerAssists}
                   data={dataPlayerAssists}
                 />
-              </div>
-            )}
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
               </div>
             )}
             {stream !== true && (

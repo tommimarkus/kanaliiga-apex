@@ -57,18 +57,25 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
             <img alt="Kanaliiga Logo" src={KanaliigaLogo} />
           </div>
           {nosponsors !== true && (
-            <>
-              <div className="sponsors">
+            <div className="sponsors">
+              <div className="sponsor">
                 <img alt="CGI" src={SponsorCGI} />
               </div>
-              <div className="sponsors">
+              <div className="sponsor">
                 <img alt="Etteplan" src={SponsorEtteplan} />
               </div>
-            </>
+            </div>
           )}
         </div>
       </div>
-      {children}
+      <div className="right-column">
+        {children}
+        <div className="authors">
+          <div className="author">
+            Tommi &ldquo;SourOldGeezer&ldquo; Leikomaa
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

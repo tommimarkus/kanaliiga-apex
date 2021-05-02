@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import './RecentTournamentsPage.scss';
 import BasePage from '../Base/BasePage';
@@ -19,14 +18,12 @@ const RecentTournamentsPage = (
   const entryPoint = '/tournament';
 
   const [data, setData] = useState<TournamentOutputListData[] | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     axios
       .get<TournamentOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
       .then((response) => {
         setData(response.data);
-        setLastFetched(new Date());
       });
     return () => {};
   }, []);
@@ -60,11 +57,6 @@ const RecentTournamentsPage = (
               columns={columnsRecentTournaments}
               data={dataRecentTournaments}
             />
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
-              </div>
-            )}
           </div>
         </div>
       )}

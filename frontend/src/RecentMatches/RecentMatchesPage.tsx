@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import './RecentMatchesPage.scss';
 import BasePage from '../Base/BasePage';
@@ -19,14 +18,12 @@ const RecentMatchesPage = (
   const entryPoint = '/match';
 
   const [data, setData] = useState<MatchOutputListData[] | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     axios
       .get<MatchOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
       .then((response) => {
         setData(response.data);
-        setLastFetched(new Date());
       });
     return () => {};
   }, []);
@@ -56,11 +53,6 @@ const RecentMatchesPage = (
               columns={columnsRecentMatches}
               data={dataRecentMatches}
             />
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
-              </div>
-            )}
           </div>
         </div>
       )}

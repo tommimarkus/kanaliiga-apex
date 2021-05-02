@@ -51,7 +51,6 @@ export class MatchEntity {
   }) {
     if (params) {
       const { token, matchData, group, index } = params;
-      Logger.debug(JSON.stringify({ ...params, matchData: undefined }));
       if (
         typeof token === 'string' &&
         matchData &&

@@ -2,7 +2,6 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
-import { formatISO } from 'date-fns';
 
 import BasePage from '../Base/BasePage';
 import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
@@ -23,7 +22,6 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
   const stream = query.has('stream');
 
   const [data, setData] = useState<MatchOutputOneData | undefined>();
-  const [lastFetched, setLastFetched] = useState<Date | undefined>();
 
   useEffect(() => {
     if (id) {
@@ -31,7 +29,6 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         .get<MatchOutputOneData>(`${Utils.baseUrl}/match/${id}`)
         .then((response) => {
           setData(response.data);
-          setLastFetched(new Date());
         });
     }
     return () => {};
@@ -152,43 +149,36 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
       title="Match Started"
     >
       {dataMatch && (
-        <div className="right-column">
-          <div className="column-content">
-            <MatchTable columns={columnsMatch} data={dataMatch} />
-            {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
-              <div className="player-tables">
-                <PlayerTable
-                  columns={columnsPlayerKills}
-                  data={dataPlayerKills}
-                />
-                <PlayerTable
-                  columns={columnsPlayerDamage}
-                  data={dataPlayerDamage}
-                />
-                <PlayerTable
-                  columns={columnsPlayerAssists}
-                  data={dataPlayerAssists}
-                />
+        <div className="column-content">
+          <MatchTable columns={columnsMatch} data={dataMatch} />
+          {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
+            <div className="player-tables">
+              <PlayerTable
+                columns={columnsPlayerKills}
+                data={dataPlayerKills}
+              />
+              <PlayerTable
+                columns={columnsPlayerDamage}
+                data={dataPlayerDamage}
+              />
+              <PlayerTable
+                columns={columnsPlayerAssists}
+                data={dataPlayerAssists}
+              />
+            </div>
+          )}
+          {stream !== true && data?.group?.tournament?.id && (
+            <div className="subset-navigation-links">
+              <div className="item">
+                <a href={`/tournament/${data?.group?.tournament.id}`}>
+                  Back to Tournament
+                </a>
               </div>
-            )}
-            {lastFetched && (
-              <div className="last-fetched">
-                Last fetched: {formatISO(lastFetched)}
+              <div className="item end">
+                <a href="/match/">Recent Matches</a>
               </div>
-            )}
-            {stream !== true && data?.group?.tournament?.id && (
-              <div className="subset-navigation-links">
-                <div className="item">
-                  <a href={`/tournament/${data?.group?.tournament.id}`}>
-                    Back to Tournament
-                  </a>
-                </div>
-                <div className="item end">
-                  <a href="/match/">Recent Matches</a>
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
     </BasePage>
