@@ -120,15 +120,17 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
             match.results?.flatMap((result) => result.teamMembers)
           )
           .reduce((prev: MatchResultTeamMemberOutputData[], curr) =>
-            curr.map((currData) => {
-              const prevData = prev.find((s) => s.name === currData.name);
+            prev.map((prevData) => {
+              const currData = curr.find(
+                (existingData) => existingData.name === prevData.name
+              );
               return {
-                name: prevData?.name || currData.name,
-                damage: (prevData?.damage || 0) + currData.damage,
-                kills: (prevData?.kills || 0) + currData.kills,
-                assists: (prevData?.assists || 0) + currData.assists,
+                name: prevData.name,
+                damage: prevData.damage + (currData?.damage || 0),
+                kills: prevData.kills + (currData?.kills || 0),
+                assists: prevData.assists + (currData?.assists || 0),
                 survivalTime:
-                  (prevData?.survivalTime || 0) + currData.survivalTime,
+                  prevData.survivalTime + (currData?.survivalTime || 0),
               } as MatchResultTeamMemberOutputData;
             })
           )
