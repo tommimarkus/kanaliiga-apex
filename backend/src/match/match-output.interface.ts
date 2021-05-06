@@ -3,6 +3,7 @@ import { GroupOutputData } from '../group/group-output.interface';
 import { matchEntityToMatchResultsOutput } from '../util/util';
 import { MatchEntity } from './match.entity';
 import { MatchData } from './match-input.interface';
+import { MatchPlayerEntity } from '../match-player/match-player.entity';
 
 export class MatchResultTeamMemberOutputData {
   @ApiProperty({ example: 'SourOldGeezer' })
@@ -19,6 +20,15 @@ export class MatchResultTeamMemberOutputData {
 
   @ApiProperty({ example: 1392 })
   survivalTime: number;
+
+  constructor(entity: MatchPlayerEntity) {
+    if (entity) {
+      this.name = entity.name;
+      this.kills = entity.kills;
+      this.assists = entity.assists;
+      this.survivalTime = entity.survivalTime;
+    }
+  }
 }
 
 export class MatchResultOutputData {

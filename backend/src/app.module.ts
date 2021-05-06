@@ -14,6 +14,7 @@ import { SeasonModule } from './season/season.module';
 import { RolesGuard } from './auth/role.guard';
 import { ScoreModule } from './score/score.module';
 import { GroupModule } from './group/group.module';
+import { MatchPlayerModule } from './match-player/match-player.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { GroupModule } from './group/group.module';
     AuthModule,
     UserModule,
     ScoreModule,
+    MatchPlayerModule,
   ],
   providers: [
     {
