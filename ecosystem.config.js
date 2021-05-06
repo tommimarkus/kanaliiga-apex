@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "backend",
       cwd: "./backend",
-      script: "dist/src/main.js",
+      script: "dist/main.js",
       watch: true,
       env: {
         NODE_ENV: "development",
