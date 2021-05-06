@@ -23,7 +23,9 @@ export default registerAs(
       dropSchema: Boolean(JSON.parse(process.env.TYPEORM_DROP_SCHEMA)) || false,
       synchronize:
         Boolean(JSON.parse(process.env.TYPEORM_SYNCHRONIZE)) || false,
-      cli: { migrationsDir: 'migrations' },
+      cli: {
+        migrationsDir: process.env.TYPEORM_CLI_MIGRATIONSDIR || 'migration',
+      },
     };
 
     Logger.log(JSON.stringify(config, null, 2));

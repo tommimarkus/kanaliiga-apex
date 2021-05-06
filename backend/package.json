@@ -16,7 +16,7 @@
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest",
     "pretypeorm": "ts-node -r tsconfig-paths/register src/tools/write-ormconfig.ts",
-    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
+    "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli",
     "posttypeorm": "ts-node -r tsconfig-paths/register src/tools/remove-ormconfig.ts",
     "genba": "node ./node_modules/bcryptjs/bin/bcrypt"
   },

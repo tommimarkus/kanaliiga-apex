@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
 import { MulterModule } from '@nestjs/platform-express/multer';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import multer = require('multer');
@@ -18,7 +17,6 @@ import { GroupModule } from './group/group.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ envFilePath: '.env' }),
     TypeOrmModule.forRoot(typeormConfig()),
     MatchModule,
     GroupModule,
