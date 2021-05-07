@@ -6,6 +6,7 @@ import axios from 'axios';
 import BasePage from '../Base/BasePage';
 import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
 import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
+import { TournamentOutputOneData } from '../interface/tournament/tournament-output-one.interface';
 import MatchTable, { MatchTableData } from '../Table/MatchTable';
 import PlayerTable from '../Table/PlayerTable';
 import Utils from '../utils';
@@ -22,6 +23,33 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
   const stream = query.has('stream');
 
   const [data, setData] = useState<MatchOutputOneData | undefined>();
+
+  const [tournamentData, setTournamentData] = useState<TournamentOutputOneData | undefined>();
+  const groupsMatches = tournamentData?.groups?.flatMap((group) => group.matches);
+
+  const dataValidMatches = groupsMatches?.filter(
+    (match): match is MatchOutputOneData =>
+      match.results !== undefined &&
+      match.results !== null &&
+      match.results.length > 0
+  )?.sort(
+    (a: MatchOutputOneData, b: MatchOutputOneData) => {
+      if (a?.start && b?.start) {
+        return a.start > b.start ? 1 : -1;
+      }
+      return 0;
+    }
+  );
+
+  useEffect(() => {
+    if (data?.group?.tournament.id) {
+      const entrypoint = `${Utils.baseUrl}/tournament/${data?.group?.tournament.id}`;
+      axios.get<TournamentOutputOneData>(entrypoint).then((response) => {
+        setTournamentData(response.data);
+      });
+    }
+    return () => {};
+  }, [data?.group?.tournament.id]);
 
   useEffect(() => {
     if (id) {
@@ -141,6 +169,7 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
       value: playerData.assists,
     }));
 
+  const currentMatchIndex = dataValidMatches?.findIndex(value => String(value.id) === id);
   return (
     <BasePage
       subtitles={
@@ -150,7 +179,13 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
     >
       {dataMatch && (
         <div className="column-content">
-          <MatchTable columns={columnsMatch} data={dataMatch} />
+          <div className={`title-container ${stream ? 'stream' : ''}`}>
+            <h1>{data?.group?.tournament.name}</h1>
+            <p className="match-number">{currentMatchIndex !== undefined && `Match ${currentMatchIndex + 1}`}</p>
+          </div>
+          <div>
+            <MatchTable columns={columnsMatch} data={dataMatch} />
+          </div>
           {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
             <div className="player-tables">
               <PlayerTable
@@ -174,6 +209,20 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
                   Back to Tournament
                 </a>
               </div>
+              <div className="item">
+                  <div>Matches:</div>
+                  {dataValidMatches
+                    ?.map((match, index) => (
+                      <div className="list" key={`match${match?.id || index}`}>
+                        {match?.id && match?.id !== data.id && (
+                          <a href={`/match/${match.id}`}>{index + 1}</a>
+                        )}
+                        {match?.id && match?.id === data.id && (
+                          <span className="current-match">{index + 1}</span>
+                        )}
+                      </div>
+                    ))}
+                </div>
               <div className="item end">
                 <a href="/match/">Recent Matches</a>
               </div>

@@ -214,7 +214,12 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
-            <MatchTable columns={columnsMatch} data={dataMatches} />
+            <div className={`title-container ${stream ? 'stream' : ''}`}>
+              <h1>{data?.name}</h1>
+            </div>
+            <div>
+              <MatchTable columns={columnsMatch} data={dataMatches} />
+            </div>
             {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
               <div className="player-tables">
                 <PlayerTable
