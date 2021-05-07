@@ -3,3 +3,23 @@
   flex-direction: row;
   justify-content: space-between;
 }
+.title-container {
+  color: white;
+  &.stream {
+    color: black;
+  }
+}
+h1 {
+  font-size: 2rem;
+  margin: 0 0 1rem;
+}
+.match-number {
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+}
+.list a {
+  text-decoration: underline;
+}
+.current-match {
+  font-weight: 100;
+}

@@ -206,7 +206,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
-            <MatchTable columns={columnsMatch} data={dataMatches} />
+            <div className={`title-container ${stream ? 'stream' : ''}`}>
+              <h1>{data?.name}</h1>
+            </div>
+            <div>
+              <MatchTable columns={columnsMatch} data={dataMatches} />
+            </div>
             {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
               <div className="player-tables">
                 <PlayerTable
@@ -234,8 +239,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
                   <div>Matches:</div>
                   {dataValidMatches
                     ?.sort(
-                      (a: MatchOutputOneData, b: MatchOutputOneData) =>
-                        a.id - b.id
+                      (a: MatchOutputOneData, b: MatchOutputOneData) => {
+                        if (a?.start && b?.start) {
+                          return a.start > b.start ? 1 : -1;
+                        }
+                        return 0;
+                      }
                     )
                     ?.map((match, index) => (
                       <div className="list" key={`match${match?.id || index}`}>
