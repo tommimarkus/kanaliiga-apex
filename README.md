@@ -84,8 +84,12 @@ VALUES (
 
 ##### Generating Migrations
 
+> ...without losing all your precious development db data.
+
 ```bash
-npm run typeorm -- migration:generate -n <NAME FOR MIGRATION>
+npm run migration:createdb
+npm run migration:generate <NAME FOR MIGRATION>
+npm run migration:dropdb
 ```
 
 > Do this every time there is a change to entity source file
