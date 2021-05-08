@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { TournamentEntity } from '../tournament/tournament.entity';
+import { SeasonEntity } from '../season/season.entity';
 import { ScoreInputData } from './score-input.interface';
 
 @Entity('score')
@@ -70,13 +70,12 @@ export class ScoreEntity {
   @Column({ nullable: false })
   placement20: number;
 
-
   @OneToMany(
-    () => TournamentEntity,
-    tournament => tournament.season,
-    { nullable: false },
+    () => SeasonEntity,
+    season => season.score,
+    { nullable: true },
   )
-  tournaments: TournamentEntity[];
+  seasons?: SeasonEntity[];
 
   constructor(inputData?: ScoreInputData) {
     if (inputData) {
@@ -101,6 +100,7 @@ export class ScoreEntity {
       this.placement18 = inputData.placement18;
       this.placement19 = inputData.placement19;
       this.placement20 = inputData.placement20;
+      this.seasons = null;
     }
   }
 }

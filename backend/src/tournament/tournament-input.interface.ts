@@ -1,13 +1,7 @@
-import {
-  ApiProperty,
-  ApiPropertyOptional,
-  getSchemaPath,
-} from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { formatISO } from 'date-fns';
 import { IsISO8601 } from 'class-validator';
 import { TournamentEntity } from './tournament.entity';
-import { GroupInputData } from '../group/group-input.interface';
-import { ScoreInputData } from '../score/score-input.interface';
 
 export class TournamentData {
   @ApiPropertyOptional({
@@ -34,17 +28,6 @@ export class TournamentData {
 }
 
 export class TournamentInputData extends TournamentData {
-  @ApiProperty({ type: [GroupInputData] })
-  groups: GroupInputData[];
-
   @ApiProperty({ example: 1 })
-  season: number;
-
-  @ApiProperty({
-    anyOf: [
-      { type: 'number', example: 1 },
-      { $ref: getSchemaPath(ScoreInputData) },
-    ],
-  })
-  score: number | ScoreInputData;
+  season?: number;
 }

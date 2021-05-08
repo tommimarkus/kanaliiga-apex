@@ -8,7 +8,6 @@ import {
 import { TournamentEntity } from './tournament.entity';
 import { TournamentInputData } from './tournament-input.interface';
 import { TournamentRepository } from './tournament.repository';
-import { ScoreService } from '../score/score.service';
 import { SeasonService } from '../season/season.service';
 import { FindOneOptions } from 'typeorm';
 
@@ -16,9 +15,6 @@ import { FindOneOptions } from 'typeorm';
 export class TournamentService {
   constructor(
     private tournamentRepository: TournamentRepository,
-
-    @Inject(forwardRef(() => ScoreService))
-    private scoreService: ScoreService,
 
     @Inject(forwardRef(() => SeasonService))
     private seasonService: SeasonService,
@@ -32,7 +28,6 @@ export class TournamentService {
         groups: 'tournament.groups',
         groupsMatches: 'groups.matches',
         matchesPlayers: 'groupsMatches.matchPlayers',
-        score: 'tournament.score',
       },
     },
     where: { active: true },
@@ -65,16 +60,10 @@ export class TournamentService {
       const seasonEntity = await this.seasonService.findOneOrFail(
         tournamentInputData.season,
       );
-      const scoreEntity =
-        typeof tournamentInputData.score === 'number'
-          ? await this.scoreService.findOneOrFail(tournamentInputData.score)
-          : undefined;
-
       const tournamentEntity = new TournamentEntity(
         token,
         tournamentInputData,
         seasonEntity,
-        scoreEntity,
       );
       return await this.tournamentRepository.save(tournamentEntity);
     } catch (exception) {

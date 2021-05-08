@@ -22,7 +22,8 @@
     "migration:dropdb": "cross-env TYPEORM_DATABASE=generate_migration_kanaliiga_apex ts-node src/tools/drop-migration-db.ts",
     "premigration:generate": "cross-env TYPEORM_DATABASE=generate_migration_kanaliiga_apex npm run typeorm -- migration:run",
     "migration:generate": "cross-env TYPEORM_DATABASE=generate_migration_kanaliiga_apex npm run typeorm -- migration:generate -n",
-    "genba": "node ./node_modules/bcryptjs/bin/bcrypt"
+    "genba": "node ./node_modules/bcryptjs/bin/bcrypt",
+    "db:seed": "ts-node -T -r tsconfig-paths/register src/tools/seed-database.ts"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
@@ -57,6 +58,7 @@
   },
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/faker": "^5.5.4",
     "@types/passport-http": "^0.3.8",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
@@ -64,6 +66,7 @@
     "eslint": "^6.7.2",
     "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.19.1",
+    "faker": "^5.5.3",
     "pg-god": "^1.0.11",
     "prettier": "^1.18.2",
     "ts-loader": "^6.2.1",

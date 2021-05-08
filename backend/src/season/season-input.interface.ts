@@ -1,7 +1,12 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import {
+  ApiProperty,
+  ApiPropertyOptional,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { formatISO } from 'date-fns';
 import { IsISO8601 } from 'class-validator';
 import { SeasonEntity } from './season.entity';
+import { ScoreInputData } from '../score/score-input.interface';
 
 export class SeasonData {
   @ApiPropertyOptional({
@@ -37,4 +42,12 @@ export class SeasonData {
   }
 }
 
-export class SeasonInputData extends SeasonData {}
+export class SeasonInputData extends SeasonData {
+  @ApiProperty({
+    anyOf: [
+      { type: 'number', example: 1 },
+      { $ref: getSchemaPath(ScoreInputData) },
+    ],
+  })
+  score: number | ScoreInputData;
+}

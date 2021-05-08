@@ -31,9 +31,9 @@ export class MatchEntity {
   @OneToMany(
     () => MatchPlayerEntity,
     matchPlayer => matchPlayer.match,
-    { cascade: ['insert'] },
+    { nullable: true },
   )
-  matchPlayers: MatchPlayerEntity[];
+  matchPlayers?: MatchPlayerEntity[];
 
   @ManyToOne(
     () => GroupEntity,
@@ -50,20 +50,19 @@ export class MatchEntity {
   }) {
     if (params) {
       const { token, matchData, group, index } = params;
-      if (
-        typeof token === 'string' &&
-        matchData &&
-        group &&
-        typeof index === 'number'
-      ) {
+      if (typeof token === 'string' && typeof index === 'number') {
         this.token = token;
         this.index = index;
-        this.start =
-          matchData.match_start && new Date(matchData.match_start * 1000);
-        this.matchPlayers = matchData.player_results.map(
-          playerResult => new MatchPlayerEntity(playerResult),
-        );
-        this.group = group;
+        if (matchData) {
+          this.start =
+            matchData.match_start && new Date(matchData.match_start * 1000);
+          this.matchPlayers = matchData.player_results.map(
+            playerResult => new MatchPlayerEntity(playerResult),
+          );
+        }
+        if (group) {
+          this.group = group;
+        }
       }
     }
   }

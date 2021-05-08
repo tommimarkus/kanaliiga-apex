@@ -1,12 +1,24 @@
-import { BadRequestException, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  forwardRef,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { SeasonEntity } from './season.entity';
 import { SeasonInputData } from './season-input.interface';
 import { SeasonRepository } from './season.repository';
 import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { ScoreService } from '../score/score.service';
 
 @Injectable()
 export class SeasonService {
-  constructor(private seasonRepository: SeasonRepository) {}
+  constructor(
+    private seasonRepository: SeasonRepository,
+
+    @Inject(forwardRef(() => ScoreService))
+    private scoreService: ScoreService,
+  ) {}
 
   private readonly findOneOptions: FindOneOptions<SeasonEntity> = {
     join: {
@@ -16,6 +28,7 @@ export class SeasonService {
         tournamentsGroups: 'tournaments.groups',
         groupsMatches: 'tournamentsGroups.matches',
         matchesPlayers: 'groupsMatches.matchPlayers',
+        score: 'season.score',
       },
     },
     where: { active: true },
@@ -39,7 +52,11 @@ export class SeasonService {
     seasonInputData: SeasonInputData,
   ): Promise<SeasonEntity> | undefined {
     try {
-      const seasonEntity = new SeasonEntity(seasonInputData);
+      const scoreEntity =
+        typeof seasonInputData.score === 'number'
+          ? await this.scoreService.findOneOrFail(seasonInputData.score)
+          : undefined;
+      const seasonEntity = new SeasonEntity(seasonInputData, scoreEntity);
       return await this.seasonRepository.save(seasonEntity);
     } catch (exception) {
       const message = `${exception.name}: ${exception.message}`;

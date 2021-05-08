@@ -1,7 +1,7 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { TournamentOutputListData } from '../tournament/tournament-output.interface';
 import { ScoreEntity } from './score.entity';
 import { ScoreData } from './score-input.interface';
+import { SeasonOutputListData } from '../season/season-output.interface';
 
 export class ScoreOutputData extends ScoreData {
   @ApiProperty()
@@ -17,15 +17,15 @@ export class ScoreOutputData extends ScoreData {
 }
 
 export class ScoreOutputOneData extends ScoreOutputData {
-  @ApiPropertyOptional({ type: [TournamentOutputListData] })
-  tournaments?: TournamentOutputListData[];
+  @ApiPropertyOptional({ type: [SeasonOutputListData] })
+  seasons?: SeasonOutputListData[];
 
   constructor(entity?: ScoreEntity) {
     super(entity);
 
     if (entity) {
-      this.tournaments = entity.tournaments?.map(
-        tournamentEntity => new TournamentOutputListData(tournamentEntity),
+      this.seasons = entity.seasons?.map(
+        seasonEntity => new SeasonOutputListData(seasonEntity),
       );
     }
   }

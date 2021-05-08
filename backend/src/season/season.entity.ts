@@ -1,5 +1,7 @@
-import { Column, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Entity } from 'typeorm/decorator/entity/Entity';
+import { ScoreInputData } from '../score/score-input.interface';
+import { ScoreEntity } from '../score/score.entity';
 import { TournamentEntity } from '../tournament/tournament.entity';
 import { SeasonInputData } from './season-input.interface';
 
@@ -29,16 +31,32 @@ export class SeasonEntity {
   @OneToMany(
     () => TournamentEntity,
     tournament => tournament.season,
-    { nullable: false },
+    { nullable: true },
   )
-  tournaments: TournamentEntity[];
+  tournaments?: TournamentEntity[];
 
-  constructor(seasonInputData?: SeasonInputData) {
+  @ManyToOne(
+    () => ScoreEntity,
+    score => score.seasons,
+    { nullable: true },
+  )
+  score?: ScoreEntity;
+
+  constructor(seasonInputData?: SeasonInputData, scoreEntity?: ScoreEntity) {
     if (seasonInputData) {
       this.start = seasonInputData.start && new Date(seasonInputData.start);
       this.end = seasonInputData.end && new Date(seasonInputData.end);
       this.name = seasonInputData.name;
-      this.tournaments = [];
+      this.tournaments = null;
+      if (scoreEntity) {
+        this.score = scoreEntity;
+      } else {
+        if (seasonInputData.score instanceof ScoreInputData) {
+          this.score = new ScoreEntity(seasonInputData.score);
+        } else {
+          throw Error('Score data is missing');
+        }
+      }
     }
   }
 }

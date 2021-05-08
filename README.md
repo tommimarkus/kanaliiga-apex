@@ -80,6 +80,12 @@ VALUES (
 );
 ```
 
+### Seed database
+
+```bash
+npm run db:seed
+```
+
 #### Migrations
 
 ##### Generating Migrations

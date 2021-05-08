@@ -25,16 +25,16 @@ export class GroupEntity {
   @OneToMany(
     () => MatchEntity,
     match => match.group,
-    { cascade: ['insert'] },
+    { nullable: true },
   )
-  matches: MatchEntity[];
+  matches?: MatchEntity[];
 
   @ManyToOne(
     () => TournamentEntity,
     tournament => tournament.groups,
-    { nullable: false },
+    { nullable: true },
   )
-  tournament: TournamentEntity;
+  tournament?: TournamentEntity;
 
   constructor(groupInputData?: GroupInputData, tournament?: TournamentEntity) {
     if (groupInputData) {
