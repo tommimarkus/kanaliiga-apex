@@ -7,6 +7,9 @@ export class MatchPlayerEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Column({ nullable: false, default: true })
+  active: boolean;
+
   @Column()
   name: string;
 
