@@ -180,8 +180,7 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
       {dataMatch && (
         <div className="column-content">
           <div className={`title-container ${stream ? 'stream' : ''}`}>
-            <h1>{data?.group?.tournament.name}</h1>
-            <p className="match-number">{currentMatchIndex !== undefined && `Match ${currentMatchIndex + 1}`}</p>
+            <h1>{data?.group?.tournament.name}{currentMatchIndex !== undefined && `, Match ${currentMatchIndex + 1}`}</h1>
           </div>
           <div>
             <MatchTable columns={columnsMatch} data={dataMatch} />
