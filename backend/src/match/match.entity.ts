@@ -31,7 +31,7 @@ export class MatchEntity {
   @OneToMany(
     () => MatchPlayerEntity,
     matchPlayer => matchPlayer.match,
-    { nullable: true },
+    { cascade: ['insert', 'update'] },
   )
   matchPlayers?: MatchPlayerEntity[];
 
