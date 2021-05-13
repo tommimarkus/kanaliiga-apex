@@ -5,10 +5,10 @@ import axios from 'axios';
 
 import BasePage from '../Base/BasePage';
 import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
+import { MatchResultOutputData } from '../interface/match/match-result-output.interface';
 import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
 import { TournamentOutputOneData } from '../interface/tournament/tournament-output-one.interface';
-import MatchTable, { MatchTableData } from '../Table/MatchTable';
-import PlayerTable from '../Table/PlayerTable';
+import Table, { Column } from '../Table/Table';
 import Utils from '../utils';
 import './MatchPage.scss';
 
@@ -24,22 +24,26 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
 
   const [data, setData] = useState<MatchOutputOneData | undefined>();
 
-  const [tournamentData, setTournamentData] = useState<TournamentOutputOneData | undefined>();
-  const groupsMatches = tournamentData?.groups?.flatMap((group) => group.matches);
+  const [tournamentData, setTournamentData] = useState<
+    TournamentOutputOneData | undefined
+  >();
+  const groupsMatches = tournamentData?.groups?.flatMap(
+    (group) => group.matches
+  );
 
-  const dataValidMatches = groupsMatches?.filter(
-    (match): match is MatchOutputOneData =>
-      match.results !== undefined &&
-      match.results !== null &&
-      match.results.length > 0
-  )?.sort(
-    (a: MatchOutputOneData, b: MatchOutputOneData) => {
+  const dataValidMatches = groupsMatches
+    ?.filter(
+      (match): match is MatchOutputOneData =>
+        match.results !== undefined &&
+        match.results !== null &&
+        match.results.length > 0
+    )
+    ?.sort((a: MatchOutputOneData, b: MatchOutputOneData) => {
       if (a?.start && b?.start) {
         return a.start > b.start ? 1 : -1;
       }
       return 0;
-    }
-  );
+    });
 
   useEffect(() => {
     if (data?.group?.tournament.id) {
@@ -62,48 +66,102 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
     return () => {};
   }, [id]);
 
-  const columnsMatch = [
-    { title: '#', field: '' },
-    { title: 'Name', field: '' },
-    { title: 'Placement', field: '' },
-    { title: 'Kills', field: '' },
-    { title: 'Points', field: '' },
-    { title: 'Damage', field: '' },
+  type ColumnData = MatchResultOutputData & { order: number };
+
+  const columnsMatch: Array<Column<ColumnData, keyof ColumnData>> = [
+    {
+      key: 'order',
+      header: '#',
+    },
+    {
+      key: 'teamName',
+      header: 'Name',
+    },
+    {
+      key: 'teamPlacement',
+      header: 'Placement',
+    },
+    {
+      key: 'teamKills',
+      header: 'Kills',
+    },
+    {
+      key: 'teamPoints',
+      header: 'Points',
+    },
+    {
+      key: 'teamDamage',
+      header: 'Damage',
+    },
   ];
 
   const startMatch = data?.start;
   const dataMatch = data?.results
-    ?.map(
-      (result) =>
-        ({
-          id: result.teamNum,
-          name: result.teamName,
-          points: result.teamPoints,
-          kills: result.teamKills,
-          damage: result.teamDamage,
-          placement: result.teamPlacement,
-        } as MatchTableData)
-    )
-    .sort((a: MatchTableData, b: MatchTableData) => {
-      const points = b.points - a.points;
+    ?.sort((a: MatchResultOutputData, b: MatchResultOutputData) => {
+      const points = b.teamPoints - a.teamPoints;
       if (points === 0) {
-        const kills = b.kills - a.kills;
+        const kills = b.teamKills - a.teamKills;
         if (kills === 0) {
-          return b.damage - a.damage;
+          return b.teamDamage - a.teamDamage;
         }
         return kills;
       }
       return points;
-    });
+    })
+    ?.map((value, index) => ({ ...value, order: index + 1 } as ColumnData));
 
   const top = 5;
 
   const dataPlayer = data?.results?.flatMap((result) => result.teamMembers);
 
-  const columnsPlayerKills = [
-    { title: 'Name', field: '' },
-    { title: 'Kills', field: '' },
+  const columnsPlayerKills: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'kills',
+      header: 'Kills',
+    },
   ];
+
+  const columnsPlayerDamage: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'damage',
+      header: 'Damage',
+    },
+  ];
+
+  const columnsPlayerAssists: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'assists',
+      header: 'Assists',
+    },
+  ];
+
   const dataPlayerKills = dataPlayer
     ?.sort(
       (
@@ -117,16 +175,8 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         return kills;
       }
     )
-    .slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.kills,
-    }));
+    ?.slice(0, top);
 
-  const columnsPlayerDamage = [
-    { title: 'Name', field: '' },
-    { title: 'Damage', field: '' },
-  ];
   const dataPlayerDamage = dataPlayer
     ?.sort(
       (
@@ -140,16 +190,8 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         return damage;
       }
     )
-    ?.slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.damage,
-    }));
+    ?.slice(0, top);
 
-  const columnsPlayerAssists = [
-    { title: 'Name', field: '' },
-    { title: 'Assists', field: '' },
-  ];
   const dataPlayerAssists = dataPlayer
     ?.sort(
       (
@@ -163,13 +205,11 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         return assists;
       }
     )
-    ?.slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.assists,
-    }));
+    ?.slice(0, top);
 
-  const currentMatchIndex = dataValidMatches?.findIndex(value => String(value.id) === id);
+  const currentMatchIndex = dataValidMatches?.findIndex(
+    (value) => String(value.id) === id
+  );
   return (
     <BasePage
       subtitles={
@@ -180,25 +220,20 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
       {dataMatch && (
         <div className="column-content">
           <div className={`title-container ${stream ? 'stream' : ''}`}>
-            <h1>{data?.group?.tournament.name}{currentMatchIndex !== undefined && `, Match ${currentMatchIndex + 1}`}</h1>
+            <h1>
+              {data?.group?.tournament.name}
+              {currentMatchIndex !== undefined &&
+                `, Match ${currentMatchIndex + 1}`}
+            </h1>
           </div>
           <div>
-            <MatchTable columns={columnsMatch} data={dataMatch} />
+            <Table columns={columnsMatch} data={dataMatch} />
           </div>
           {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
             <div className="player-tables">
-              <PlayerTable
-                columns={columnsPlayerKills}
-                data={dataPlayerKills}
-              />
-              <PlayerTable
-                columns={columnsPlayerDamage}
-                data={dataPlayerDamage}
-              />
-              <PlayerTable
-                columns={columnsPlayerAssists}
-                data={dataPlayerAssists}
-              />
+              <Table columns={columnsPlayerKills} data={dataPlayerKills} />
+              <Table columns={columnsPlayerDamage} data={dataPlayerDamage} />
+              <Table columns={columnsPlayerAssists} data={dataPlayerAssists} />
             </div>
           )}
           {stream !== true && data?.group?.tournament?.id && (
@@ -209,19 +244,18 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
                 </a>
               </div>
               <div className="item">
-                  <div>Matches:</div>
-                  {dataValidMatches
-                    ?.map((match, index) => (
-                      <div className="list" key={`match${match?.id || index}`}>
-                        {match?.id && match?.id !== data.id && (
-                          <a href={`/match/${match.id}`}>{index + 1}</a>
-                        )}
-                        {match?.id && match?.id === data.id && (
-                          <span className="current-match">{index + 1}</span>
-                        )}
-                      </div>
-                    ))}
-                </div>
+                <div>Matches:</div>
+                {dataValidMatches?.map((match, index) => (
+                  <div className="list" key={`match${match?.id || index}`}>
+                    {match?.id && match?.id !== data.id && (
+                      <a href={`/match/${match.id}`}>{index + 1}</a>
+                    )}
+                    {match?.id && match?.id === data.id && (
+                      <span className="current-match">{index + 1}</span>
+                    )}
+                  </div>
+                ))}
+              </div>
               <div className="item end">
                 <a href="/match/">Recent Matches</a>
               </div>

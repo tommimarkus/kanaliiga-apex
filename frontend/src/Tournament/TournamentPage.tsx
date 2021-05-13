@@ -6,10 +6,10 @@ import axios from 'axios';
 import './TournamentPage.scss';
 import BasePage from '../Base/BasePage';
 import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
+import { MatchResultOutputData } from '../interface/match/match-result-output.interface';
 import { MatchResultTeamMemberOutputData } from '../interface/match/match-result-team-member-output.interface';
 import { TournamentOutputOneData } from '../interface/tournament/tournament-output-one.interface';
-import MatchTable, { MatchTableData } from '../Table/MatchTable';
-import PlayerTable from '../Table/PlayerTable';
+import Table, { Column } from '../Table/Table';
 import Utils from '../utils';
 
 export interface TournamentPageProps extends RouteComponentProps {
@@ -36,12 +36,29 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
     return () => {};
   }, [id]);
 
-  const columnsMatch = [
-    { title: '#', field: '' },
-    { title: 'Name', field: '' },
-    { title: 'Kills', field: '' },
-    { title: 'Points', field: '' },
-    { title: 'Damage', field: '' },
+  type ColumnData = MatchResultOutputData & { order: number };
+
+  const columnsMatch: Array<Column<ColumnData, keyof ColumnData>> = [
+    {
+      key: 'order',
+      header: '#',
+    },
+    {
+      key: 'teamName',
+      header: 'Name',
+    },
+    {
+      key: 'teamKills',
+      header: 'Kills',
+    },
+    {
+      key: 'teamPoints',
+      header: 'Points',
+    },
+    {
+      key: 'teamDamage',
+      header: 'Damage',
+    },
   ];
 
   const name = data?.name;
@@ -58,43 +75,33 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   const dataMatches =
     dataValidMatches && dataValidMatches.length > 0
       ? dataValidMatches
-          .map((match) =>
-            match.results?.map(
-              (result) =>
-                ({
-                  id: result.teamNum,
-                  name: result.teamName,
-                  points: result.teamPoints,
-                  kills: result.teamKills,
-                  damage: result.teamDamage,
-                } as MatchTableData)
-            )
-          )
-          .reduce((prev: MatchTableData[], curr) =>
+          .map((value) => value.results)
+          .reduce((prev: MatchResultOutputData[], curr) =>
             prev.map((prevData) => {
               const currData = curr.find(
-                (existingData) => existingData.id === prevData.id
+                (existingData) => existingData.teamNum === prevData.teamNum
               );
               return {
-                id: prevData.id,
-                name: prevData.name,
-                damage: prevData.damage + (currData?.damage || 0),
-                kills: prevData.kills + (currData?.kills || 0),
-                points: prevData.points + (currData?.points || 0),
-              } as MatchTableData;
+                teamNum: prevData.teamNum,
+                teamName: prevData.teamName,
+                teamDamage: prevData.teamDamage + (currData?.teamDamage || 0),
+                teamKills: prevData.teamKills + (currData?.teamKills || 0),
+                teamPoints: prevData.teamPoints + (currData?.teamPoints || 0),
+              } as MatchResultOutputData;
             })
           )
-          .sort((a: MatchTableData, b: MatchTableData) => {
-            const points = b.points - a.points;
+          .sort((a: MatchResultOutputData, b: MatchResultOutputData) => {
+            const points = b.teamPoints - a.teamPoints;
             if (points === 0) {
-              const kills = b.kills - a.kills;
+              const kills = b.teamKills - a.teamKills;
               if (kills === 0) {
-                return b.damage - a.damage;
+                return b.teamDamage - a.teamDamage;
               }
               return kills;
             }
             return points;
           })
+          .map((value, index) => ({ ...value, order: index + 1 } as ColumnData))
       : undefined;
 
   const top = 5;
@@ -128,10 +135,54 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
           )
       : undefined;
 
-  const columnsPlayerKills = [
-    { title: 'Name', field: '' },
-    { title: 'Kills', field: '' },
+  const columnsPlayerKills: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'kills',
+      header: 'Kills',
+    },
   ];
+
+  const columnsPlayerDamage: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'damage',
+      header: 'Damage',
+    },
+  ];
+
+  const columnsPlayerAssists: Array<
+    Column<
+      MatchResultTeamMemberOutputData,
+      keyof MatchResultTeamMemberOutputData
+    >
+  > = [
+    {
+      key: 'name',
+      header: 'Name',
+    },
+    {
+      key: 'assists',
+      header: 'Assists',
+    },
+  ];
+
   const dataPlayerKills = dataPlayer
     ?.sort(
       (
@@ -145,16 +196,8 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
         return kills;
       }
     )
-    .slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.kills,
-    }));
+    ?.slice(0, top);
 
-  const columnsPlayerDamage = [
-    { title: 'Name', field: '' },
-    { title: 'Damage', field: '' },
-  ];
   const dataPlayerDamage = dataPlayer
     ?.sort(
       (
@@ -168,16 +211,8 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
         return damage;
       }
     )
-    ?.slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.damage,
-    }));
+    ?.slice(0, top);
 
-  const columnsPlayerAssists = [
-    { title: 'Name', field: '' },
-    { title: 'Assists', field: '' },
-  ];
   const dataPlayerAssists = dataPlayer
     ?.sort(
       (
@@ -191,11 +226,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
         return assists;
       }
     )
-    ?.slice(0, top)
-    ?.map((playerData) => ({
-      name: playerData.name,
-      value: playerData.assists,
-    }));
+    ?.slice(0, top);
 
   const subtitles = [name, start].filter(
     (v): v is string => typeof v === 'string'
@@ -210,19 +241,13 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
               <h1>{data?.name}</h1>
             </div>
             <div>
-              <MatchTable columns={columnsMatch} data={dataMatches} />
+              <Table columns={columnsMatch} data={dataMatches} />
             </div>
             {dataPlayerKills && dataPlayerDamage && dataPlayerAssists && (
               <div className="player-tables">
-                <PlayerTable
-                  columns={columnsPlayerKills}
-                  data={dataPlayerKills}
-                />
-                <PlayerTable
-                  columns={columnsPlayerDamage}
-                  data={dataPlayerDamage}
-                />
-                <PlayerTable
+                <Table columns={columnsPlayerKills} data={dataPlayerKills} />
+                <Table columns={columnsPlayerDamage} data={dataPlayerDamage} />
+                <Table
                   columns={columnsPlayerAssists}
                   data={dataPlayerAssists}
                 />
@@ -238,14 +263,12 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
                 <div className="item">
                   <div>Matches:</div>
                   {dataValidMatches
-                    ?.sort(
-                      (a: MatchOutputOneData, b: MatchOutputOneData) => {
-                        if (a?.start && b?.start) {
-                          return a.start > b.start ? 1 : -1;
-                        }
-                        return 0;
+                    ?.sort((a: MatchOutputOneData, b: MatchOutputOneData) => {
+                      if (a?.start && b?.start) {
+                        return a.start > b.start ? 1 : -1;
                       }
-                    )
+                      return 0;
+                    })
                     ?.map((match, index) => (
                       <div className="list" key={`match${match?.id || index}`}>
                         {match?.id && (
