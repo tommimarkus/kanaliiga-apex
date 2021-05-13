@@ -23,7 +23,8 @@
     "premigration:generate": "cross-env TYPEORM_DATABASE=generate_migration_kanaliiga_apex npm run typeorm -- migration:run",
     "migration:generate": "cross-env TYPEORM_DATABASE=generate_migration_kanaliiga_apex npm run typeorm -- migration:generate -n",
     "genba": "node ./node_modules/bcryptjs/bin/bcrypt",
-    "db:seed": "ts-node -T -r tsconfig-paths/register src/tools/seed-database.ts"
+    "db:seed": "ts-node -T -r tsconfig-paths/register src/tools/seed-database.ts",
+    "db:clear:match": "ts-node -T -r tsconfig-paths/register src/tools/clear-database-match.ts"
   },
   "dependencies": {
     "@nestjs/common": "^7.6.15",
