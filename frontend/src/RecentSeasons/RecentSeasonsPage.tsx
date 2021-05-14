@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import './RecentSeasonsPage.scss';
 import BasePage from '../Base/BasePage';
@@ -40,12 +41,14 @@ const RecentSeasonsPage = (
     )
     .map((recentSeasonsData) => {
       let dateString = '';
-      if (recentSeasonsData.start) {
-        dateString = Utils.localDateString(recentSeasonsData.start);
-        if (recentSeasonsData.end) {
-          dateString = `${dateString} to ${Utils.localDateString(
-            recentSeasonsData.end
-          )}`;
+      const start = recentSeasonsData.start &&
+        DateTime.fromISO(recentSeasonsData.start).toLocaleString({ month: '2-digit', day: '2-digit' });
+      const end = recentSeasonsData.end &&
+        DateTime.fromISO(recentSeasonsData.end).toLocaleString();
+      if (start) {
+        dateString = start;
+        if (end && start !== end) {
+          dateString = `${start} to ${end}`;
         }
       }
       return {

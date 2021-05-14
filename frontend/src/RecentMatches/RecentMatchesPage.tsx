@@ -2,8 +2,10 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import './RecentMatchesPage.scss';
+
 import BasePage from '../Base/BasePage';
 import { MatchOutputListData } from '../interface/match/match-output-list.interface';
 import LinkTable, { LinkTableData } from '../Table/LinkTable';
@@ -38,7 +40,11 @@ const RecentMatchesPage = (
       ({
         name:
           recentMatchesData.start &&
-          Utils.localDateTimeString(recentMatchesData.start),
+          `${DateTime
+            .fromISO(recentMatchesData.start)
+            .toLocaleString()}, ${DateTime
+            .fromISO(recentMatchesData.start)
+            .toLocaleString(DateTime.TIME_24_SIMPLE)}`,
         value: recentMatchesData.group?.tournament?.name || 'Unnamed',
         link: `${entryPoint}/${recentMatchesData.id}`,
       } as LinkTableData)

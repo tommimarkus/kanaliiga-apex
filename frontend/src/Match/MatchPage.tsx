@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import BasePage from '../Base/BasePage';
 import { MatchOutputOneData } from '../interface/match/match-output-one.interface';
@@ -37,13 +38,11 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         match.results !== undefined &&
         match.results !== null &&
         match.results.length > 0
-    )
-    ?.sort((a: MatchOutputOneData, b: MatchOutputOneData) => {
-      if (a?.start && b?.start) {
-        return a.start > b.start ? 1 : -1;
-      }
-      return 0;
-    });
+    )?.sort(
+      (a: MatchOutputOneData, b: MatchOutputOneData) => (
+        Utils.sortDateStrings(a.start || '', b.start || '')
+      )
+    );
 
   useEffect(() => {
     if (data?.group?.tournament.id) {
@@ -207,15 +206,15 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
     )
     ?.slice(0, top);
 
-  const currentMatchIndex = dataValidMatches?.findIndex(
-    (value) => String(value.id) === id
-  );
+  const currentMatchIndex = dataValidMatches?.findIndex(value => String(value.id) === id);
+  const timeSubtitle = startMatch ? `Started ${DateTime.fromISO(startMatch).toLocaleString(DateTime.TIME_24_SIMPLE)}` : '';
   return (
     <BasePage
-      subtitles={
-        startMatch ? [Utils.localDateTimeString(startMatch)] : undefined
-      }
-      title="Match Started"
+      subtitles={[
+        tournamentData?.name || '',
+        timeSubtitle,
+      ]}
+      title={currentMatchIndex !== undefined && currentMatchIndex >= 0 ? `Match ${currentMatchIndex + 1}` : 'Match'}
     >
       {dataMatch && (
         <div className="column-content">

@@ -3,9 +3,12 @@ import { render } from 'react-dom';
 
 import './index.scss';
 import axios from 'axios';
+import { Settings } from 'luxon';
 
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+
+Settings.defaultLocale = 'en-GB';
 
 render(
   <StrictMode>
