@@ -1,5 +1,4 @@
-import { isISO8601 } from 'class-validator';
-import { compareAsc } from 'date-fns';
+import { DateTime } from 'luxon';
 
 export default class Utils {
   static baseUrl = `${process.env.REACT_APP_API_SCHEME || 'http'}://${
@@ -13,35 +12,14 @@ export default class Utils {
   static videoUrl = process.env.REACT_APP_VIDEO_HOST || '';
 
   static sortDateStrings(a: string, b: string): number {
-    if (isISO8601(a, { strict: true }) && !isISO8601(b, { strict: true })) {
+    if (a === b || (a && !b)) {
       return 1;
     }
-    if (!isISO8601(a, { strict: true }) && isISO8601(b, { strict: true })) {
+    if (!a && b) {
       return -1;
     }
-    return compareAsc(new Date(a), new Date(b));
-  }
-
-  static localDateTimeString(dateTimeString: string): string {
-    if (!isISO8601(dateTimeString)) {
-      return dateTimeString;
-    }
-    return `${this.localDateString(dateTimeString)} ${new Date(
-      dateTimeString
-    ).toLocaleTimeString(Intl.DateTimeFormat().resolvedOptions().locale, {
-      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    })}`;
-  }
-
-  static localDateString(dateString: string): string {
-    if (!isISO8601(dateString)) {
-      return dateString;
-    }
-    return new Date(dateString).toLocaleDateString(
-      Intl.DateTimeFormat().resolvedOptions().locale,
-      {
-        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      }
-    );
+    const aDate = DateTime.fromISO(a);
+    const bDate = DateTime.fromISO(b);
+    return aDate > bDate ? 1 : -1;
   }
 }

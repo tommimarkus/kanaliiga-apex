@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import './RecentTournamentsPage.scss';
 import BasePage from '../Base/BasePage';
@@ -42,7 +43,11 @@ const RecentTournamentsPage = (
         ({
           name:
             recentTournamentsData.start &&
-            Utils.localDateTimeString(recentTournamentsData.start),
+            `${DateTime
+              .fromISO(recentTournamentsData.start)
+              .toLocaleString()}, ${DateTime
+              .fromISO(recentTournamentsData.start)
+              .toLocaleString(DateTime.TIME_24_SIMPLE)}`,
           value: recentTournamentsData.name || 'Unnamed',
           link: `${entryPoint}/${recentTournamentsData.id}`,
         } as LinkTableData)

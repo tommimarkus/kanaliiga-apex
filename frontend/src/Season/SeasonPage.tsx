@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import './SeasonPage.scss';
 import BasePage from '../Base/BasePage';
@@ -63,8 +64,8 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   ];
 
   const name = data?.name;
-  const start = data && data.start && Utils.localDateTimeString(data.start);
-  const end = data && data.end && Utils.localDateTimeString(data.end);
+  const start = data?.start && DateTime.fromISO(data.start).toLocaleString({ month: '2-digit', day: '2-digit' }) || '';
+  const end = data?.end && DateTime.fromISO(data.end).toLocaleString() || '';
 
   const dataValidMatches = data?.tournaments
     ?.flatMap((tournament) =>
@@ -236,7 +237,10 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
     )
     ?.slice(0, top);
 
-  const subtitles = [name, start, end].filter(
+  const subtitles = [
+    name,
+    `${start}${end && ` - ${end}` || ''}`,
+  ].filter(
     (v): v is string => typeof v === 'string'
   );
 
@@ -245,9 +249,6 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
-            <div className={`title-container ${stream ? 'stream' : ''}`}>
-              <h1>{data?.name}</h1>
-            </div>
             <div>
               <Table columns={columnsMatch} data={dataMatches} />
             </div>
@@ -270,7 +271,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
                       (
                         a: TournamentOutputOneData,
                         b: TournamentOutputOneData
-                      ) => a.id - b.id
+                      ) => Utils.sortDateStrings(a.start || '', b.start || '')
                     )
                     ?.map((tournament, index) => (
                       <div

@@ -2,6 +2,7 @@ import React, { ReactElement, useEffect, useState } from 'react';
 
 import { RouteComponentProps, useLocation } from '@reach/router';
 import axios from 'axios';
+import { DateTime } from 'luxon';
 
 import './TournamentPage.scss';
 import BasePage from '../Base/BasePage';
@@ -62,7 +63,7 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
   ];
 
   const name = data?.name;
-  const start = data && data.start && Utils.localDateTimeString(data.start);
+  const start = data?.start && DateTime.fromISO(data.start).toLocaleString() || '';
 
   const groupsMatches = data?.groups?.flatMap((group) => group.matches);
 
@@ -228,7 +229,10 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
     )
     ?.slice(0, top);
 
-  const subtitles = [name, start].filter(
+  const subtitles = [
+    name,
+    start,
+  ].filter(
     (v): v is string => typeof v === 'string'
   );
 
@@ -237,9 +241,6 @@ const TournamentPage = (props: TournamentPageProps): ReactElement => {
       {dataMatches && (
         <div className="right-column">
           <div className="column-content">
-            <div className={`title-container ${stream ? 'stream' : ''}`}>
-              <h1>{data?.name}</h1>
-            </div>
             <div>
               <Table columns={columnsMatch} data={dataMatches} />
             </div>
