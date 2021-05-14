@@ -83,8 +83,8 @@ class SeedDatabaseService {
     const ids = this.countAsSequence(count);
 
     const seasons = ids.map(id => {
-      const start = Faker.date.past(5);
-      const end = Faker.date.recent(30, start);
+      const end = Faker.date.past(5);
+      const start = Faker.date.recent(30, end);
       const season: SeasonEntity = {
         id,
         active: this.randomActive(),
