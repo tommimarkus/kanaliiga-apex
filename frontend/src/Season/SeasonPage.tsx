@@ -271,7 +271,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
                       (
                         a: TournamentOutputOneData,
                         b: TournamentOutputOneData
-                      ) => Utils.sortDateStrings(a.start || '', b.start || '')
+                      ) => Utils.sortDateStrings(a.start, b.start)
                     )
                     ?.map((tournament, index) => (
                       <div

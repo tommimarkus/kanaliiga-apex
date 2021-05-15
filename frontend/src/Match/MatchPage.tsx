@@ -25,12 +25,8 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
 
   const [data, setData] = useState<MatchOutputOneData | undefined>();
 
-  const [tournamentData, setTournamentData] = useState<
-    TournamentOutputOneData | undefined
-  >();
-  const groupsMatches = tournamentData?.groups?.flatMap(
-    (group) => group.matches
-  );
+  const [tournamentData, setTournamentData] = useState<TournamentOutputOneData | undefined>();
+  const groupsMatches = tournamentData?.groups?.flatMap((group) => group.matches);
 
   const dataValidMatches = groupsMatches
     ?.filter(
@@ -38,11 +34,9 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         match.results !== undefined &&
         match.results !== null &&
         match.results.length > 0
-    )?.sort(
-      (a: MatchOutputOneData, b: MatchOutputOneData) => (
-        Utils.sortDateStrings(a.start || '', b.start || '')
-      )
-    );
+    )?.sort((a: MatchOutputOneData, b: MatchOutputOneData) => (
+      Utils.sortDateStrings(a.start, b.start)
+    ));
 
   useEffect(() => {
     if (data?.group?.tournament.id) {
