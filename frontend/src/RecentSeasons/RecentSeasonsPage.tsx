@@ -37,7 +37,7 @@ const RecentSeasonsPage = (
   const dataRecentSeasons = data
     ?.filter((season) => season.active)
     ?.sort((a: SeasonOutputListData, b: SeasonOutputListData) =>
-      Utils.sortDateStrings(b.end || '', a.end || '')
+      Utils.sortDateStrings(b.end, a.end)
     )
     .map((recentSeasonsData) => {
       let dateString = '';

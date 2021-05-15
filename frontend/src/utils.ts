@@ -1,4 +1,4 @@
-import { DateTime } from 'luxon';
+import { DateTime, DateTimeFormatOptions } from 'luxon';
 
 export default class Utils {
   static baseUrl = `${process.env.REACT_APP_API_SCHEME || 'http'}://${
@@ -11,15 +11,17 @@ export default class Utils {
 
   static videoUrl = process.env.REACT_APP_VIDEO_HOST || '';
 
-  static sortDateStrings(a: string, b: string): number {
-    if (a === b || (a && !b)) {
+  static sortDateStrings(a = '', b = ''): number {
+    if (a === b) {
       return 1;
-    }
-    if (!a && b) {
-      return -1;
     }
     const aDate = DateTime.fromISO(a);
     const bDate = DateTime.fromISO(b);
     return aDate > bDate ? 1 : -1;
+  }
+
+  static dateAndTimeFormat: DateTimeFormatOptions = {
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hourCycle: 'h24',
   }
 }

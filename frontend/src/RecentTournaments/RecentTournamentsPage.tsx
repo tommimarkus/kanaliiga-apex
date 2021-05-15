@@ -36,18 +36,16 @@ const RecentTournamentsPage = (
 
   const dataRecentTournaments = data
     ?.sort((a: TournamentOutputListData, b: TournamentOutputListData) =>
-      Utils.sortDateStrings(b.start || '', a.start || '')
+      Utils.sortDateStrings(b.start, a.start)
     )
     .map(
       (recentTournamentsData) =>
         ({
           name:
             recentTournamentsData.start &&
-            `${DateTime
+            DateTime
               .fromISO(recentTournamentsData.start)
-              .toLocaleString()}, ${DateTime
-              .fromISO(recentTournamentsData.start)
-              .toLocaleString(DateTime.TIME_24_SIMPLE)}`,
+              .toLocaleString(Utils.dateAndTimeFormat),
           value: recentTournamentsData.name || 'Unnamed',
           link: `${entryPoint}/${recentTournamentsData.id}`,
         } as LinkTableData)

@@ -40,11 +40,9 @@ const RecentMatchesPage = (
       ({
         name:
           recentMatchesData.start &&
-          `${DateTime
+          DateTime
             .fromISO(recentMatchesData.start)
-            .toLocaleString()}, ${DateTime
-            .fromISO(recentMatchesData.start)
-            .toLocaleString(DateTime.TIME_24_SIMPLE)}`,
+            .toLocaleString(Utils.dateAndTimeFormat),
         value: recentMatchesData.group?.tournament?.name || 'Unnamed',
         link: `${entryPoint}/${recentMatchesData.id}`,
       } as LinkTableData)
