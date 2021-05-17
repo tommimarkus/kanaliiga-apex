@@ -28,7 +28,7 @@ export class SeasonOutputOneData extends SeasonOutputData {
     super(entity);
 
     if (entity) {
-      this.tournaments = entity.tournaments.map(
+      this.tournaments = entity.tournaments?.map(
         tournamentEntity => new TournamentOutputOneData(tournamentEntity),
       );
     }

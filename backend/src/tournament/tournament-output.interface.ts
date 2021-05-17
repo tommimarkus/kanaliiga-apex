@@ -38,7 +38,7 @@ export class TournamentOutputOneData extends TournamentOutputData {
     super(entity);
 
     if (entity) {
-      this.groups = entity.groups.map(group => new GroupOutputOneData(group));
+      this.groups = entity.groups?.map(group => new GroupOutputOneData(group));
     }
   }
 }
