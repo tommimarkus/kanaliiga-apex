@@ -38,7 +38,9 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
     return () => {};
   }, [id]);
 
-  type ColumnData = MatchResultOutputData & { order: number };
+  type ColumnData = Omit<MatchResultOutputData, 'teamMembers'> & {
+    order: number;
+  };
 
   const columnsMatch: Array<Column<ColumnData, keyof ColumnData>> = [
     {
@@ -64,8 +66,14 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
   ];
 
   const name = data?.name;
-  const start = data?.start && DateTime.fromISO(data.start).toLocaleString({ month: '2-digit', day: '2-digit' }) || '';
-  const end = data?.end && DateTime.fromISO(data.end).toLocaleString() || '';
+  const start =
+    (data?.start &&
+      DateTime.fromISO(data.start).toLocaleString({
+        month: '2-digit',
+        day: '2-digit',
+      })) ||
+    '';
+  const end = (data?.end && DateTime.fromISO(data.end).toLocaleString()) || '';
 
   const dataValidMatches = data?.tournaments
     ?.flatMap((tournament) =>
@@ -77,37 +85,55 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
         match.results !== null &&
         match.results.length > 0
     );
-  const dataMatches =
-    dataValidMatches && dataValidMatches.length > 0
-      ? dataValidMatches
-          .map((value) => value.results)
-          .reduce((prev: MatchResultOutputData[], curr) =>
-            prev.map((prevData) => {
-              const currData = curr.find(
-                (existingData) => existingData.teamNum === prevData.teamNum
-              );
-              return {
-                teamNum: prevData.teamNum,
-                teamName: prevData.teamName,
-                teamDamage: prevData.teamDamage + (currData?.teamDamage || 0),
-                teamKills: prevData.teamKills + (currData?.teamKills || 0),
-                teamPoints: prevData.teamPoints + (currData?.teamPoints || 0),
-              } as MatchResultOutputData;
-            })
-          )
-          .sort((a: MatchResultOutputData, b: MatchResultOutputData) => {
-            const points = b.teamPoints - a.teamPoints;
-            if (points === 0) {
-              const kills = b.teamKills - a.teamKills;
-              if (kills === 0) {
-                return b.teamDamage - a.teamDamage;
-              }
-              return kills;
-            }
-            return points;
-          })
-          .map((value, index) => ({ ...value, order: index + 1 } as ColumnData))
-      : undefined;
+
+  const matchResults: MatchResultOutputData[] = [];
+
+  if (dataValidMatches && dataValidMatches.length > 0) {
+    dataValidMatches.forEach((value) => {
+      value.results.forEach((currData) => {
+        const prevDataIndex = matchResults.findIndex(
+          (existingResult) => existingResult.teamNum === currData.teamNum
+        );
+        if (prevDataIndex === -1) {
+          matchResults.push({ ...currData });
+        } else {
+          const prevData = matchResults[prevDataIndex];
+          prevData.teamDamage += currData.teamDamage;
+          prevData.teamKills += currData.teamKills;
+          prevData.teamPoints += currData.teamPoints;
+          prevData.teamPlacement = Math.min(
+            prevData.teamPlacement,
+            currData.teamPlacement
+          );
+        }
+      });
+    });
+  }
+
+  matchResults.sort((a: MatchResultOutputData, b: MatchResultOutputData) => {
+    const points = b.teamPoints - a.teamPoints;
+    if (points === 0) {
+      const kills = b.teamKills - a.teamKills;
+      if (kills === 0) {
+        return b.teamDamage - a.teamDamage;
+      }
+      return kills;
+    }
+    return points;
+  });
+
+  const dataMatches = matchResults.map((value, index) => {
+    const columnData: ColumnData = {
+      teamDamage: value.teamDamage,
+      teamKills: value.teamKills,
+      teamName: value.teamName,
+      teamNum: value.teamNum,
+      teamPlacement: value.teamPlacement,
+      teamPoints: value.teamPoints,
+      order: index + 1,
+    };
+    return columnData;
+  });
 
   const top = 5;
 
@@ -237,10 +263,7 @@ const SeasonPage = (props: SeasonPageProps): ReactElement => {
     )
     ?.slice(0, top);
 
-  const subtitles = [
-    name,
-    `${start}${end && ` - ${end}` || ''}`,
-  ].filter(
+  const subtitles = [name, `${start}${(end && ` - ${end}`) || ''}`].filter(
     (v): v is string => typeof v === 'string'
   );
 
