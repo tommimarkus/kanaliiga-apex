@@ -1,5 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
+import { SelectQueryBuilder } from 'typeorm';
 import { MatchResultTeamMemberOutputData } from '../match/match-output.interface';
+import { MatchPlayerEntity } from './match-player.entity';
 import { MatchPlayerRepository } from './match-player.repository';
 
 @Injectable()
@@ -30,5 +32,19 @@ export class MatchPlayerService {
       };
       return outputData;
     });
+  }
+
+  resultsQuery(id: number): SelectQueryBuilder<MatchPlayerEntity> {
+    return this.matchPlayerRepository
+      .createQueryBuilder('player')
+      .select('COALESCE(SUM(player.kills), 0)', 'total_kills')
+      .addSelect('COALESCE(SUM(player.damage), 0)', 'total_damage')
+      .addSelect('COALESCE(SUM(player.assists), 0)', 'total_assists')
+      .addSelect('COALESCE(MIN(player.teamPlacement), 20)', 'best_placement')
+      .addSelect('player."teamNum"', 'team_num')
+      .addSelect('player."matchId"', 'match_id')
+      .where('player."matchId" = :id', { id })
+      .groupBy('team_num')
+      .addGroupBy('match_id');
   }
 }

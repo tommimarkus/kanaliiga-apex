@@ -13,9 +13,17 @@ export class MatchData {
   @IsISO8601({ strict: true })
   start?: string;
 
+  @ApiPropertyOptional({ nullable: true, example: false })
+  aimAssistAllowed?: boolean;
+
+  @ApiPropertyOptional({ nullable: true, example: 'mp_rr_desertlands_mu3' })
+  mapName?: string;
+
   constructor(entity?: MatchEntity) {
     if (entity) {
       this.start = entity.start ? formatISO(entity.start) : undefined;
+      this.aimAssistAllowed = entity.aimAssistAllowed;
+      this.mapName = entity.mapName;
     }
   }
 }

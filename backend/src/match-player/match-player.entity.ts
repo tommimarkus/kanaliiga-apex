@@ -34,6 +34,27 @@ export class MatchPlayerEntity {
   @Column()
   teamPlacement: number;
 
+  @Column()
+  hits: number;
+
+  @Column()
+  characterName: string;
+
+  @Column()
+  revivesGiven: number;
+
+  @Column()
+  knockdowns: number;
+
+  @Column()
+  respawnsGiven: number;
+
+  @Column()
+  headshots: number;
+
+  @Column()
+  shots: number;
+
   @ManyToOne(
     () => MatchEntity,
     match => match.matchPlayers,
@@ -50,6 +71,13 @@ export class MatchPlayerEntity {
       this.teamName = playerResult.teamName;
       this.teamNum = playerResult.teamNum;
       this.teamPlacement = playerResult.teamPlacement;
+      this.hits = playerResult.hits;
+      this.characterName = playerResult.characterName;
+      this.revivesGiven = playerResult.revivesGiven;
+      this.knockdowns = playerResult.knockdowns;
+      this.respawnsGiven = playerResult.respawnsGiven;
+      this.headshots = playerResult.headshots;
+      this.shots = playerResult.shots;
     }
   }
 }

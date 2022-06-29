@@ -208,6 +208,19 @@ class SeedDatabaseService {
       return prePlayers.map((prePlayer, index) => {
         const id = (match.id - 1) * count + (index + 1);
         const damage = Faker.datatype.number(Faker.datatype.number(6) * 400);
+        const shots = Faker.datatype.number(Faker.datatype.number(15) * 10);
+        const hits = Faker.datatype.number(shots);
+        const characterNames = [
+          'valkyrie',
+          'lifeline',
+          'bangalore',
+          'gibraltar',
+          'revenant',
+          'octane',
+          'mirage',
+          'wraith',
+          'caustic',
+        ];
         const player: MatchPlayerEntity = {
           id,
           active: this.randomActive(),
@@ -231,6 +244,13 @@ class SeedDatabaseService {
           name: prePlayer.name,
           teamName: prePlayer.teamName,
           teamNum: prePlayer.teamNum,
+          hits: Faker.datatype.number(shots),
+          characterName: Faker.random.arrayElement(characterNames),
+          revivesGiven: Faker.datatype.number(5),
+          knockdowns: Faker.datatype.number(hits / 3),
+          respawnsGiven: Faker.datatype.number(5),
+          headshots: Faker.datatype.number(hits),
+          shots: shots,
           match,
         };
         return player;

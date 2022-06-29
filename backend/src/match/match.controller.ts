@@ -40,8 +40,7 @@ export class MatchController {
   async find(
     @Param('id', ParseIntPipe) id: number,
   ): Promise<MatchOutputOneData> | undefined {
-    const matchEntity = await this.matchService.findOne(id);
-    return matchEntity ? new MatchOutputOneData(matchEntity) : undefined;
+    return await this.matchService.findOne(id);
   }
 
   @Post('json')

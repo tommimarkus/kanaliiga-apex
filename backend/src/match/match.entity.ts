@@ -28,6 +28,12 @@ export class MatchEntity {
   @Column({ type: 'timestamp with time zone', nullable: true })
   start?: Date;
 
+  @Column()
+  aimAssistAllowed?: boolean;
+  
+  @Column()
+  mapName?: string;
+
   @OneToMany(
     () => MatchPlayerEntity,
     matchPlayer => matchPlayer.match,
@@ -56,6 +62,8 @@ export class MatchEntity {
         if (matchData) {
           this.start =
             matchData.match_start && new Date(matchData.match_start * 1000);
+          this.aimAssistAllowed = matchData.aim_assist_allowed
+          this.mapName = matchData.map_name
           this.matchPlayers = matchData.player_results.map(
             playerResult => new MatchPlayerEntity(playerResult),
           );

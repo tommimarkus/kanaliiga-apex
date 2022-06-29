@@ -25,8 +25,11 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
 
   const [data, setData] = useState<MatchOutputOneData | undefined>();
 
-  const [tournamentData, setTournamentData] = useState<TournamentOutputOneData | undefined>();
-  const groupsMatches = tournamentData?.groups?.flatMap((group) => group.matches);
+  const [tournamentData, setTournamentData] =
+    useState<TournamentOutputOneData | undefined>();
+  const groupsMatches = tournamentData?.groups?.flatMap(
+    (group) => group.matches
+  );
 
   const dataValidMatches = groupsMatches
     ?.filter(
@@ -34,19 +37,20 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
         match.results !== undefined &&
         match.results !== null &&
         match.results.length > 0
-    )?.sort((a: MatchOutputOneData, b: MatchOutputOneData) => (
+    )
+    ?.sort((a: MatchOutputOneData, b: MatchOutputOneData) =>
       Utils.sortDateStrings(a.start, b.start)
-    ));
+    );
 
   useEffect(() => {
-    if (data?.group?.tournament.id) {
-      const entrypoint = `${Utils.baseUrl}/tournament/${data?.group?.tournament.id}`;
+    if (data?.group?.tournament?.id) {
+      const entrypoint = `${Utils.baseUrl}/tournament/${data?.group?.tournament?.id}`;
       axios.get<TournamentOutputOneData>(entrypoint).then((response) => {
         setTournamentData(response.data);
       });
     }
     return () => {};
-  }, [data?.group?.tournament.id]);
+  }, [data?.group?.tournament?.id]);
 
   useEffect(() => {
     if (id) {
@@ -200,21 +204,28 @@ const MatchPage = (props: MatchPageProps): ReactElement => {
     )
     ?.slice(0, top);
 
-  const currentMatchIndex = dataValidMatches?.findIndex(value => String(value.id) === id);
-  const timeSubtitle = startMatch ? `Started ${DateTime.fromISO(startMatch).toLocaleString(DateTime.TIME_24_SIMPLE)}` : '';
+  const currentMatchIndex = dataValidMatches?.findIndex(
+    (value) => String(value.id) === id
+  );
+  const timeSubtitle = startMatch
+    ? `Started ${DateTime.fromISO(startMatch).toLocaleString(
+        DateTime.TIME_24_SIMPLE
+      )}`
+    : '';
   return (
     <BasePage
-      subtitles={[
-        tournamentData?.name || '',
-        timeSubtitle,
-      ]}
-      title={currentMatchIndex !== undefined && currentMatchIndex >= 0 ? `Match ${currentMatchIndex + 1}` : 'Match'}
+      subtitles={[tournamentData?.name || '', timeSubtitle]}
+      title={
+        currentMatchIndex !== undefined && currentMatchIndex >= 0
+          ? `Match ${currentMatchIndex + 1}`
+          : 'Match'
+      }
     >
       {dataMatch && (
         <div className="column-content">
           <div className={`title-container ${stream ? 'stream' : ''}`}>
             <h1>
-              {data?.group?.tournament.name}
+              {tournamentData?.name}
               {currentMatchIndex !== undefined &&
                 `, Match ${currentMatchIndex + 1}`}
             </h1>
