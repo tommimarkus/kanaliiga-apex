@@ -1,4 +1,4 @@
 export interface TournamentData {
-  name?: string;
-  start?: string;
+  name?: string
+  start?: string
 }

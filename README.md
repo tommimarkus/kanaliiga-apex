@@ -36,7 +36,7 @@ docker run --name postgresql-container
   -e POSTGRES_PASSWORD=<DB_PASSWORD>
   -e PGDATA=/var/lib/postgresql/data/pgdata \
   -v ${PWD}/.postgres/default/data:/var/lib/postgresql/data/pgdata \
-  -d postgres:11
+  -d postgres:12
 ```
 
 ### Configure database connection

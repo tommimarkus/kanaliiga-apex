@@ -1,22 +1,22 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Role } from '../auth/role.constant';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+import { Role } from '../auth/role.constant'
 
 @Entity('user')
 export class UserEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false })
-  username: string;
+    username: string
 
   @Column({ nullable: false })
-  passwordHash: string;
+    passwordHash: string
 
   @Column({
     type: 'enum',
     enum: Role,
     nullable: false,
-    array: true,
+    array: true
   })
-  roles: Role;
+    roles: Role
 }

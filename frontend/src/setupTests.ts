@@ -3,12 +3,12 @@
 // expect(element).toHaveTextContent(/react/i)
 // learn more: https://github.com/testing-library/jest-dom
 
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect'
 
 Object.defineProperty(window, 'matchMedia', {
   value: () => ({
     matches: false,
     addListener: () => {},
-    removeListener: () => {},
-  }),
-});
+    removeListener: () => {}
+  })
+})

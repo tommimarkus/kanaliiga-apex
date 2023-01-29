@@ -3,31 +3,31 @@ import {
   forwardRef,
   Inject,
   Injectable,
-  Logger,
-} from '@nestjs/common';
-import { EAMatchesData } from '../ea-match-data/ea-match-data.interface';
-import { MatchEntity } from './match.entity';
-import { MatchRepository } from './match.repository';
-import { FindManyOptions, FindOneOptions, IsNull, Not } from 'typeorm';
-import { GroupService } from '../group/group.service';
+  Logger
+} from '@nestjs/common'
+import { type EAMatchesData } from '../ea-match-data/ea-match-data.interface'
+import { MatchEntity } from './match.entity'
+import { type FindManyOptions, type FindOneOptions, IsNull, Not, Repository } from 'typeorm'
+import { GroupService } from '../group/group.service'
 import {
-  MatchOutputOneData,
-  MatchResultOutputData,
-} from './match-output.interface';
-import { MatchPlayerEntity } from '../match-player/match-player.entity';
-import { ScoreEntity } from '../score/score.entity';
-import { MatchPlayerService } from '../match-player/match-player.service';
-import { GroupEntity } from '../group/group.entity';
-import { TournamentEntity } from '../tournament/tournament.entity';
+  type MatchOutputOneData,
+  type MatchResultOutputData
+} from './match-output.interface'
+import { MatchPlayerEntity } from '../match-player/match-player.entity'
+import { ScoreEntity } from '../score/score.entity'
+import { MatchPlayerService } from '../match-player/match-player.service'
+import { GroupEntity } from '../group/group.entity'
+import { TournamentEntity } from '../tournament/tournament.entity'
+import { InjectRepository } from '@nestjs/typeorm'
 
 @Injectable()
 export class MatchService {
-  constructor(
-    private matchRepository: MatchRepository,
+  constructor (
+    @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
     @Inject(forwardRef(() => MatchPlayerService))
-    private matchPlayerService: MatchPlayerService,
+    private readonly matchPlayerService: MatchPlayerService,
     @Inject(forwardRef(() => GroupService))
-    private groupService: GroupService,
+    private readonly groupService: GroupService
   ) {}
 
   private readonly findOneOptions: FindOneOptions<MatchEntity> = {
@@ -36,24 +36,25 @@ export class MatchService {
       leftJoinAndSelect: {
         matchPlayers: 'match.matchPlayers',
         group: 'match.group',
-        groupTournament: 'group.tournament',
-      },
+        groupTournament: 'group.tournament'
+      }
     },
-    where: { start: Not(IsNull()), active: true },
-  };
+    where: { start: Not(IsNull()), active: true }
+  }
+
   private readonly findManyOptions: FindManyOptions<MatchEntity> = {
     ...this.findOneOptions,
     order: { start: 'DESC' },
-    take: 24,
-  };
-
-  async find(): Promise<MatchEntity[]> {
-    Logger.debug(JSON.stringify(this.findManyOptions));
-    return await this.matchRepository.find(this.findManyOptions);
+    take: 24
   }
 
-  async findOne(id: number): Promise<MatchOutputOneData> | undefined {
-    const resultsQuery = this.matchPlayerService.resultsQuery(id);
+  async find (): Promise<MatchEntity[]> {
+    Logger.debug(JSON.stringify(this.findManyOptions))
+    return await this.matchRepository.find(this.findManyOptions)
+  }
+
+  async findOne (id: number): Promise<MatchOutputOneData | undefined> {
+    const resultsQuery = this.matchPlayerService.resultsQuery(id)
     const qb = this.matchRepository
       .createQueryBuilder('match')
       .select('match.active', 'active')
@@ -61,14 +62,14 @@ export class MatchService {
       .addSelect('match.start', 'start')
       .addSelect(
         'results.placement_points + results.kill_points',
-        'total_points',
+        'total_points'
       )
       .addSelect('tournament.id', 'tournament_id')
       .innerJoin(GroupEntity, 'group', 'group.id = match.group')
       .innerJoin(
         TournamentEntity,
         'tournament',
-        'tournament.id = group.tournament',
+        'tournament.id = group.tournament'
       )
       .innerJoinAndSelect(
         resultsQueryBuilder => {
@@ -105,7 +106,7 @@ export class MatchService {
                         WHEN team_results.best_placement = 20 THEN score.placement20
                         ELSE 0
                         END`,
-              'placement_points',
+              'placement_points'
             )
             .from(`(${resultsQuery.getQuery()})`, 'team_results')
             .setParameters(resultsQuery.getParameters())
@@ -118,31 +119,31 @@ export class MatchService {
                   .from(MatchPlayerEntity, 'player')
                   .where('player."matchId" = :id', { id })
                   .groupBy('team_num')
-                  .addGroupBy('match_id');
+                  .addGroupBy('match_id')
               },
               'team_names',
-              'team_names.team_num = team_results.team_num',
+              'team_names.team_num = team_results.team_num'
             )
-            .innerJoin(ScoreEntity, 'score', 'score.id = 1');
+            .innerJoin(ScoreEntity, 'score', 'score.id = 1')
         },
         'results',
-        'match.id = match_id',
+        'match.id = match_id'
       )
       .orderBy('total_points', 'DESC')
       .addOrderBy('kills', 'DESC')
       .addOrderBy('damage', 'DESC')
-      .addOrderBy('assists', 'DESC');
+      .addOrderBy('assists', 'DESC')
 
-    Logger.debug(qb.getSql());
+    Logger.debug(qb.getSql())
 
-    const rawResults = await qb.getRawMany();
+    const rawResults = await qb.getRawMany()
 
     if (
       rawResults !== undefined &&
       rawResults !== null &&
       rawResults.length > 0
     ) {
-      const first = rawResults[0];
+      const first = rawResults[0]
       const results: MatchOutputOneData = {
         active: first.active,
         id: first.id,
@@ -150,7 +151,7 @@ export class MatchService {
           id: 1,
           active: true,
           order: 1,
-          tournament: { id: first.tournament_id, active: true, name: '' },
+          tournament: { id: first.tournament_id, active: true, name: '' }
         },
         start: first.start,
         results: rawResults.map(rawResultData => {
@@ -161,66 +162,65 @@ export class MatchService {
             teamKills: rawResultData.kills,
             teamDamage: rawResultData.damage,
             teamPoints: rawResultData.total_points,
-            teamMembers: [],
-          };
-          return outputResult;
-        }),
-      };
+            teamMembers: []
+          }
+          return outputResult
+        })
+      }
 
-      return results;
+      return results
     }
 
-    return undefined;
+    return undefined
   }
 
-  async findOneOrFail(id: number): Promise<MatchEntity> {
-    return await this.matchRepository.findOneOrFail(id, this.findOneOptions);
+  async findOneOrFail (id: number): Promise<MatchEntity> {
+    return await this.matchRepository.findOneOrFail({ where: { id }, ...this.findOneOptions })
   }
 
-  async save(
+  async save (
     token: string,
     matchesData: EAMatchesData,
-    group?: number,
-  ): Promise<MatchEntity[]> | undefined {
+    group?: number
+  ): Promise<MatchEntity[] | undefined> {
     try {
       const groupEntity =
         group !== undefined
           ? await this.groupService.findOneOrFail(group)
-          : undefined;
+          : undefined
       return await Promise.all(
         matchesData.matches.map(async (matchData, index) => {
           const matchEntity = new MatchEntity({
             token,
             matchData,
             group: groupEntity,
-            index,
-          });
+            index
+          })
           const existingMatchEntity = await this.matchRepository.findOne({
             select: ['id', 'token', 'index'],
-            where: { token, index },
-          });
-          if (existingMatchEntity) {
-            matchEntity.id = existingMatchEntity.id;
+            where: { token, index }
+          })
+          if (existingMatchEntity != null) {
+            matchEntity.id = existingMatchEntity.id
           }
-          return await this.matchRepository.save(matchEntity);
-        }),
-      );
+          return await this.matchRepository.save(matchEntity)
+        })
+      )
     } catch (exception) {
-      const message = `${exception.name}: ${exception.message}`;
-      Logger.error(`${message} ${exception.stack}`);
-      throw new BadRequestException(message);
+      Logger.error(exception)
+      throw new BadRequestException()
     }
   }
 
-  async saveJSON(
+  async saveJSON (
     file: Express.Multer.File,
     token: string,
-    group?: number,
-  ): Promise<MatchEntity[]> | undefined {
+    group?: number
+  ): Promise<MatchEntity[] | undefined> {
     return await this.save(
       token,
       JSON.parse(file.buffer.toString()) as EAMatchesData,
-      group,
-    );
+      group
+    )
   }
 }

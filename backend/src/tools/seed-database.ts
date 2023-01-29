@@ -1,49 +1,46 @@
-import { Injectable, Logger, Module } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import typeormConfig from '../config/config.typeorm';
-import { SeasonEntity } from '../season/season.entity';
-import * as Faker from 'faker';
-import { SeasonRepository } from '../season/season.repository';
-import { TournamentEntity } from '../tournament/tournament.entity';
-import { GroupEntity } from '../group/group.entity';
-import { MatchEntity } from '../match/match.entity';
-import { MatchPlayerEntity } from '../match-player/match-player.entity';
-import { ScoreEntity } from '../score/score.entity';
-import { ScoreRepository } from '../score/score.repository';
-import { TournamentRepository } from '../tournament/tournament.repository';
-import { GroupRepository } from '../group/group.repository';
-import { MatchRepository } from '../match/match.repository';
-import { MatchPlayerRepository } from '../match-player/match-player.repository';
+import { Injectable, Logger, Module } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm'
+import typeormConfig from '../config/config.typeorm'
+import { SeasonEntity } from '../season/season.entity'
+import { faker } from '@faker-js/faker'
+import { TournamentEntity } from '../tournament/tournament.entity'
+import { GroupEntity } from '../group/group.entity'
+import { MatchEntity } from '../match/match.entity'
+import { MatchPlayerEntity } from '../match-player/match-player.entity'
+import { ScoreEntity } from '../score/score.entity'
+import { DataSource, Repository } from 'typeorm'
 
 @Injectable()
 class SeedDatabaseService {
-  constructor(
-    private scoreRepository: ScoreRepository,
-    private seasonRepository: SeasonRepository,
-    private tournamentRepository: TournamentRepository,
-    private groupRepository: GroupRepository,
-    private matchRepository: MatchRepository,
-    private playerRepository: MatchPlayerRepository,
+  constructor (
+    @InjectRepository(ScoreEntity) private readonly scoreRepository: Repository<ScoreEntity>,
+    @InjectRepository(SeasonEntity) private readonly seasonRepository: Repository<SeasonEntity>,
+    @InjectRepository(TournamentEntity) private readonly tournamentRepository: Repository<TournamentEntity>,
+    @InjectRepository(GroupEntity) private readonly groupRepository: Repository<GroupEntity>,
+    @InjectRepository(MatchEntity) private readonly matchRepository: Repository<MatchEntity>,
+    @InjectRepository(MatchPlayerEntity) private readonly playerRepository: Repository<MatchPlayerEntity>
   ) {}
 
-  private countAsSequence(count: number): number[] {
-    return Array.from({ length: count }, (_, k) => k + 1);
+  private countAsSequence (count: number): number[] {
+    return Array.from({ length: count }, (_, k) => k + 1)
   }
 
-  private randomActive(): boolean {
-    return Faker.datatype.number(100) < 99;
+  private randomActive (): boolean {
+    return faker.datatype.number(100) < 99
   }
 
-  private randomHexString(count: number): string {
-    return Faker.datatype
-      .hexaDecimal(count)
-      .slice(2)
-      .toLowerCase();
+  private randomHexString (count: number): string {
+    return faker.datatype
+      .hexadecimal({
+        length: count,
+        prefix: '',
+        case: 'lower'
+      })
   }
 
-  private async generateScore(): Promise<ScoreEntity> {
-    Logger.log('Generating Score');
+  private async generateScore (): Promise<ScoreEntity> {
+    Logger.log('Generating Score')
 
     const score: ScoreEntity = {
       id: 1,
@@ -68,104 +65,104 @@ class SeedDatabaseService {
       placement18: 0,
       placement19: 0,
       placement20: 0,
-      seasons: null,
-    };
+      seasons: undefined
+    }
 
-    return await this.scoreRepository.save(score);
+    return await this.scoreRepository.save(score)
   }
 
-  private async generateSeasons(
+  private async generateSeasons (
     score: ScoreEntity,
-    count: number,
+    count: number
   ): Promise<SeasonEntity[]> {
-    Logger.log('Generating Seasons');
+    Logger.log('Generating Seasons')
 
-    const ids = this.countAsSequence(count);
+    const ids = this.countAsSequence(count)
 
     const seasons = ids.map(id => {
-      const start = Faker.date.past(5);
-      const end = Faker.date.recent(30, start);
+      const start = faker.date.past(5)
+      const end = faker.date.soon(30, start)
       const season: SeasonEntity = {
         id,
         active: this.randomActive(),
         start,
         end,
         name: `Kanaliiga Apex Season ${id}`,
-        tournaments: null,
-        score,
-      };
-      return season;
-    });
+        tournaments: undefined,
+        score
+      }
+      return season
+    })
 
-    return await this.seasonRepository.save(seasons);
+    return await this.seasonRepository.save(seasons)
   }
 
-  private async generateTournaments(
+  private async generateTournaments (
     seasons: SeasonEntity[],
-    count: number,
+    count: number
   ): Promise<TournamentEntity[]> {
-    Logger.log('Generating Tournaments');
+    Logger.log('Generating Tournaments')
 
-    const ids = this.countAsSequence(count);
+    const ids = this.countAsSequence(count)
 
     const tournaments = seasons.flatMap(season => {
       return ids.map(localId => {
-        const id = (season.id - 1) * count + localId;
-        const start = Faker.date.between(season.start, season.end);
+        const id = (season.id - 1) * count + localId
+        const start = faker.date.between(season.start, season.end)
         const tournament: TournamentEntity = {
           id,
           active: this.randomActive(),
           start,
           name: `Kanaliiga Apex Season ${season.id} Game Day ${localId}`,
-          groups: null,
+          groups: undefined,
           season,
-          token: `S${season.id}_Day${localId}`,
-        };
-        return tournament;
-      });
-    });
+          token: `S${season.id}_Day${localId}`
+        }
+        return tournament
+      })
+    })
 
-    return await this.tournamentRepository.save(tournaments);
+    return await this.tournamentRepository.save(tournaments)
   }
 
-  private async generateGroups(
+  private async generateGroups (
     tournaments: TournamentEntity[],
-    count: number,
+    count: number
   ): Promise<GroupEntity[]> {
-    Logger.log('Generating Groups');
+    Logger.log('Generating Groups')
 
-    const ids = this.countAsSequence(count);
+    const ids = this.countAsSequence(count)
 
     const groups = tournaments.flatMap(tournament => {
       return ids.map(localId => {
-        const id = (tournament.id - 1) * count + localId;
+        const id = (tournament.id - 1) * count + localId
         const group: GroupEntity = {
           id,
           active: this.randomActive(),
           order: localId,
-          matches: null,
-          tournament,
-        };
-        return group;
-      });
-    });
+          matches: undefined,
+          tournament
+        }
+        return group
+      })
+    })
 
-    return await this.groupRepository.save(groups);
+    return await this.groupRepository.save(groups)
   }
 
-  private async generateMatches(
+  private async generateMatches (
     groups: GroupEntity[],
-    count: number,
+    count: number
   ): Promise<MatchEntity[]> {
-    Logger.log('Generating Matches');
+    Logger.log('Generating Matches')
 
-    const ids = this.countAsSequence(count);
+    const ids = this.countAsSequence(count)
 
     const matches = groups.flatMap(group => {
-      const token = `a${this.randomHexString(7)}-${this.randomHexString(22)}`;
+      const token = `a${this.randomHexString(7)}-${this.randomHexString(22)}`
       return ids.map(localId => {
-        const id = (group.id - 1) * count + localId;
-        const start = Faker.date.past(5);
+        const id = (group.id - 1) * count + localId
+        const start = faker.date.past(5)
         const match: MatchEntity = {
           id,
           active: this.randomActive(),
@@ -173,43 +170,47 @@ class SeedDatabaseService {
           token,
           group,
           start,
-          matchPlayers: null,
-        };
-        return match;
-      });
-    });
+          aimAssistAllowed: faker.datatype.boolean(),
+          mapName: faker.music.songName(),
+          matchPlayers: undefined
+        }
+        return match
+      })
+    })
 
-    return await this.matchRepository.save(matches);
+    return await this.matchRepository.save(matches)
   }
 
-  private async generatePlayers(
+  private async generatePlayers (
     matches: MatchEntity[],
-    count: number,
+    count: number
   ): Promise<MatchPlayerEntity[]> {
-    Logger.log('Generating Players');
+    Logger.log('Generating Players')
 
-    const ids = this.countAsSequence(count);
+    const ids = this.countAsSequence(count)
 
     const teamNames = this.countAsSequence(count / 3).map(() =>
-      Faker.company.companyName(),
-    );
+      faker.company.name()
+    )
+    const placements = faker.helpers.shuffle(Array.from(Array(20).keys()))
     const prePlayers = ids.map(id => {
-      const teamNum = 1 + Math.floor((id - 1) / 3);
+      const teamNum = 1 + Math.floor((id - 1) / 3)
       const player: Partial<MatchPlayerEntity> = {
         active: this.randomActive(),
-        name: Faker.name.firstName(),
+        name: faker.name.firstName(),
         teamNum,
         teamName: teamNames[teamNum - 1],
-      };
-      return player;
-    });
+        teamPlacement: placements.indexOf(teamNum) + 1
+      }
+      return player
+    })
 
     const players = matches.flatMap(match => {
       return prePlayers.map((prePlayer, index) => {
-        const id = (match.id - 1) * count + (index + 1);
-        const damage = Faker.datatype.number(Faker.datatype.number(6) * 400);
-        const shots = Faker.datatype.number(Faker.datatype.number(15) * 10);
-        const hits = Faker.datatype.number(shots);
+        const id = (match.id - 1) * count + (index + 1)
+        const damage = faker.datatype.number(faker.datatype.number(15) * 250)
+        const shots = faker.datatype.number(faker.datatype.number(15) * 10)
+        const hits = faker.datatype.number(shots)
         const characterNames = [
           'valkyrie',
           'lifeline',
@@ -219,54 +220,56 @@ class SeedDatabaseService {
           'octane',
           'mirage',
           'wraith',
-          'caustic',
-        ];
+          'caustic'
+        ]
+        const damageOver2500 = damage >= 2500
+        const damageOver1500 = damage >= 1500
         const player: MatchPlayerEntity = {
           id,
           active: this.randomActive(),
           damage,
           kills:
-            (damage >= 2500
-              ? Faker.datatype.number(12)
-              : damage >= 1500
-              ? Faker.datatype.number(4)
-              : 0) + Faker.datatype.number(8),
+            (damageOver2500
+              ? faker.datatype.number(8)
+              : damageOver1500
+                ? faker.datatype.number(3)
+                : 0) + faker.datatype.number(3),
           assists:
-            (damage >= 2500
-              ? Faker.datatype.number(6)
-              : damage >= 1500
-              ? Faker.datatype.number(3)
-              : 0) + Faker.datatype.number(15),
+            (damageOver2500
+              ? faker.datatype.number(4)
+              : damageOver1500
+                ? faker.datatype.number(2)
+                : 0) + faker.datatype.number(3),
           survivalTime:
-            (damage >= 2500 ? 1300 : damage >= 1500 ? 900 : 0) +
-            Faker.datatype.number(700),
-          teamPlacement: prePlayer.teamNum,
-          name: prePlayer.name,
-          teamName: prePlayer.teamName,
-          teamNum: prePlayer.teamNum,
-          hits: Faker.datatype.number(shots),
-          characterName: Faker.random.arrayElement(characterNames),
-          revivesGiven: Faker.datatype.number(5),
-          knockdowns: Faker.datatype.number(hits / 3),
-          respawnsGiven: Faker.datatype.number(5),
-          headshots: Faker.datatype.number(hits),
-          shots: shots,
-          match,
-        };
-        return player;
-      });
-    });
+            (damageOver2500 ? 1300 : damageOver1500 ? 900 : 0) +
+            faker.datatype.number(700),
+          teamPlacement: prePlayer.teamPlacement ?? 0,
+          name: prePlayer.name ?? '',
+          teamName: prePlayer.teamName ?? '',
+          teamNum: prePlayer.teamNum ?? 0,
+          hits: faker.datatype.number(shots),
+          characterName: faker.helpers.arrayElement(characterNames),
+          revivesGiven: faker.datatype.number(5),
+          knockdowns: faker.datatype.number(hits / 3),
+          respawnsGiven: faker.datatype.number(5),
+          headshots: faker.datatype.number(hits),
+          shots,
+          match
+        }
+        return player
+      })
+    })
 
-    return await this.playerRepository.save(players, { chunk: 50 });
+    return await this.playerRepository.save(players, { chunk: 50 })
   }
 
-  async generate() {
-    const score = await this.generateScore();
-    const seasons = await this.generateSeasons(score, 5);
-    const tournaments = await this.generateTournaments(seasons, 4);
-    const groups = await this.generateGroups(tournaments, 1);
-    const matches = await this.generateMatches(groups, 4);
-    await this.generatePlayers(matches, 60);
+  async generate (): Promise<void> {
+    const score = await this.generateScore()
+    const seasons = await this.generateSeasons(score, 5)
+    const tournaments = await this.generateTournaments(seasons, 4)
+    const groups = await this.generateGroups(tournaments, 1)
+    const matches = await this.generateMatches(groups, 4)
+    await this.generatePlayers(matches, 60)
   }
 }
 
@@ -280,45 +283,39 @@ class SeedDatabaseService {
         GroupEntity,
         MatchEntity,
         MatchPlayerEntity,
-        ScoreEntity,
+        ScoreEntity
       ],
-      logging: false,
+      logging: false
     }),
-    TypeOrmModule.forFeature([ScoreRepository]),
-    TypeOrmModule.forFeature([SeasonRepository]),
-    TypeOrmModule.forFeature([TournamentRepository]),
-    TypeOrmModule.forFeature([GroupRepository]),
-    TypeOrmModule.forFeature([MatchRepository]),
-    TypeOrmModule.forFeature([MatchPlayerRepository]),
+    TypeOrmModule.forFeature([ScoreEntity]),
+    TypeOrmModule.forFeature([SeasonEntity]),
+    TypeOrmModule.forFeature([TournamentEntity]),
+    TypeOrmModule.forFeature([GroupEntity]),
+    TypeOrmModule.forFeature([MatchEntity]),
+    TypeOrmModule.forFeature([MatchPlayerEntity])
   ],
-  providers: [SeedDatabaseService],
+  providers: [SeedDatabaseService]
 })
 class SeedDatabaseModule {}
 
-async function bootstrap() {
+async function bootstrap (): Promise<void> {
   try {
-    Faker.seed(1);
-    Faker.setLocale('fi');
+    faker.seed(1)
+    faker.setLocale('fi')
     const app = await NestFactory.createApplicationContext(SeedDatabaseModule, {
-      abortOnError: true,
-    });
+      abortOnError: true
+    })
     try {
-      Logger.log('Seeding database:');
-      const seedDatabaseService = app.get(SeedDatabaseService);
-      await seedDatabaseService.generate();
-    } catch (e) {
-      Logger.error(`${e.name} ${e.message}`);
-      if (e.stackTrace) {
-        Logger.error(`${e.stackTrace}`);
-      }
+      Logger.log('Seeding database:')
+      const seedDatabaseService = app.get(SeedDatabaseService)
+      await seedDatabaseService.generate()
+    } catch (exception) {
+      Logger.error(exception, exception.stack ?? exception.stackTrace)
     }
-    await app.close();
-  } catch (e) {
-    Logger.error(`${e.name} ${e.message}`);
-    if (e.stackTrace) {
-      Logger.error(`${e.stackTrace}`);
-    }
+    await app.close()
+  } catch (exception) {
+    Logger.error(exception, exception.stack ?? exception.stackTrace)
   }
 }
 
-bootstrap();
+bootstrap().catch((reason: any) => { Logger.error(reason, reason.stack ?? reason.stackTrace) })

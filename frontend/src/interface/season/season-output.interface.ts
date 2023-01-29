@@ -1,6 +1,6 @@
-import { SeasonData } from './season.interface';
+import { type SeasonData } from './season.interface'
 
 export interface SeasonOutputData extends SeasonData {
-  id: number;
-  active: boolean;
+  id: number
+  active: boolean
 }

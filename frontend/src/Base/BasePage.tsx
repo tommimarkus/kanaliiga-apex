@@ -1,29 +1,26 @@
-import React, { PropsWithChildren, ReactElement } from 'react';
+import React, { type PropsWithChildren, type ReactElement } from 'react'
+import { useLocation } from 'react-router'
 
-import { useLocation } from '@reach/router';
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import ImageBackground from '../ImageBackground/ImageBackground';
-import Poster from '../images/background.jpg';
-import SponsorCGI from '../images/cgi_600px.webp';
-import SponsorEtteplan from '../images/Etteplan_logo_rgb_300.png';
-import KanaliigaLogo from '../images/kanaliiga-logo-250px.png';
-import Utils from '../utils';
-import VideoBackground from '../VideoBackground/VideoBackground';
-import './BasePage.scss';
+import ImageBackground from '../ImageBackground/ImageBackground'
+import Poster from '../images/background.jpg'
+import KanaliigaLogo from '../images/kanaliiga-logo-250px.png'
+import { videoUrl } from '../utils'
+import VideoBackground from '../VideoBackground/VideoBackground'
+import './BasePage.scss'
 
 export interface BasePageProps {
-  title?: string;
-  subtitles?: string[];
+  title?: string
+  subtitles?: string[]
 }
 
-const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
-  const { title, subtitles, children } = props;
+function BasePage (props: PropsWithChildren<BasePageProps>): ReactElement {
+  const { title, subtitles, children } = props
 
-  const query = new URLSearchParams(useLocation().search);
-  const stream = query.has('stream');
-  const nosponsors = query.has('nosponsors');
-  const videobackground = query.has('videobackground');
+  const query = new URLSearchParams(useLocation().search)
+  const stream = query.has('stream')
+  const videobackground = query.has('videobackground')
 
   return (
     <div className={classNames('container', { stream })}>
@@ -33,7 +30,7 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
             <VideoBackground
               poster={Poster}
               videoSources={[
-                `${Utils.videoUrl}/apex-video-background-download-worlds-edge-6.mp4`,
+                `${videoUrl}/apex-video-background-download-worlds-edge-6.mp4`
               ]}
             />
           )}
@@ -42,13 +39,13 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
       )}
       <div className="left-column">
         <div className="column-content">
-          {title && (
+          {typeof title === 'string' && (
             <div className="title-info">
               {title}
-              {subtitles &&
-                subtitles.map((subtitleItem) => (
-                  <div className="subtitle-info" key={subtitleItem}>
-                    <div>{subtitleItem}</div>
+              {Array.isArray(subtitles) &&
+                subtitles.map((subtitleItem, index) => (
+                  <div className="subtitle-info" key={`${subtitleItem}${index}`}>
+                    {subtitleItem}
                   </div>
                 ))}
             </div>
@@ -56,16 +53,6 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
           <div className="kanaliiga-logo">
             <img alt="Kanaliiga Logo" src={KanaliigaLogo} />
           </div>
-          {nosponsors !== true && (
-            <div className="sponsors">
-              <div className="sponsor">
-                <img alt="CGI" src={SponsorCGI} />
-              </div>
-              <div className="sponsor">
-                <img alt="Etteplan" src={SponsorEtteplan} />
-              </div>
-            </div>
-          )}
         </div>
       </div>
       <div className="right-column">
@@ -77,7 +64,7 @@ const BasePage = (props: PropsWithChildren<BasePageProps>): ReactElement => {
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default BasePage;
+export default BasePage

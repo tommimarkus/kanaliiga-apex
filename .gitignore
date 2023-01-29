@@ -1,3 +1,1 @@
-backend/ormconfig.json
-backend/.env
-frontend/.env
+*.session.sql

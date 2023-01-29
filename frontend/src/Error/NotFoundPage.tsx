@@ -1,12 +1,9 @@
-import { ReactElement } from 'react';
+import React, { type ReactElement } from 'react'
 
-import { RouteComponentProps } from '@reach/router';
+import './NotFoundPage.scss'
 
-import './NotFoundPage.scss';
+function NotFoundPage (): ReactElement {
+  return <div className="error">404: Not found!</div>
+}
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const NotFoundPage = (props: RouteComponentProps): ReactElement => (
-  <div className="error">404: Not found!</div>
-);
-
-export default NotFoundPage;
+export default NotFoundPage

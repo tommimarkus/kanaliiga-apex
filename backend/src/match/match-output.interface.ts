@@ -1,95 +1,91 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { GroupOutputData } from '../group/group-output.interface';
-import { matchEntityToMatchResultsOutput } from '../util/util';
-import { MatchEntity } from './match.entity';
-import { MatchData } from './match-input.interface';
-import { MatchPlayerEntity } from '../match-player/match-player.entity';
+import { ApiProperty } from '@nestjs/swagger'
+import { GroupOutputData } from '../group/group-output.interface'
+import { matchEntityToMatchResultsOutput } from '../util/util'
+import { type MatchEntity } from './match.entity'
+import { MatchData } from './match-input.interface'
+import { type MatchPlayerEntity } from '../match-player/match-player.entity'
 
 export class MatchResultTeamMemberOutputData {
   @ApiProperty({ example: 'SourOldGeezer' })
-  name: string;
+    name: string
 
   @ApiProperty({ example: 16 })
-  kills: number;
+    kills: number
 
   @ApiProperty({ example: 9 })
-  assists: number;
+    assists: number
 
   @ApiProperty({ example: 3926 })
-  damage: number;
+    damage: number
 
   @ApiProperty({ example: 1392 })
-  survivalTime: number;
+    survivalTime: number
 
-  constructor(entity: MatchPlayerEntity) {
-    if (entity) {
-      this.name = entity.name;
-      this.kills = entity.kills;
-      this.assists = entity.assists;
-      this.survivalTime = entity.survivalTime;
+  constructor (entity: MatchPlayerEntity) {
+    if (entity != null) {
+      this.name = entity.name
+      this.kills = entity.kills
+      this.assists = entity.assists
+      this.survivalTime = entity.survivalTime
     }
   }
 }
 
 export class MatchResultOutputData {
   @ApiProperty({ example: 8 })
-  teamNum: number;
+    teamNum: number
 
   @ApiProperty({ example: 'Vincit' })
-  teamName: string;
+    teamName: string
 
   @ApiProperty({ example: 1 })
-  teamPlacement: number;
+    teamPlacement: number
 
   @ApiProperty({ example: 28 })
-  teamKills: number;
+    teamKills: number
 
   @ApiProperty({ example: 40 })
-  teamPoints: number;
+    teamPoints: number
 
   @ApiProperty({ type: [MatchResultTeamMemberOutputData] })
-  teamMembers: MatchResultTeamMemberOutputData[];
+    teamMembers: MatchResultTeamMemberOutputData[]
 
   @ApiProperty({ example: 7222 })
-  teamDamage: number;
+    teamDamage: number
 }
 
 export class MatchOutputData extends MatchData {
   @ApiProperty()
-  id: number;
+    id: number
 
   @ApiProperty({ example: true })
-  active: boolean;
+    active: boolean
 
   @ApiProperty({ type: GroupOutputData })
-  group?: GroupOutputData;
+    group?: GroupOutputData
 
-  constructor(entity?: MatchEntity) {
-    super(entity);
+  constructor (entity?: MatchEntity) {
+    super(entity)
 
-    if (entity) {
-      this.id = entity.id;
-      this.active = entity.active;
-      this.group = entity.group ? new GroupOutputData(entity.group) : undefined;
+    if (entity != null) {
+      this.id = entity.id
+      this.active = entity.active
+      this.group = (entity.group != null) ? new GroupOutputData(entity.group) : undefined
     }
   }
 }
 
 export class MatchOutputOneData extends MatchOutputData {
   @ApiProperty({ type: [MatchResultOutputData] })
-  results: MatchResultOutputData[];
+    results: MatchResultOutputData[]
 
-  constructor(entity?: MatchEntity) {
-    super(entity);
+  constructor (entity?: MatchEntity) {
+    super(entity)
 
-    if (entity) {
-      this.results = matchEntityToMatchResultsOutput(entity);
+    if (entity != null) {
+      this.results = matchEntityToMatchResultsOutput(entity)
     }
   }
 }
 
-export class MatchOutputListData extends MatchOutputData {
-  constructor(entity?: MatchEntity) {
-    super(entity);
-  }
-}
+export class MatchOutputListData extends MatchOutputData {}

@@ -1,75 +1,74 @@
-import { EAMatchData } from '../ea-match-data/ea-match-data.interface';
-import { MatchPlayerEntity } from '../match-player/match-player.entity';
+import { type EAMatchData } from '../ea-match-data/ea-match-data.interface'
+import { MatchPlayerEntity } from '../match-player/match-player.entity'
 import {
   Column,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
-import { Entity } from 'typeorm/decorator/entity/Entity';
-import { GroupEntity } from '../group/group.entity';
+  Unique
+} from 'typeorm'
+import { Entity } from 'typeorm/decorator/entity/Entity'
+import { GroupEntity } from '../group/group.entity'
 
 @Entity('match')
 @Unique('unique_token_index', ['token', 'index'])
 export class MatchEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false, default: true })
-  active: boolean;
+    active: boolean
 
   @Column({ nullable: false })
-  token: string;
+    token: string
 
   @Column({ nullable: false, default: 0 })
-  index: number;
+    index: number
 
   @Column({ type: 'timestamp with time zone', nullable: true })
-  start?: Date;
+    start?: Date
 
-  @Column()
-  aimAssistAllowed?: boolean;
-  
-  @Column()
-  mapName?: string;
+  @Column({ nullable: true })
+    aimAssistAllowed?: boolean
+
+  @Column({ nullable: true })
+    mapName?: string
 
   @OneToMany(
     () => MatchPlayerEntity,
     matchPlayer => matchPlayer.match,
-    { cascade: ['insert', 'update'] },
+    { cascade: ['insert', 'update'] }
   )
-  matchPlayers?: MatchPlayerEntity[];
+    matchPlayers?: MatchPlayerEntity[]
 
   @ManyToOne(
     () => GroupEntity,
     group => group.matches,
-    { nullable: true },
+    { nullable: true }
   )
-  group?: GroupEntity;
+    group?: GroupEntity
 
-  constructor(params?: {
-    token: string;
-    matchData?: EAMatchData;
-    group?: GroupEntity;
-    index: number;
+  constructor (params?: {
+    token: string
+    matchData?: EAMatchData
+    group?: GroupEntity
+    index: number
   }) {
-    if (params) {
-      const { token, matchData, group, index } = params;
+    if (params != null) {
+      const { token, matchData, group, index } = params
       if (typeof token === 'string' && typeof index === 'number') {
-        this.token = token;
-        this.index = index;
-        if (matchData) {
-          this.start =
-            matchData.match_start && new Date(matchData.match_start * 1000);
+        this.token = token
+        this.index = index
+        if (matchData != null) {
+          this.start = typeof matchData.match_start === 'number' ? new Date(matchData.match_start * 1000) : undefined
           this.aimAssistAllowed = matchData.aim_assist_allowed
           this.mapName = matchData.map_name
           this.matchPlayers = matchData.player_results.map(
-            playerResult => new MatchPlayerEntity(playerResult),
-          );
+            playerResult => new MatchPlayerEntity(playerResult)
+          )
         }
-        if (group) {
-          this.group = group;
+        if (group != null) {
+          this.group = group
         }
       }
     }

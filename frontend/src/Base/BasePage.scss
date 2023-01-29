@@ -46,7 +46,7 @@
   margin-left: 1.5em;
   margin-bottom: 0em;
   margin-right: 1.5em;
-  justify-content: space-between;
+  justify-content: flex-start;
 }
 
 .title-info {
@@ -74,25 +74,6 @@
   margin-top: 0.5rem;
 }
 
-.sponsors {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  align-content: center;
-  align-items: center;
-  justify-content: space-between;
-  justify-items: center;
-  overflow: visible;
-  img {
-    width: 15vw;
-  }
-}
-
-.sponsor {
-  display: flex;
-  margin-bottom: 1em;
-}
-
 .kanaliiga-logo {
   display: flex;
   flex-direction: column;
@@ -101,6 +82,8 @@
   align-items: center;
   align-content: center;
   overflow: visible;
+  padding-top: 5vh;
+  padding-bottom: 5vh;
   img {
     width: 15vw;
   }

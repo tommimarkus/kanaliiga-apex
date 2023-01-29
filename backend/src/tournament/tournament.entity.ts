@@ -1,57 +1,56 @@
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Entity } from 'typeorm/decorator/entity/Entity';
-import { GroupEntity } from '../group/group.entity';
-import { SeasonEntity } from '../season/season.entity';
-import { TournamentInputData } from './tournament-input.interface';
+import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity } from 'typeorm/decorator/entity/Entity'
+import { GroupEntity } from '../group/group.entity'
+import { SeasonEntity } from '../season/season.entity'
+import { TournamentInputData } from './tournament-input.interface'
 
 @Entity('tournament')
 export class TournamentEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false, default: true })
-  active: boolean;
+    active: boolean
 
   @Column({ unique: true, nullable: false })
-  token: string;
+    token: string
 
   @Column({ unique: true, nullable: false })
-  name: string;
+    name: string
 
   @Column({
     type: 'timestamp with time zone',
-    nullable: false,
+    nullable: false
   })
-  start: Date;
+    start: Date
 
   @OneToMany(
     () => GroupEntity,
     group => group.tournament,
-    { nullable: true },
+    { nullable: true }
   )
-  groups?: GroupEntity[];
+    groups?: GroupEntity[]
 
   @ManyToOne(
     () => SeasonEntity,
     season => season.tournaments,
-    { nullable: true },
+    { nullable: true }
   )
-  season?: SeasonEntity;
+    season?: SeasonEntity
 
-  constructor(
+  constructor (
     token?: string,
     tournamentInputData?: TournamentInputData,
-    seasonEntity?: SeasonEntity,
+    seasonEntity?: SeasonEntity
   ) {
-    if (token && tournamentInputData) {
-      this.token = token;
-      this.name = tournamentInputData.name;
-      this.start =
-        tournamentInputData.start && new Date(tournamentInputData.start);
-      if (seasonEntity) {
-        this.season = seasonEntity;
-      } else {
-        throw Error('Season data is missing');
+    if (token != null && tournamentInputData != null) {
+      if (typeof tournamentInputData.start === 'string') {
+        this.token = token
+        this.name = tournamentInputData.name
+        this.start = new Date(tournamentInputData.start)
+        if (seasonEntity != null) {
+          this.season = seasonEntity
+        }
       }
     }
   }

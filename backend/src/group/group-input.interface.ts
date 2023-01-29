@@ -1,29 +1,31 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { GroupEntity } from './group.entity';
+import { ApiProperty } from '@nestjs/swagger'
+import { type GroupEntity } from './group.entity'
 
 export class GroupData {
   @ApiProperty({
     nullable: false,
-    example: 1,
+    example: 1
   })
-  order: number;
+    order: number
 
-  constructor(entity?: GroupEntity) {
-    if (entity) {
-      this.order = entity.order;
+  constructor (entity?: GroupEntity) {
+    if (entity != null) {
+      this.order = entity.order
     }
   }
 }
 
 export class GroupInputData extends GroupData {
   @ApiProperty({ nullable: false, example: 1 })
-  tournament: number;
+    tournament: number
 
-  constructor(entity?: GroupEntity) {
-    super(entity);
+  constructor (entity?: GroupEntity) {
+    super(entity)
 
-    if (entity) {
-      this.tournament = entity.tournament.id;
+    if (entity != null) {
+      if (entity.tournament !== undefined) {
+        this.tournament = entity.tournament.id
+      }
     }
   }
 }

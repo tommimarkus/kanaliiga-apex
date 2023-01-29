@@ -1,8 +1,8 @@
-import { SeasonOutputData } from '../season/season-output.interface';
-import { TournamentData } from './tournament.interface';
+import { type SeasonOutputData } from '../season/season-output.interface'
+import { type TournamentData } from './tournament.interface'
 
 export interface TournamentOutputData extends TournamentData {
-  id: number;
-  active: boolean;
-  season?: SeasonOutputData;
+  id: number
+  active: boolean
+  season?: SeasonOutputData
 }

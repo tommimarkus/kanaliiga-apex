@@ -1,54 +1,54 @@
-import { Logger } from '@nestjs/common';
-import { dropDatabase } from 'pg-god';
-import { connectionOptions } from '../config/config.typeorm';
+import { Logger } from '@nestjs/common'
+import { dropDatabase } from 'pg-god'
+import { connectionOptions } from '../config/config.connection'
 
-async function drop() {
-  const options = connectionOptions();
+async function drop (): Promise<void> {
+  const options = connectionOptions()
 
   const databaseName =
-    typeof options.database === 'string' ? options.database : undefined;
+    typeof options.database === 'string' ? options.database : undefined
 
   if (databaseName === undefined) {
-    throw new Error('No database name found');
+    throw new Error('No database name found')
   }
 
   const user =
-    typeof options.username === 'string' ? options.username : undefined;
+    typeof options.username === 'string' ? options.username : undefined
 
   if (user === undefined) {
-    throw new Error('No user name found');
+    throw new Error('No user name found')
   }
 
-  const port = typeof options.port === 'number' ? options.port : undefined;
+  const port = typeof options.port === 'number' ? options.port : undefined
 
   if (port === undefined) {
-    throw new Error('No port found');
+    throw new Error('No port found')
   }
 
-  const host = typeof options.host === 'string' ? options.host : undefined;
+  const host = typeof options.host === 'string' ? options.host : undefined
 
   if (host === undefined) {
-    throw new Error('No host name found');
+    throw new Error('No host name found')
   }
 
   const password =
-    typeof options.password === 'string' ? options.password : undefined;
+    typeof options.password === 'string' ? options.password : undefined
 
   if (password === undefined) {
-    throw new Error('No password found');
+    throw new Error('No password found')
   }
 
   await dropDatabase(
     {
-      databaseName,
+      databaseName
     },
     {
       user,
       port,
       host,
-      password,
-    },
-  );
+      password
+    }
+  )
 }
 
-drop().catch((e: Error) => Logger.error(`${e.name} ${e.message}`));
+drop().catch((exception) => { Logger.error(exception) })

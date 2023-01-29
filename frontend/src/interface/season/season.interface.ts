@@ -1,5 +1,5 @@
 export interface SeasonData {
-  start?: string;
-  end?: string;
-  name: string;
+  start?: string
+  end?: string
+  name: string
 }

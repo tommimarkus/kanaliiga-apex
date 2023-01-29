@@ -1,18 +1,18 @@
-import { forwardRef, Module } from '@nestjs/common';
-import { MatchService } from './match.service';
-import { MatchController } from './match.controller';
-import { MatchRepository } from './match.repository';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { GroupModule } from '../group/group.module';
-import { MatchPlayerModule } from '../match-player/match-player.module';
+import { forwardRef, Module } from '@nestjs/common'
+import { MatchService } from './match.service'
+import { MatchController } from './match.controller'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { GroupModule } from '../group/group.module'
+import { MatchPlayerModule } from '../match-player/match-player.module'
+import { MatchEntity } from './match.entity'
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([MatchRepository]),
+    TypeOrmModule.forFeature([MatchEntity]),
     forwardRef(() => MatchPlayerModule),
-    forwardRef(() => GroupModule),
+    forwardRef(() => GroupModule)
   ],
   providers: [MatchService],
-  controllers: [MatchController],
+  controllers: [MatchController]
 })
 export class MatchModule {}

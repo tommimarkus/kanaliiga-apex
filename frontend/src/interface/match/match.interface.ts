@@ -1,3 +1,3 @@
 export interface MatchData {
-  start?: string;
+  start?: string
 }

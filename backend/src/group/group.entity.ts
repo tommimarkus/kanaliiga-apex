@@ -3,45 +3,45 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Unique,
-} from 'typeorm';
-import { Entity } from 'typeorm/decorator/entity/Entity';
-import { MatchEntity } from '../match/match.entity';
-import { TournamentEntity } from '../tournament/tournament.entity';
-import { GroupInputData } from './group-input.interface';
+  Unique
+} from 'typeorm'
+import { Entity } from 'typeorm/decorator/entity/Entity'
+import { MatchEntity } from '../match/match.entity'
+import { TournamentEntity } from '../tournament/tournament.entity'
+import { GroupInputData } from './group-input.interface'
 
 @Entity('group')
 @Unique('tournament_order', ['tournament', 'order'])
 export class GroupEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false, default: true })
-  active: boolean;
+    active: boolean
 
   @Column({ nullable: false })
-  order: number;
+    order: number
 
   @OneToMany(
     () => MatchEntity,
     match => match.group,
-    { nullable: true },
+    { nullable: true }
   )
-  matches?: MatchEntity[];
+    matches?: MatchEntity[]
 
   @ManyToOne(
     () => TournamentEntity,
     tournament => tournament.groups,
-    { nullable: true },
+    { nullable: true }
   )
-  tournament?: TournamentEntity;
+    tournament?: TournamentEntity
 
-  constructor(groupInputData?: GroupInputData, tournament?: TournamentEntity) {
-    if (groupInputData) {
-      this.order = groupInputData.order;
-      this.matches = [];
-      if (tournament) {
-        this.tournament = tournament;
+  constructor (groupInputData?: GroupInputData, tournament?: TournamentEntity) {
+    if (groupInputData != null) {
+      this.order = groupInputData.order
+      this.matches = []
+      if (tournament != null) {
+        this.tournament = tournament
       }
     }
   }

@@ -1,83 +1,83 @@
-import { EAMatchPlayerResult } from '../ea-match-data/ea-match-data.interface';
-import { MatchEntity } from '../match/match.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { EAMatchPlayerResult } from '../ea-match-data/ea-match-data.interface'
+import { MatchEntity } from '../match/match.entity'
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('match-player')
 export class MatchPlayerEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false, default: true })
-  active: boolean;
+    active: boolean
 
   @Column()
-  name: string;
+    name: string
 
   @Column()
-  kills: number;
+    kills: number
 
   @Column()
-  assists: number;
+    assists: number
 
   @Column()
-  damage: number;
+    damage: number
 
   @Column()
-  survivalTime: number;
+    survivalTime: number
 
   @Column()
-  teamName: string;
+    teamName: string
 
   @Column()
-  teamNum: number;
+    teamNum: number
 
   @Column()
-  teamPlacement: number;
+    teamPlacement: number
 
-  @Column()
-  hits: number;
+  @Column({ default: 0 })
+    hits: number
 
-  @Column()
-  characterName: string;
+  @Column({ default: '' })
+    characterName: string
 
-  @Column()
-  revivesGiven: number;
+  @Column({ default: 0 })
+    revivesGiven: number
 
-  @Column()
-  knockdowns: number;
+  @Column({ default: 0 })
+    knockdowns: number
 
-  @Column()
-  respawnsGiven: number;
+  @Column({ default: 0 })
+    respawnsGiven: number
 
-  @Column()
-  headshots: number;
+  @Column({ default: 0 })
+    headshots: number
 
-  @Column()
-  shots: number;
+  @Column({ default: 0 })
+    shots: number
 
   @ManyToOne(
     () => MatchEntity,
-    match => match.matchPlayers,
+    match => match.matchPlayers
   )
-  match: MatchEntity;
+    match: MatchEntity
 
-  constructor(playerResult?: EAMatchPlayerResult) {
-    if (playerResult) {
-      this.name = playerResult.playerName;
-      this.kills = playerResult.kills;
-      this.assists = playerResult.assists;
-      this.damage = playerResult.damageDealt;
-      this.survivalTime = playerResult.survivalTime;
-      this.teamName = playerResult.teamName;
-      this.teamNum = playerResult.teamNum;
-      this.teamPlacement = playerResult.teamPlacement;
-      this.hits = playerResult.hits;
-      this.characterName = playerResult.characterName;
-      this.revivesGiven = playerResult.revivesGiven;
-      this.knockdowns = playerResult.knockdowns;
-      this.respawnsGiven = playerResult.respawnsGiven;
-      this.headshots = playerResult.headshots;
-      this.shots = playerResult.shots;
+  constructor (playerResult?: EAMatchPlayerResult) {
+    if (playerResult != null) {
+      this.name = playerResult.playerName
+      this.kills = playerResult.kills
+      this.assists = playerResult.assists
+      this.damage = playerResult.damageDealt
+      this.survivalTime = playerResult.survivalTime
+      this.teamName = playerResult.teamName
+      this.teamNum = playerResult.teamNum
+      this.teamPlacement = playerResult.teamPlacement
+      this.hits = playerResult.hits
+      this.characterName = playerResult.characterName
+      this.revivesGiven = playerResult.revivesGiven
+      this.knockdowns = playerResult.knockdowns
+      this.respawnsGiven = playerResult.respawnsGiven
+      this.headshots = playerResult.headshots
+      this.shots = playerResult.shots
     }
   }
 }

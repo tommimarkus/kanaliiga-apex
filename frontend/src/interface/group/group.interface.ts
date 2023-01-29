@@ -1,3 +1,3 @@
 export interface GroupData {
-  order: number;
+  order: number
 }

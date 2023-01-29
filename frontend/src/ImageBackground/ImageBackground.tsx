@@ -1,21 +1,21 @@
-import { ReactElement } from 'react';
+import React, { type ReactElement } from 'react'
 
-import './ImageBackground.scss';
+import './ImageBackground.scss'
 
 export interface ImageBackgroundProps {
-  imageSources: string[];
+  imageSources: string[]
 }
 
-const ImageBackground = (props: ImageBackgroundProps): ReactElement => {
-  const { imageSources } = props;
+function ImageBackground (props: ImageBackgroundProps): ReactElement {
+  const { imageSources } = props
 
-  const image = imageSources[Math.floor(Math.random() * imageSources.length)];
+  const image = imageSources[Math.floor(Math.random() * imageSources.length)]
 
   return (
     <div className="video-background-container">
       <img alt="background" className="poster-background" src={image} />
     </div>
-  );
-};
+  )
+}
 
-export default ImageBackground;
+export default ImageBackground

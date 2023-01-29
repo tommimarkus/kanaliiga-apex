@@ -1,59 +1,57 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react'
 
-import { RouteComponentProps } from '@reach/router';
-import axios from 'axios';
-import { DateTime } from 'luxon';
+import axios from 'axios'
+import { DateTime } from 'luxon'
 
-import './RecentTournamentsPage.scss';
-import BasePage from '../Base/BasePage';
-import { TournamentOutputListData } from '../interface/tournament/tournament-output-list.interface';
-import LinkTable, { LinkTableData } from '../Table/LinkTable';
-import Utils from '../utils';
+import './RecentTournamentsPage.scss'
+import BasePage from '../Base/BasePage'
+import { type TournamentOutputListData } from '../interface/tournament/tournament-output-list.interface'
+import LinkTable, { type LinkTableData } from '../Table/LinkTable'
+import { baseUrl, sortDateStrings, dateAndTimeFormat } from '../utils'
 
-export interface RecentTournamentsPageProps extends RouteComponentProps {}
+function RecentTournamentsPage (): ReactElement {
+  const entryPoint = '/tournament'
 
-const RecentTournamentsPage = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  props: RecentTournamentsPageProps
-): ReactElement => {
-  const entryPoint = '/tournament';
-
-  const [data, setData] = useState<TournamentOutputListData[] | undefined>();
+  const [data, setData] = useState<TournamentOutputListData[] | undefined>()
 
   useEffect(() => {
     axios
-      .get<TournamentOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
+      .get<TournamentOutputListData[]>(`${baseUrl}${entryPoint}`)
       .then((response) => {
-        setData(response.data);
-      });
-    return () => {};
-  }, []);
+        setData(response.data)
+      })
+      .catch((reason: any) => {
+        console.error('Failed to fetch tournament data\n\n%s', reason)
+      })
+    return () => { }
+  }, [])
 
   const columnsRecentTournaments = [
     { title: 'Date', field: '' },
-    { title: 'Name', field: '' },
-  ];
+    { title: 'Name', field: '' }
+  ]
 
-  const dataRecentTournaments = data
+  const dataRecentTournaments: LinkTableData[] | undefined = data
     ?.sort((a: TournamentOutputListData, b: TournamentOutputListData) =>
-      Utils.sortDateStrings(b.start, a.start)
+      sortDateStrings(b.start, a.start)
     )
     .map(
       (recentTournamentsData) =>
         ({
           name:
-            recentTournamentsData.start &&
-            DateTime
+          typeof recentTournamentsData.start === 'string'
+            ? DateTime
               .fromISO(recentTournamentsData.start)
-              .toLocaleString(Utils.dateAndTimeFormat),
-          value: recentTournamentsData.name || 'Unnamed',
-          link: `${entryPoint}/${recentTournamentsData.id}`,
-        } as LinkTableData)
-    );
+              .toLocaleString(dateAndTimeFormat)
+            : '',
+          value: typeof recentTournamentsData.name === 'string' ? recentTournamentsData.name : 'Unnamed',
+          link: `${entryPoint}/${recentTournamentsData.id}`
+        })
+    )
 
   return (
     <BasePage title="Recent Tournaments">
-      {dataRecentTournaments && (
+      {(dataRecentTournaments != null) && (
         <div className="right-column">
           <div className="column-content">
             <LinkTable
@@ -64,7 +62,7 @@ const RecentTournamentsPage = (
         </div>
       )}
     </BasePage>
-  );
-};
+  )
+}
 
-export default RecentTournamentsPage;
+export default RecentTournamentsPage

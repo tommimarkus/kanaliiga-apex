@@ -3,7 +3,7 @@ module.exports = {
     {
       name: "backend",
       cwd: "./backend",
-      script: "dist/main.js",
+      script: "dist/src/main.js",
       watch: true,
       env: {
         NODE_ENV: "development",
@@ -26,9 +26,17 @@ module.exports = {
       "post-deploy":
         ". ~/.bash_profile && ~/setup.sh && sh post-deploy.sh && pm2 reload ecosystem.config.js --env production",
       "pre-setup": "",
-      env_production: {
-        NODE_ENV: "production",
-      },
+    },
+    development: {
+      user: "kanapex",
+      host: "95.216.174.76",
+      ref: "origin/dev",
+      repo: "git@github.com:tommimarkus/kanaliiga-apex.git",
+      path: "/var/opt/apps/kanaliiga-apex",
+      "pre-deploy-local": "",
+      "post-deploy":
+        ". ~/.bash_profile && ~/setup.sh && sh post-deploy.sh && pm2 reload ecosystem.config.js --env production",
+      "pre-setup": "",
     },
   },
 };

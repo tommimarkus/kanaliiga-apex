@@ -1,14 +1,14 @@
-import { Injectable, Logger } from '@nestjs/common';
-import { SelectQueryBuilder } from 'typeorm';
-import { MatchResultTeamMemberOutputData } from '../match/match-output.interface';
-import { MatchPlayerEntity } from './match-player.entity';
-import { MatchPlayerRepository } from './match-player.repository';
+import { Injectable, Logger } from '@nestjs/common'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Repository, type SelectQueryBuilder } from 'typeorm'
+import { type MatchResultTeamMemberOutputData } from '../match/match-output.interface'
+import { MatchPlayerEntity } from './match-player.entity'
 
 @Injectable()
 export class MatchPlayerService {
-  constructor(private matchPlayerRepository: MatchPlayerRepository) {}
+  constructor (@InjectRepository(MatchPlayerEntity) private readonly matchPlayerRepository: Repository<MatchPlayerEntity>) {}
 
-  async find(): Promise<MatchResultTeamMemberOutputData[]> {
+  async find (): Promise<MatchResultTeamMemberOutputData[]> {
     const qb = this.matchPlayerRepository
       .createQueryBuilder('player')
       .select('COALESCE(SUM(player.kills), 0)', 'total_kills')
@@ -20,21 +20,21 @@ export class MatchPlayerService {
       .groupBy('player_name')
       .orderBy('total_kills', 'DESC')
       .addOrderBy('total_damage', 'DESC')
-      .addOrderBy('total_assists', 'DESC');
-    Logger.debug(qb.getSql());
+      .addOrderBy('total_assists', 'DESC')
+    Logger.debug(qb.getSql())
     return (await qb.getRawMany()).map(rawData => {
       const outputData: MatchResultTeamMemberOutputData = {
         name: rawData.player_name,
         kills: rawData.total_kills,
         damage: rawData.total_damage,
         assists: rawData.total_assists,
-        survivalTime: rawData.total_survival_time,
-      };
-      return outputData;
-    });
+        survivalTime: rawData.total_survival_time
+      }
+      return outputData
+    })
   }
 
-  resultsQuery(id: number): SelectQueryBuilder<MatchPlayerEntity> {
+  resultsQuery (id: number): SelectQueryBuilder<MatchPlayerEntity> {
     return this.matchPlayerRepository
       .createQueryBuilder('player')
       .select('COALESCE(SUM(player.kills), 0)', 'total_kills')
@@ -45,6 +45,6 @@ export class MatchPlayerService {
       .addSelect('player."matchId"', 'match_id')
       .where('player."matchId" = :id', { id })
       .groupBy('team_num')
-      .addGroupBy('match_id');
+      .addGroupBy('match_id')
   }
 }

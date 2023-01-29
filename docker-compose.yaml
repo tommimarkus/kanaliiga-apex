@@ -1,0 +1,47 @@
+version: "3.7"
+services:
+    frontend:
+        tty: true
+        depends_on:
+            - backend
+        container_name: kanaliiga_apex_frontend
+        ports:
+            - "3000:3000"
+        build:
+            context: ./frontend
+        volumes:
+          - ./frontend:/usr/src/app/frontend
+        env_file: ./frontend/.env
+    backend:
+        depends_on:
+            - database
+        container_name: kanaliiga_apex_backend
+        ports:
+            - "3001:3001"
+        build:
+            context: ./backend
+        environment:
+            TYPEORM_HOST: database
+        volumes:
+          - ./backend:/usr/src/app/backend
+        env_file: ./backend/.env
+        links:
+            - database
+    database:
+        container_name: kanaliiga_apex_database
+        build:
+            context: .
+            dockerfile: Dockerfile-postgresql
+        volumes:
+            - "/var/run/postgres/postgres.sock:/var/run/postgres/postgres.sock"
+            - "database:/var/lib/lib/postgresql/data"
+        ports:
+            - "5432:5432"
+        restart: always
+        environment:
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: kanaliiga-apex-dev
+          POSTGRES_PASSWORD: kanaliiga-apex-dev
+          POSTGRES_DB: kanaliiga-apex-dev
+volumes:
+    database:

@@ -1,28 +1,29 @@
-import { ReactElement } from 'react';
+import React, { type ReactElement } from 'react'
+import { useNavigate } from 'react-router'
 
-import { navigate } from '@reach/router';
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import './LinkTable.scss';
+import './LinkTable.scss'
 
 export interface LinkTableColumn {
-  title: string;
-  field: string;
+  title: string
+  field: string
 }
 
 export interface LinkTableData {
-  name: string;
-  value: string;
-  link: string;
+  name: string
+  value: string
+  link: string
 }
 
 export interface LinkTableProps {
-  columns: LinkTableColumn[];
-  data: LinkTableData[];
+  columns: LinkTableColumn[]
+  data: LinkTableData[]
 }
 
-const LinkTable = (props: LinkTableProps): ReactElement => {
-  const { columns, data } = props;
+function LinkTable (props: LinkTableProps): ReactElement {
+  const { columns, data } = props
+  const navigate = useNavigate()
   return (
     <div className="link-table-container">
       <table className="link-table">
@@ -31,7 +32,7 @@ const LinkTable = (props: LinkTableProps): ReactElement => {
             {columns.map((c, columnIndex) => (
               <th
                 className="link-table-column-header"
-                key={columnIndex.toString()}
+                key={columnIndex}
               >
                 {c.title}
               </th>
@@ -46,8 +47,8 @@ const LinkTable = (props: LinkTableProps): ReactElement => {
                 { odd: rowIndex % 2 !== 0 },
                 { even: rowIndex % 2 === 0 }
               )}
-              key={rowIndex.toString()}
-              onClick={() => navigate(d.link)}
+              key={rowIndex}
+              onClick={() => { navigate(d.link) }}
             >
               <td className="link-table-column-data">{d.name}</td>
               <td className="link-table-column-data">{d.value}</td>
@@ -57,7 +58,7 @@ const LinkTable = (props: LinkTableProps): ReactElement => {
         <tfoot className="link-table-footer" />
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default LinkTable;
+export default LinkTable

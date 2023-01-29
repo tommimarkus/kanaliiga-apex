@@ -1,22 +1,22 @@
-import { ReactElement } from 'react';
+import React, { type ReactElement } from 'react'
 
-import classNames from 'classnames';
+import classNames from 'classnames'
 
-import './Table.scss';
+import './Table.scss'
 
-export type Column<T, K extends keyof T> = {
-  key: K;
-  header: string | ReactElement;
-  width?: number;
-};
+export interface Column<T, K extends keyof T> {
+  key: K
+  header: string | ReactElement
+  width?: number
+}
 
-type TableProps<T, K extends keyof T> = {
-  data: Array<T>;
-  columns: Array<Column<T, K>>;
-};
+interface TableProps<T, K extends keyof T> {
+  data: T[]
+  columns: Array<Column<T, K>>
+}
 
-const Table = <T, K extends keyof T>(props: TableProps<T, K>): ReactElement => {
-  const { columns, data } = props;
+function Table<T, K extends keyof T> (props: TableProps<T, K>): ReactElement {
+  const { columns, data } = props
   return (
     <div className="match-table-container">
       <table className="match-table">
@@ -25,9 +25,7 @@ const Table = <T, K extends keyof T>(props: TableProps<T, K>): ReactElement => {
             {columns.map((column, columnIndex) => (
               <th
                 className="match-table-column-header"
-                key={`MatchTableColumnHeader${
-                  column.header
-                }${columnIndex.toString()}`}
+                key={`MatchTableColumnHeader${columnIndex}`}
               >
                 {column.header}
               </th>
@@ -42,16 +40,14 @@ const Table = <T, K extends keyof T>(props: TableProps<T, K>): ReactElement => {
                 { odd: rowIndex % 2 !== 0 },
                 { even: rowIndex % 2 === 0 }
               )}
-              key={`MatchTableRow${rowIndex.toString()}`}
+              key={`MatchTableRow${rowIndex}`}
             >
               {columns.map((column, columnIndex) => (
                 <td
                   className="match-table-column-data"
-                  key={`MatchTableColumn${
-                    column.header
-                  }${columnIndex.toString()}`}
+                  key={`MatchTableColumn${columnIndex}`}
                 >
-                  {row[column.key]}
+                  {row[column.key] as string}
                 </td>
               ))}
             </tr>
@@ -60,7 +56,7 @@ const Table = <T, K extends keyof T>(props: TableProps<T, K>): ReactElement => {
         <tfoot className="table-footer" />
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default Table;
+export default Table

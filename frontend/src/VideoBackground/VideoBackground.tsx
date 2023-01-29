@@ -1,14 +1,14 @@
-import { ReactElement } from 'react';
+import React, { type ReactElement } from 'react'
 
-import './VideoBackground.scss';
+import './VideoBackground.scss'
 
 export interface VideoBackgroundProps {
-  videoSources: string[];
-  poster?: string;
+  videoSources: string[]
+  poster?: string
 }
 
-const VideoBackground = (props: VideoBackgroundProps): ReactElement => {
-  const { videoSources, poster } = props;
+function VideoBackground (props: VideoBackgroundProps): ReactElement {
+  const { videoSources, poster } = props
 
   return (
     <div className="video-background-container">
@@ -19,7 +19,7 @@ const VideoBackground = (props: VideoBackgroundProps): ReactElement => {
         />
       </video>
     </div>
-  );
-};
+  )
+}
 
-export default VideoBackground;
+export default VideoBackground

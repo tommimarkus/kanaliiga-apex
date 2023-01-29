@@ -1,5 +1,5 @@
-import { TournamentData } from './tournament.interface';
+import { type TournamentData } from './tournament.interface'
 
 export interface TournamentInputData extends TournamentData {
-  matchTokens: string[];
+  matchTokens: string[]
 }

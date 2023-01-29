@@ -1,3 +1,3 @@
-import { SeasonOutputData } from './season-output.interface';
+import { type SeasonOutputData } from './season-output.interface'
 
 export interface SeasonOutputListData extends SeasonOutputData {}

@@ -1,60 +1,60 @@
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Entity } from 'typeorm/decorator/entity/Entity';
-import { ScoreInputData } from '../score/score-input.interface';
-import { ScoreEntity } from '../score/score.entity';
-import { TournamentEntity } from '../tournament/tournament.entity';
-import { SeasonInputData } from './season-input.interface';
+import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Entity } from 'typeorm/decorator/entity/Entity'
+import { ScoreInputData } from '../score/score-input.interface'
+import { ScoreEntity } from '../score/score.entity'
+import { TournamentEntity } from '../tournament/tournament.entity'
+import { SeasonInputData } from './season-input.interface'
 
 @Entity('season')
 export class SeasonEntity {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number
 
   @Column({ nullable: false, default: true })
-  active: boolean;
+    active: boolean
 
   @Column({ nullable: true })
-  name: string;
+    name: string
 
   @Column({
     type: 'timestamp with time zone',
-    nullable: false,
+    nullable: false
   })
-  start: Date;
+    start: Date
 
   @Column({
     type: 'timestamp with time zone',
-    nullable: false,
+    nullable: false
   })
-  end: Date;
+    end: Date
 
   @OneToMany(
     () => TournamentEntity,
     tournament => tournament.season,
-    { nullable: true },
+    { nullable: true }
   )
-  tournaments?: TournamentEntity[];
+    tournaments?: TournamentEntity[]
 
   @ManyToOne(
     () => ScoreEntity,
     score => score.seasons,
-    { nullable: true },
+    { nullable: true }
   )
-  score?: ScoreEntity;
+    score?: ScoreEntity
 
-  constructor(seasonInputData?: SeasonInputData, scoreEntity?: ScoreEntity) {
-    if (seasonInputData) {
-      this.start = seasonInputData.start && new Date(seasonInputData.start);
-      this.end = seasonInputData.end && new Date(seasonInputData.end);
-      this.name = seasonInputData.name;
-      this.tournaments = null;
-      if (scoreEntity) {
-        this.score = scoreEntity;
-      } else {
-        if (seasonInputData.score instanceof ScoreInputData) {
-          this.score = new ScoreEntity(seasonInputData.score);
+  constructor (seasonInputData?: SeasonInputData, scoreEntity?: ScoreEntity) {
+    if (seasonInputData != null) {
+      if (typeof seasonInputData.start === 'string' && typeof seasonInputData.end === 'string') {
+        this.start = new Date(seasonInputData.start)
+        this.end = new Date(seasonInputData.end)
+        this.name = seasonInputData.name
+        this.tournaments = undefined
+        if (scoreEntity != null) {
+          this.score = scoreEntity
         } else {
-          throw Error('Score data is missing');
+          if (seasonInputData.score instanceof ScoreInputData) {
+            this.score = new ScoreEntity(seasonInputData.score)
+          }
         }
       }
     }

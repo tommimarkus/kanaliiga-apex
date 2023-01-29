@@ -1,56 +1,54 @@
-import React, { ReactElement, useEffect, useState } from 'react';
+import React, { type ReactElement, useEffect, useState } from 'react'
 
-import { RouteComponentProps } from '@reach/router';
-import axios from 'axios';
-import { DateTime } from 'luxon';
+import axios from 'axios'
+import { DateTime } from 'luxon'
 
-import './RecentMatchesPage.scss';
+import './RecentMatchesPage.scss'
 
-import BasePage from '../Base/BasePage';
-import { MatchOutputListData } from '../interface/match/match-output-list.interface';
-import LinkTable, { LinkTableData } from '../Table/LinkTable';
-import Utils from '../utils';
+import BasePage from '../Base/BasePage'
+import { type MatchOutputListData } from '../interface/match/match-output-list.interface'
+import LinkTable, { type LinkTableData } from '../Table/LinkTable'
+import { baseUrl, dateAndTimeFormat } from '../utils'
 
-export interface RecentMatchesPageProps extends RouteComponentProps {}
+function RecentMatchesPage (): ReactElement {
+  const entryPoint = '/match'
 
-const RecentMatchesPage = (
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  props: RecentMatchesPageProps
-): ReactElement => {
-  const entryPoint = '/match';
-
-  const [data, setData] = useState<MatchOutputListData[] | undefined>();
+  const [data, setData] = useState<MatchOutputListData[] | undefined>()
 
   useEffect(() => {
     axios
-      .get<MatchOutputListData[]>(`${Utils.baseUrl}${entryPoint}`)
+      .get<MatchOutputListData[]>(`${baseUrl}${entryPoint}`)
       .then((response) => {
-        setData(response.data);
-      });
-    return () => {};
-  }, []);
+        setData(response.data)
+      })
+      .catch((reason: any) => {
+        console.error('Failed to fetch match data\n\n%s', reason)
+      })
+    return () => { }
+  }, [])
 
   const columnsRecentMatches = [
     { title: 'Date', field: '' },
-    { title: 'Tournament', field: '' },
-  ];
+    { title: 'Tournament', field: '' }
+  ]
 
-  const dataRecentMatches = data?.map(
+  const dataRecentMatches: LinkTableData[] | undefined = data?.map(
     (recentMatchesData) =>
       ({
         name:
-          recentMatchesData.start &&
-          DateTime
+        typeof recentMatchesData.start === 'string'
+          ? DateTime
             .fromISO(recentMatchesData.start)
-            .toLocaleString(Utils.dateAndTimeFormat),
-        value: recentMatchesData.group?.tournament?.name || 'Unnamed',
-        link: `${entryPoint}/${recentMatchesData.id}`,
-      } as LinkTableData)
-  );
+            .toLocaleString(dateAndTimeFormat)
+          : '',
+        value: typeof recentMatchesData.group?.tournament?.name === 'string' ? recentMatchesData.group?.tournament?.name : 'Unnamed',
+        link: `${entryPoint}/${recentMatchesData.id}`
+      })
+  )
 
   return (
     <BasePage title="Recent Matches">
-      {dataRecentMatches && (
+      {(dataRecentMatches != null) && (
         <div className="right-column">
           <div className="column-content">
             <LinkTable
@@ -61,7 +59,7 @@ const RecentMatchesPage = (
         </div>
       )}
     </BasePage>
-  );
-};
+  )
+}
 
-export default RecentMatchesPage;
+export default RecentMatchesPage

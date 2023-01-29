@@ -1,58 +1,58 @@
-import { Injectable, Logger, Module } from '@nestjs/common';
-import { NestFactory } from '@nestjs/core';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { Connection } from 'typeorm';
-import typeormConfig from '../config/config.typeorm';
+import { Injectable, Logger, Module } from '@nestjs/common'
+import { NestFactory } from '@nestjs/core'
+import { TypeOrmModule } from '@nestjs/typeorm'
+import { Connection } from 'typeorm'
+import typeormConfig from '../config/config.typeorm'
 
 @Injectable()
 class ClearDatabaseService {
-  constructor(private connection: Connection) {}
+  constructor (private readonly connection: Connection) {}
 
-  async clearMatch() {
-    Logger.log('Clearing Match');
+  async clearMatch (): Promise<void> {
+    Logger.log('Clearing Match')
     await this.connection
       .createQueryRunner()
       .query(
-        'TRUNCATE "match-player", "match", "group", "tournament", "season" RESTART IDENTITY CASCADE;',
-      );
+        'TRUNCATE "match-player", "match", "group", "tournament", "season" RESTART IDENTITY CASCADE;'
+      )
   }
 }
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      ...typeormConfig(),
-    }),
+      ...typeormConfig()
+    })
   ],
-  providers: [ClearDatabaseService],
+  providers: [ClearDatabaseService]
 })
 class ClearDatabaseModule {}
 
-async function bootstrap() {
+async function bootstrap (): Promise<void> {
   try {
     const app = await NestFactory.createApplicationContext(
       ClearDatabaseModule,
       {
-        abortOnError: true,
-      },
-    );
+        abortOnError: true
+      }
+    )
     try {
-      Logger.log('Clearing database:');
-      const clearDatabaseService = app.get(ClearDatabaseService);
-      await clearDatabaseService.clearMatch();
-    } catch (e) {
-      Logger.error(`${e.name} ${e.message}`);
-      if (e.stackTrace) {
-        Logger.error(`${e.stackTrace}`);
+      Logger.log('Clearing database:')
+      const clearDatabaseService = app.get(ClearDatabaseService)
+      await clearDatabaseService.clearMatch()
+    } catch (exception) {
+      Logger.error(exception)
+      if (exception.stackTrace != null) {
+        Logger.error(exception.stackTrace)
       }
     }
-    await app.close();
-  } catch (e) {
-    Logger.error(`${e.name} ${e.message}`);
-    if (e.stackTrace) {
-      Logger.error(`${e.stackTrace}`);
+    await app.close()
+  } catch (exception) {
+    Logger.error(exception)
+    if (exception.stackTrace != null) {
+      Logger.error(exception.stackTrace)
     }
   }
 }
 
-bootstrap();
+bootstrap().catch((reason: any) => { Logger.error(reason) })
