@@ -19,6 +19,8 @@ function MatchPage (): ReactElement {
   const query = new URLSearchParams(useLocation().search)
   const stream = query.has('stream')
 
+  const top = 5
+
   const [data, setData] = useState<MatchOutputOneData | undefined>()
 
   const [tournamentData, setTournamentData] =
@@ -26,6 +28,10 @@ function MatchPage (): ReactElement {
   const groupsMatches = tournamentData?.groups?.flatMap(
     (group) => group.matches
   )
+
+  const [dataKillsMVP, setDataKillsMVP] = useState<MatchResultTeamMemberOutputData[] | undefined>()
+  const [dataDamageMVP, setDataDamageMVP] = useState<MatchResultTeamMemberOutputData[] | undefined>()
+  const [dataAssistsMVP, setDataAssistsMVP] = useState<MatchResultTeamMemberOutputData[] | undefined>()
 
   const dataValidMatches = groupsMatches
     ?.filter(
@@ -39,9 +45,9 @@ function MatchPage (): ReactElement {
     )
 
   useEffect(() => {
-    const id = data?.group?.tournament?.id
-    if (typeof id === 'number') {
-      const entrypoint = `${baseUrl}/tournament/${id}`
+    const tournamentId = data?.group?.tournament?.id
+    if (typeof tournamentId === 'number') {
+      const entrypoint = `${baseUrl}/tournament/${tournamentId}`
       axios.get<TournamentOutputOneData>(entrypoint)
         .then((response) => {
           setTournamentData(response.data)
@@ -62,6 +68,30 @@ function MatchPage (): ReactElement {
         })
         .catch((reason: any) => {
           console.error('Failed to fetch match data\n\n%s', reason)
+        })
+      axios
+        .get<MatchResultTeamMemberOutputData[]>(`${baseUrl}/player/${id}/mvp/kills/${top}`)
+        .then((response) => {
+          setDataKillsMVP(response.data)
+        })
+        .catch((reason: any) => {
+          console.error('Failed to fetch match kills mvp data\n\n%s', reason)
+        })
+      axios
+        .get<MatchResultTeamMemberOutputData[]>(`${baseUrl}/player/${id}/mvp/damage/${top}`)
+        .then((response) => {
+          setDataDamageMVP(response.data)
+        })
+        .catch((reason: any) => {
+          console.error('Failed to fetch match damage mvp data\n\n%s', reason)
+        })
+      axios
+        .get<MatchResultTeamMemberOutputData[]>(`${baseUrl}/player/${id}/mvp/assists/${top}`)
+        .then((response) => {
+          setDataAssistsMVP(response.data)
+        })
+        .catch((reason: any) => {
+          console.error('Failed to fetch match assists mvp data\n\n%s', reason)
         })
     }
     return () => {}
@@ -111,10 +141,6 @@ function MatchPage (): ReactElement {
     })
     ?.map((value, index) => ({ ...value, order: index + 1 }))
 
-  const top = 5
-
-  const dataPlayer = data?.results?.flatMap((result) => result.teamMembers)
-
   const columnsPlayerKills: Array<
   Column<
   MatchResultTeamMemberOutputData,
@@ -163,51 +189,6 @@ function MatchPage (): ReactElement {
     }
   ]
 
-  const dataPlayerKills = dataPlayer
-    ?.sort(
-      (
-        a: MatchResultTeamMemberOutputData,
-        b: MatchResultTeamMemberOutputData
-      ) => {
-        const kills = b.kills - a.kills
-        if (kills === 0) {
-          return b.damage - a.damage
-        }
-        return kills
-      }
-    )
-    ?.slice(0, top)
-
-  const dataPlayerDamage = dataPlayer
-    ?.sort(
-      (
-        a: MatchResultTeamMemberOutputData,
-        b: MatchResultTeamMemberOutputData
-      ) => {
-        const damage = b.damage - a.damage
-        if (damage === 0) {
-          return b.kills - a.kills
-        }
-        return damage
-      }
-    )
-    ?.slice(0, top)
-
-  const dataPlayerAssists = dataPlayer
-    ?.sort(
-      (
-        a: MatchResultTeamMemberOutputData,
-        b: MatchResultTeamMemberOutputData
-      ) => {
-        const assists = b.assists - a.assists
-        if (assists === 0) {
-          return b.damage - a.damage
-        }
-        return assists
-      }
-    )
-    ?.slice(0, top)
-
   const currentMatchIndex = dataValidMatches?.findIndex(
     (value) => String(value.id) === id
   )
@@ -237,11 +218,11 @@ function MatchPage (): ReactElement {
           <div>
             <Table columns={columnsMatch} data={dataMatch} />
           </div>
-          {(dataPlayerKills != null) && (dataPlayerDamage != null) && (dataPlayerAssists != null) && (
+          {(dataKillsMVP != null) && (dataDamageMVP != null) && (dataAssistsMVP != null) && (
             <div className="player-tables">
-              <Table columns={columnsPlayerKills} data={dataPlayerKills} />
-              <Table columns={columnsPlayerDamage} data={dataPlayerDamage} />
-              <Table columns={columnsPlayerAssists} data={dataPlayerAssists} />
+              <Table columns={columnsPlayerKills} data={dataKillsMVP} />
+              <Table columns={columnsPlayerDamage} data={dataDamageMVP} />
+              <Table columns={columnsPlayerAssists} data={dataAssistsMVP} />
             </div>
           )}
           {!stream && typeof data?.group?.tournament?.id === 'number' && (

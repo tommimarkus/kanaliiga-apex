@@ -21,7 +21,6 @@ export class MatchPlayerService {
       .orderBy('total_kills', 'DESC')
       .addOrderBy('total_damage', 'DESC')
       .addOrderBy('total_assists', 'DESC')
-    Logger.debug(qb.getSql())
     return (await qb.getRawMany()).map(rawData => {
       const outputData: MatchResultTeamMemberOutputData = {
         name: rawData.player_name,
@@ -34,7 +33,7 @@ export class MatchPlayerService {
     })
   }
 
-  resultsQuery (id: number): SelectQueryBuilder<MatchPlayerEntity> {
+  resultsQuery (matchId: number): SelectQueryBuilder<MatchPlayerEntity> {
     return this.matchPlayerRepository
       .createQueryBuilder('player')
       .select('COALESCE(SUM(player.kills), 0)', 'total_kills')
@@ -43,8 +42,40 @@ export class MatchPlayerService {
       .addSelect('COALESCE(MIN(player.teamPlacement), 20)', 'best_placement')
       .addSelect('player."teamNum"', 'team_num')
       .addSelect('player."matchId"', 'match_id')
-      .where('player."matchId" = :id', { id })
+      .where('player."matchId" = :matchId', { matchId })
       .groupBy('team_num')
       .addGroupBy('match_id')
+  }
+
+  async findTopKillsByMatchId (matchId: number, limit: number): Promise<MatchResultTeamMemberOutputData[]> {
+    const qb = this.topQuery(matchId, limit).addOrderBy('total_kills', 'DESC')
+    return (await qb.getRawMany()).map(rawData => this.asOutput(rawData))
+  }
+
+  async findTopDamageByMatchId (matchId: number, limit: number): Promise<MatchResultTeamMemberOutputData[]> {
+    const qb = this.topQuery(matchId, limit).addOrderBy('total_damage', 'DESC')
+    return (await qb.getRawMany()).map(rawData => this.asOutput(rawData))
+  }
+
+  async findTopAssistsByMatchId (matchId: number, limit: number): Promise<MatchResultTeamMemberOutputData[]> {
+    const qb = this.topQuery(matchId, limit).addOrderBy('total_assists', 'DESC')
+    return (await qb.getRawMany()).map(rawData => this.asOutput(rawData))
+  }
+
+  private topQuery (matchId: number, limit: number): SelectQueryBuilder<MatchPlayerEntity> {
+    return this.resultsQuery(matchId)
+      .addSelect('player.name', 'player_name')
+      .addGroupBy('player_name')
+      .limit(limit)
+  }
+
+  private asOutput (rawData: any): MatchResultTeamMemberOutputData {
+    return {
+      name: rawData.player_name,
+      kills: rawData.total_kills,
+      damage: rawData.total_damage,
+      assists: rawData.total_assists,
+      survivalTime: rawData.total_survival_time
+    }
   }
 }

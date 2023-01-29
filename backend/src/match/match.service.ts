@@ -49,7 +49,6 @@ export class MatchService {
   }
 
   async find (): Promise<MatchEntity[]> {
-    Logger.debug(JSON.stringify(this.findManyOptions))
     return await this.matchRepository.find(this.findManyOptions)
   }
 
@@ -133,8 +132,6 @@ export class MatchService {
       .addOrderBy('kills', 'DESC')
       .addOrderBy('damage', 'DESC')
       .addOrderBy('assists', 'DESC')
-
-    Logger.debug(qb.getSql())
 
     const rawResults = await qb.getRawMany()
 

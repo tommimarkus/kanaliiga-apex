@@ -8,7 +8,6 @@ export class AuthService {
 
   async validateUser (username: string, password: string): Promise<any> {
     const user = await this.userService.findOne(username)
-    Logger.debug(JSON.stringify(user))
     return (user != null) && bcrypt.compareSync(password, user.passwordHash)
       ? { roles: user.roles }
       : undefined
