@@ -1,57 +1,73 @@
 import { EAMatchPlayerResult } from '../ea-match-data/ea-match-data.interface'
 import { MatchEntity } from '../match/match.entity'
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity('match-player')
 export class MatchPlayerEntity {
   @PrimaryGeneratedColumn()
     id: number
 
+  @Index()
   @Column({ nullable: false, default: true })
     active: boolean
 
+  @Index()
   @Column()
     name: string
 
+  @Index()
   @Column()
     kills: number
 
+  @Index()
   @Column()
     assists: number
 
+  @Index()
   @Column()
     damage: number
 
+  @Index()
   @Column()
     survivalTime: number
 
+  @Index()
   @Column()
     teamName: string
 
+  @Index()
   @Column()
     teamNum: number
 
+  @Index()
   @Column()
     teamPlacement: number
 
+  @Index()
   @Column({ default: 0 })
     hits: number
 
+  @Index()
   @Column({ default: '' })
     characterName: string
 
+  @Index()
   @Column({ default: 0 })
     revivesGiven: number
 
+  @Index()
   @Column({ default: 0 })
     knockdowns: number
 
+  @Index()
   @Column({ default: 0 })
     respawnsGiven: number
 
+  @Index()
   @Column({ default: 0 })
     headshots: number
 
+  @Index()
   @Column({ default: 0 })
     shots: number
 

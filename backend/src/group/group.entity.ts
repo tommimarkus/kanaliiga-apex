@@ -1,5 +1,6 @@
 import {
   Column,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,9 +17,11 @@ export class GroupEntity {
   @PrimaryGeneratedColumn()
     id: number
 
+  @Index()
   @Column({ nullable: false, default: true })
     active: boolean
 
+  @Index()
   @Column({ nullable: false })
     order: number
 

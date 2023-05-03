@@ -1,4 +1,4 @@
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Entity } from 'typeorm/decorator/entity/Entity'
 import { ScoreInputData } from '../score/score-input.interface'
 import { ScoreEntity } from '../score/score.entity'
@@ -10,18 +10,22 @@ export class SeasonEntity {
   @PrimaryGeneratedColumn()
     id: number
 
+  @Index()
   @Column({ nullable: false, default: true })
     active: boolean
 
+  @Index()
   @Column({ nullable: true })
     name: string
 
+  @Index()
   @Column({
     type: 'timestamp with time zone',
     nullable: false
   })
     start: Date
 
+  @Index()
   @Column({
     type: 'timestamp with time zone',
     nullable: false

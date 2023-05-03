@@ -2,6 +2,7 @@ import { type EAMatchData } from '../ea-match-data/ea-match-data.interface'
 import { MatchPlayerEntity } from '../match-player/match-player.entity'
 import {
   Column,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,21 +17,27 @@ export class MatchEntity {
   @PrimaryGeneratedColumn()
     id: number
 
+  @Index()
   @Column({ nullable: false, default: true })
     active: boolean
 
+  @Index()
   @Column({ nullable: false })
     token: string
 
+  @Index()
   @Column({ nullable: false, default: 0 })
     index: number
 
+  @Index()
   @Column({ type: 'timestamp with time zone', nullable: true })
     start?: Date
 
+  @Index()
   @Column({ nullable: true })
     aimAssistAllowed?: boolean
 
+  @Index()
   @Column({ nullable: true })
     mapName?: string
 

@@ -7,9 +7,10 @@ import {
 } from '@nestjs/common'
 import { SeasonEntity } from './season.entity'
 import { type SeasonInputData } from './season-input.interface'
-import { Repository, type FindManyOptions, type FindOneOptions } from 'typeorm'
+import { Repository, type FindManyOptions, type FindOneOptions, type FindOptionsWhere } from 'typeorm'
 import { ScoreService } from '../score/score.service'
 import { InjectRepository } from '@nestjs/typeorm'
+import { addWhere } from 'src/util/typeorm.utils'
 
 @Injectable()
 export class SeasonService {
@@ -42,11 +43,13 @@ export class SeasonService {
   }
 
   async findOne (id: number): Promise<SeasonEntity | null> {
-    return await this.seasonRepository.findOne({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<SeasonEntity> = { id }
+    return await this.seasonRepository.findOne(addWhere(this.findOneOptions, where))
   }
 
   async findOneOrFail (id: number): Promise<SeasonEntity> {
-    return await this.seasonRepository.findOneOrFail({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<SeasonEntity> = { id }
+    return await this.seasonRepository.findOneOrFail(addWhere(this.findOneOptions, where))
   }
 
   async save (

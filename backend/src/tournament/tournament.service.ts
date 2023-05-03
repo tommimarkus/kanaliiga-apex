@@ -8,8 +8,9 @@ import {
 import { TournamentEntity } from './tournament.entity'
 import { type TournamentInputData } from './tournament-input.interface'
 import { SeasonService } from '../season/season.service'
-import { Repository, type FindOneOptions } from 'typeorm'
+import { Repository, type FindOneOptions, type FindOptionsWhere } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { addWhere } from 'src/util/typeorm.utils'
 
 @Injectable()
 export class TournamentService {
@@ -43,11 +44,13 @@ export class TournamentService {
   }
 
   async findOne (id: number): Promise<TournamentEntity | null> {
-    return await this.tournamentRepository.findOne({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<TournamentEntity> = { id }
+    return await this.tournamentRepository.findOne(addWhere(this.findOneOptions, where))
   }
 
   async findOneOrFail (id: number): Promise<TournamentEntity> {
-    return await this.tournamentRepository.findOneOrFail({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<TournamentEntity> = { id }
+    return await this.tournamentRepository.findOneOrFail(addWhere(this.findOneOptions, where))
   }
 
   async save (

@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common'
 import { type EAMatchesData } from '../ea-match-data/ea-match-data.interface'
 import { MatchEntity } from './match.entity'
-import { type FindManyOptions, type FindOneOptions, IsNull, Not, Repository } from 'typeorm'
+import { type FindManyOptions, type FindOneOptions, IsNull, Not, Repository, type FindOptionsWhere } from 'typeorm'
 import { GroupService } from '../group/group.service'
 import {
   type MatchOutputOneData,
@@ -19,6 +19,7 @@ import { MatchPlayerService } from '../match-player/match-player.service'
 import { GroupEntity } from '../group/group.entity'
 import { TournamentEntity } from '../tournament/tournament.entity'
 import { InjectRepository } from '@nestjs/typeorm'
+import { addWhere } from 'src/util/typeorm.utils'
 
 @Injectable()
 export class MatchService {
@@ -172,7 +173,8 @@ export class MatchService {
   }
 
   async findOneOrFail (id: number): Promise<MatchEntity> {
-    return await this.matchRepository.findOneOrFail({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<MatchEntity> = { id }
+    return await this.matchRepository.findOneOrFail(addWhere(this.findOneOptions, where))
   }
 
   async save (

@@ -1,4 +1,4 @@
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
+import { Column, Index, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { Entity } from 'typeorm/decorator/entity/Entity'
 import { GroupEntity } from '../group/group.entity'
 import { SeasonEntity } from '../season/season.entity'
@@ -9,12 +9,15 @@ export class TournamentEntity {
   @PrimaryGeneratedColumn()
     id: number
 
+  @Index()
   @Column({ nullable: false, default: true })
     active: boolean
 
+  @Index()
   @Column({ unique: true, nullable: false })
     token: string
 
+  @Index()
   @Column({ unique: true, nullable: false })
     name: string
 

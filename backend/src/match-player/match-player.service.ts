@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common'
+import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository, type SelectQueryBuilder } from 'typeorm'
 import { type MatchResultTeamMemberOutputData } from '../match/match-output.interface'

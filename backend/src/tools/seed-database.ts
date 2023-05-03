@@ -9,7 +9,7 @@ import { GroupEntity } from '../group/group.entity'
 import { MatchEntity } from '../match/match.entity'
 import { MatchPlayerEntity } from '../match-player/match-player.entity'
 import { ScoreEntity } from '../score/score.entity'
-import { DataSource, Repository } from 'typeorm'
+import { Repository } from 'typeorm'
 
 @Injectable()
 class SeedDatabaseService {

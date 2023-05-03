@@ -8,8 +8,9 @@ import {
 import { GroupEntity } from './group.entity'
 import { type GroupInputData } from './group-input.interface'
 import { TournamentService } from '../tournament/tournament.service'
-import { Repository, type FindManyOptions, type FindOneOptions } from 'typeorm'
+import { Repository, type FindManyOptions, type FindOneOptions, type FindOptionsWhere } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
+import { addWhere } from 'src/util/typeorm.utils'
 
 @Injectable()
 export class GroupService {
@@ -32,8 +33,7 @@ export class GroupService {
   }
 
   private readonly findManyOptions: FindManyOptions<GroupEntity> = {
-    ...this.findOneOptions,
-    join: undefined
+    where: { active: true }
   }
 
   async find (): Promise<GroupEntity[]> {
@@ -43,11 +43,13 @@ export class GroupService {
   }
 
   async findOne (id: number): Promise<GroupEntity | null> {
-    return await this.groupRepository.findOne({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<GroupEntity> = { id }
+    return await this.groupRepository.findOne(addWhere(this.findOneOptions, where))
   }
 
   async findOneOrFail (id: number): Promise<GroupEntity> {
-    return await this.groupRepository.findOneOrFail({ where: { id }, ...this.findOneOptions })
+    const where: FindOptionsWhere<GroupEntity> = { id }
+    return await this.groupRepository.findOneOrFail(addWhere(this.findOneOptions, where))
   }
 
   async save (groupInputData: GroupInputData): Promise<GroupEntity | undefined> {
